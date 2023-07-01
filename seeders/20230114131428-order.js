@@ -51,9 +51,9 @@ module.exports = {
         id_store: 1,
         id_shipping_partner: 1,
         time_order: "2023-01-23 06:30:00",
-        delivery_fee: 0,
-        item_fee: 0,
-        total: 0,
+        delivery_fee: 25000,
+        item_fee: 110000,
+        total: 135000,
         status: 4
       },
       {

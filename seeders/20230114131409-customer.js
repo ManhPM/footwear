@@ -18,6 +18,7 @@ module.exports = {
         email: "n19dccn216@student.ptithcm.edu.vn",
         phone: "0123456789",
         address: "Cầu Xã Tĩnh, Bình Lợi, Huyện Bình Chánh, Thành phố Hồ Chí Minh",
+        image: "https://thuthuatnhanh.com/wp-content/uploads/2021/02/Avatar-ngau-dep.jpg"
       },
       {
         id_account: 5,
@@ -25,6 +26,7 @@ module.exports = {
         email: "phammanhbeo2001@gmail.com",
         phone: "0631231189",
         address: "Xã Quang Trung, Huyện Thống Nhất, Tỉnh Đồng Nai",
+        image: "https://thuthuatnhanh.com/wp-content/uploads/2021/02/Avatar-ngau-dep.jpg"
       },
     ]);
   },

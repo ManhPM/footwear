@@ -148,117 +148,6 @@ const createAccountForStaff = async (req, res) => {
   }
 };
 
-const loginStaff = async (req, res) => {
-  const { username, password } = req.body;
-  const account = await Account.findOne({
-    where: {
-      username,
-    },
-  });
-  if (account.id_role != 2 && account.id_role != 3) {
-    res.status(400).json({ message: "Tài khoản không có quyền truy cập!" });
-  } else {
-    const isAuth = bcrypt.compareSync(password, account.password);
-    if (isAuth) {
-      const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-        expiresIn: 15 * 24 * 60 * 60,
-      });
-      const refreshToken = jwt.sign(
-        { username: account.username },
-        "manhpham2k1",
-        {
-          expiresIn: 30 * 24 * 60 * 60,
-        }
-      );
-      res.status(200).json({
-        message: "Đăng nhập thành công!",
-        token,
-        refreshToken,
-        expireTimeToken: 15 * 24 * 60 * 60,
-        expireTimeRefreshToken: 30 * 24 * 60 * 30,
-      });
-    } else {
-      res.status(400).json({ message: "Sai thông tin đăng nhập!" });
-    }
-  }
-};
-
-const loginAdmin = async (req, res) => {
-  const { username, password } = req.body;
-  const account = await Account.findOne({
-    where: {
-      username,
-    },
-  });
-  if (account.id_role == 5) {
-    const isAuth = bcrypt.compareSync(password, account.password);
-    if (isAuth) {
-      const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-        expiresIn: 15 * 24 * 60 * 60,
-      });
-      const refreshToken = jwt.sign(
-        { username: account.username },
-        "manhpham2k1",
-        {
-          expiresIn: 30 * 24 * 60 * 60,
-        }
-      );
-      res.status(200).json({
-        message: "Đăng nhập thành công!",
-        token,
-        refreshToken,
-        expireTimeToken: 15 * 24 * 60 * 60,
-        expireTimeRefreshToken: 30 * 24 * 60 * 60,
-      });
-    } else {
-      res.status(400).json({ message: "Sai thông tin đăng nhập!" });
-    }
-  } else {
-    res.status(400).json({ message: "Tài khoản không có quyền truy cập!" });
-  }
-};
-
-const loginShipper = async (req, res) => {
-  const { username, password } = req.body;
-  const account = await Account.findOne({
-    where: {
-      username,
-    },
-  });
-  if (account.id_role != 4) {
-    res.status(400).json({ message: "Tài khoản không có quyền truy cập!" });
-  } else {
-    const shipper = await Shipper.findOne({
-      where: {
-        id_account: account.id_account,
-      },
-    });
-    const isAuth = bcrypt.compareSync(password, account.password);
-    if (isAuth) {
-      const token = jwt.sign({ username: account.username }, "manhpham2k1", {
-        expiresIn: 15 * 24 * 60 * 60,
-      });
-      const refreshToken = jwt.sign(
-        { username: account.username },
-        "manhpham2k1",
-        {
-          expiresIn: 30 * 24 * 60 * 60,
-        }
-      );
-      res.status(200).json({
-        message: "Đăng nhập thành công!",
-        token,
-        refreshToken,
-        expireTimeToken: 15 * 24 * 60 * 60,
-        expireTimeRefreshToken: 30 * 24 * 60 * 60,
-        shipperInfo: shipper,
-      });
-    } else {
-      res.status(400).json({ message: "Sai thông tin đăng nhập!" });
-    }
-  }
-};
-
 const login = async (req, res) => {
   const { username, password } = req.body;
   const account = await Account.findOne({
@@ -268,32 +157,68 @@ const login = async (req, res) => {
   });
   const isAuth = bcrypt.compareSync(password, account.password);
   if (isAuth) {
-    const customer = await Customer.findOne({
-      where: {
-        id_account: account.id_account,
-      },
-    });
     const token = jwt.sign({ username: account.username }, "manhpham2k1", {
       expiresIn: 15 * 24 * 60 * 60,
     });
-    const refreshToken = jwt.sign(
-      { username: account.username },
-      "manhpham2k1",
-      {
-        expiresIn: 30 * 24 * 60 * 60,
-      }
-    );
-    res.status(200).json({
-      message: "Đăng nhập thành công!",
-      token,
-      refreshToken,
-      userInfo: customer,
-      expireTimeToken: 15 * 60 * 60 * 24,
-      expireTimeRefreshToken: 30 * 60 * 60 * 24,
-    });
+    if (account.id_role == 1) {
+      const customer = await Account.sequelize.query(
+        "SELECT CU.*, A.username, R.name as role FROM roles as R, customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            username,
+          },
+        }
+      );
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .render("account/profile", {
+          username: customer[0].username,
+          image: customer[0].image,
+          name: customer[0].name,
+          role: customer[0].role,
+          address: customer[0].address,
+          phone: customer[0].phone,
+          email: customer[0].email,
+        });
+    } else if (account.id_role == 3 || account.id_role == 4) {
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .render("order/order");
+    } else if (account.id_role == 2) {
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .render("order/dashboard-manager");
+    } else {
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .render("order/dashboard-admin");
+    }
   } else {
-    res.status(400).json({ message: "Sai thông tin đăng nhập!" });
+    res
+      .status(400)
+      .render("account/signin", { message: "Sai thông tin đăng nhập!" });
   }
+};
+
+const logout = async (req, res, next) => {
+  res.clearCookie("access_token").status(200).render("account/signin");
 };
 
 const getUserInfo = async (req, res) => {
@@ -316,6 +241,10 @@ const getUserInfo = async (req, res) => {
       message: "Lấy thông tin user thất bại!",
     });
   }
+};
+
+const edit = async (req, res) => {
+  res.status(200).render("account/edit");
 };
 
 const refreshToken = async (req, res) => {
@@ -410,7 +339,7 @@ const changePassword = async (req, res) => {
     if (isAuth) {
       if (newPassword == repeatPassword) {
         if (newPassword == oldPassword) {
-          res.status(400).json({
+          res.status(400).render("account/edit", {
             message: "Mật khẩu mới không được giống với mật khẩu cũ!",
           });
         } else {
@@ -420,30 +349,25 @@ const changePassword = async (req, res) => {
           const hashPassword = bcrypt.hashSync(newPassword, salt);
           accountUpdate.password = hashPassword;
           await accountUpdate.save();
-          res.status(200).json({
+          res.clearCookie("access_token").status(201).render("account/signin", {
             message: "Đổi mật khẩu thành công!",
           });
         }
       } else {
-        res.status(400).json({
+        res.status(400).render("account/edit", {
           message: "Mật khẩu lặp lại không đúng!",
         });
       }
     } else {
-      res.status(400).json({
+      res.status(400).render("account/edit", {
         message: "Mật khẩu không chính xác!",
       });
     }
   } catch (error) {
-    res.status(500).json({
+    res.status(500).render("account/edit", {
       message: "Thao tác thất bại!",
     });
   }
-};
-
-const logout = async (req, res, next) => {
-  res.removeHeader("access_token");
-  res.status(200).json({ message: "Đăng xuất thành công!" });
 };
 
 const forgotPassword = async (req, res) => {
@@ -572,9 +496,6 @@ const accessForgotPassword = async (req, res, next) => {
 
 module.exports = {
   login,
-  loginStaff,
-  loginShipper,
-  loginAdmin,
   changePassword,
   forgotPassword,
   verify,
@@ -586,4 +507,6 @@ module.exports = {
   uploadAvatar,
   updateProfile,
   getUserInfo,
+  logout,
+  edit,
 };
