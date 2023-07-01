@@ -433,7 +433,7 @@ const createReport = async (req, res) => {
     const date = new Date();
     date.setHours(date.getHours() + 7);
     const itemList = await Order_detail.sequelize.query(
-      "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as total, I.id_item FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item ORDER BY sold DESC",
+      "SELECT I.id_item, (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND DAY(orders.time_order) = DAY(current_date()) AND MONTH(orders.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND DAY(orders.time_order) = DAY(current_date()) AND MONTH(orders.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as total FROM order_details as OD, orders as O, items as I WHERE O.id_order = OD.id_order AND O.status = 4 AND OD.id_item = I.id_item AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date()) ",
       {
         replacements: { id_store: staff[0].id_store },
         type: QueryTypes.SELECT,
@@ -441,7 +441,7 @@ const createReport = async (req, res) => {
       }
     );
     const doanhThu = await Order_detail.sequelize.query(
-      "SELECT DISTINCT SUM((SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0)) as total, (SELECT COUNT(*) FROM orders WHERE orders.id_store = :id_store AND orders.id_order = O.id_order) as countOrder FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item",
+      "SELECT SUM(O.item_fee) as total, COUNT(O.id_order) as countOrder FROM orders as O WHERE O.id_store = :id_store AND O.status = 4 AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())",
       {
         replacements: { id_store: staff[0].id_store },
         type: QueryTypes.SELECT,
@@ -573,7 +573,7 @@ const dashboardManager = async (req, res) => {
       );
 
       const info = await Order_detail.sequelize.query(
-        "SELECT(SELECT COUNT(*) from orders WHERE orders.id_store = :id_store) as total, (SELECT COUNT(*) from orders WHERE orders.id_store = 1 AND orders.status = 0) as un_confirm, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 4) as finished, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 2) as canceled, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 1) as confirmed, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 3) as delivering",
+        "SELECT(SELECT COUNT(*) from orders WHERE orders.id_store = :id_store) as total, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 0) as un_confirm, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 4) as finished, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 2) as canceled, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 1) as confirmed, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 3) as delivering",
         {
           replacements: { id_store: staff[0].id_store },
           type: QueryTypes.SELECT,
