@@ -1,4 +1,5 @@
 <meta charset="utf-8" />
+  <base href="http://localhost:3005/">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
@@ -84,7 +85,7 @@
                         </tr>
                         <tr>
                           <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: left;">
-                            Hello, Philip Brooks.
+                            Hello, {{info.name_customer}}.
                             <br> Thank you for shopping from our store and for your order.
                           </td>
                         </tr>
@@ -112,9 +113,23 @@
                         </tr>
                         <tr>
                           <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: right;">
-                            <small>ORDER</small> #800000025<br />
-                            <small>MARCH 4TH 2016</small><br/>
-                            <small>STATUS: <span class="badge badge-sm bg-gradient-secondary">Chưa xác nhận</span></small><br/>
+                            <small>ORDER</small> #HD{{info.id_order}}<br />
+                            <small>{{info.time_order}}</small><br/>
+                            {{#ifcond info.status 0}}
+                            <small>STATUS:<span class="badge badge-sm bg-gradient-secondary">Chưa xác nhận</span></small><br/>
+                            {{/ifcond}}
+                            {{#ifcond info.status 1}}
+                            <small>STATUS:<span class="badge badge-sm bg-gradient-info">Đã xác nhận</span></small><br/>
+                            {{/ifcond}}
+                            {{#ifcond info.status 2}}
+                            <small>STATUS:<span class="badge badge-sm bg-gradient-danger">Đã huỷ</span></small><br/>
+                            {{/ifcond}}
+                            {{#ifcond info.status 3}}
+                            <small>STATUS:<span class="badge badge-sm bg-gradient-warning">Đang giao</span></small><br/>
+                            {{/ifcond}}
+                            {{#ifcond info.status 4}}
+                            <small>STATUS:<span class="badge badge-sm bg-gradient-success">Đã giao</span></small><br/>
+                            {{/ifcond}}
                           </td>
                         </tr>
                       </tbody>
@@ -168,22 +183,18 @@
                     <tr>
                       <td height="10" colspan="4"></td>
                     </tr>
+                    {{#each itemList}}
                     <tr>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">
-                        Beats Studio Over-Ear Headphones
+                        {{this.name}}
                       </td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center"><small>10</small></td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">50000</td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">500000</td>
+                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center"><small>{{this.quantity}}</small></td>
+                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">{{this.price}}</td>
+                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">{{this.amount}}</td>
                     </tr>
+                    {{/each}}
                     <tr>
                       <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
-                    </tr>
-                    <tr>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">Beats RemoteTalk Cable</td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center"><small>10</small></td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">50000</td>
-                      <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">500000</td>
                     </tr>
                     <tr>
                       <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
@@ -220,15 +231,15 @@
                         Tổng phụ
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; white-space:nowrap;" width="80">
-                        1000000
+                        {{info.item_fee}}
                       </td>
                     </tr>
                     <tr>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
-                        Shipping
+                        Phí giao hàng
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
-                        30000
+                        {{info.delivery_fee}}
                       </td>
                     </tr>
                     <tr>
@@ -236,7 +247,7 @@
                         <strong>Tổng cộng</strong>
                       </td>
                       <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
-                        <strong>1030000</strong>
+                        <strong>{{info.total}}</strong>
                       </td>
                     </tr>
                   </tbody>
@@ -285,8 +296,8 @@
                             </tr>
                             <tr>
                               <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
-                                Đơn vị vận chuyển: GrabFood<br>
-                                Giao hàng: Phạm Minh Mạnh<br>
+                                Đơn vị vận chuyển: {{info.name_shipping_partner}}<br>
+                                Giao hàng: {{info.name_shipper}}<br>
                               </td>
                             </tr>
                           </tbody>
@@ -308,7 +319,7 @@
                             </tr>
                             <tr>
                               <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
-                                Credit Card<br>
+                                {{info.name_payment}}<br>
                               </td>
                             </tr>
                           </tbody>
@@ -343,9 +354,9 @@
                             </tr>
                             <tr>
                               <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
-                                Tên khách hàng: Phạm Minh Mạnh<br>
-                                SDT: Phạm Minh Mạnh<br>
-                                Mô tả: 50% đường thôi nhé!<br>
+                                Tên khách hàng: {{info.name_customer}}<br>
+                                SDT: {{info.phone}}<br>
+                                Mô tả: {{info.description}}<br>
                               </td>
                             </tr>
                           </tbody>
@@ -370,10 +381,10 @@
                             </tr>
                             <tr>
                               <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
-                                Thời gian đặt: 30/06/2023 12:50<br>
-                                Thời gian nhận đơn: 30/06/2023 12:51<br>
-                                Thời gian shipper nhận đơn: <br>30/06/2023 12:55<br>
-                                Thời gian shipper giao tới: <br>30/06/2023 13:05<br>
+                                Thời gian đặt: {{info.time_order}}<br>
+                                Thời gian nhận đơn: {{info.time_confirm}}<br>
+                                Thời gian deliver nhận đơn: <br>{{info.time_shipper_receive}}<br>
+                                Thời gian deliver giao tới: <br>{{info.time_shipper_delivered}}<br>
                               </td>
                             </tr>
                           </tbody>

@@ -16,6 +16,7 @@
 <html lang="en">
 
 <head>
+  <base href="http://localhost:3005/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -41,7 +42,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
-        <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <img src="../assets/img/logos/p2m.png" class="navbar-brand-img h-100" alt="main_logo">
         <span class="ms-1 font-weight-bold">P2M Drink</span>
       </a>
     </div>
@@ -135,8 +136,7 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-              <h6>Bảng đơn hàng<br>
-                <a href="" class="badge badge-sm bg-gradient-warning">Thêm mới</a></h6>
+              <h6>Bảng đơn hàng<br></h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
@@ -154,39 +154,58 @@
                   </thead>
                   <tbody>
                     <tr>
+                      {{#each orderList}}
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">#HD1</h6>
+                            <h6 class="mb-0 text-sm">#HD{{this.id_order}}</h6>
                           </div>
                         </div>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Phạm Minh Mạnh</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.name_customer}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">0961592551</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.phone}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">30/06/2023 12:50</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.time_order}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">Grab Food</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.name_shipping_partner}}</span>
                       </td>
+                      {{#ifcond this.status 0}}
                       <td class="align-middle text-center text-sm">
                         <span class="badge badge-sm bg-gradient-secondary">Chưa xác nhận</span>
                       </td>
-                      <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-success" data-toggle="tooltip" data-original-title="Edit user">
-                          Receive
-                        </a>
+                      {{/ifcond}}
+                      {{#ifcond this.status 1}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-info">Đã xác nhận</span>
                       </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 2}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-danger">Đã huỷ</span>
+                      </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 3}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-warning">Đang giao</span>
+                      </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 4}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-success">Đã giao</span>
+                      </td>
+                      {{/ifcond}}
                       <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-warning" data-toggle="tooltip" data-original-title="Edit user">
-                          Cancel
+                        <a href="/orders/detail/{{this.id_order}}" class="text-secondary font-weight-bold text-xs text-info" data-toggle="tooltip" data-original-title="Edit user">
+                          Detail
                         </a>
                       </td>
                     </tr>
+                    {{/each}}
                   </tbody>
                 </table>
               </div>

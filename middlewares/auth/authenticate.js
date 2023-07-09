@@ -8,6 +8,7 @@ const authenticate = (req, res, next) => {
       try {
         const data = jwt.verify(token, "manhpham2k1");
         req.username = data.username;
+        req.id_role = data.id_role;
         return next();
       } catch {
         return res.status(401).json({message: "Token đã hết hạn!" });

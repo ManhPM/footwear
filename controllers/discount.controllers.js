@@ -1,9 +1,25 @@
 const { Discount } = require("../models");
+const { QueryTypes } = require("sequelize");
 
 const getAllDiscount = async (req, res) => {
   try {
     const discountList = await Discount.findAll({});
     res.status(201).json({discountList});
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const getAllDiscountAdmin = async (req, res) => {
+  try {
+    const discountList = await Discount.sequelize.query(
+      "SELECT D.code, D.discount_percent, D.min_quantity, D.quantity, D.description, DATE_FORMAT(D.start_date, '%d/%m/%Y') as start_date, DATE_FORMAT(D.end_date, '%d/%m/%Y') as end_date FROM discounts as D",
+      {
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(201).render("discount/discount",{discountList});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -61,5 +77,6 @@ module.exports = {
   getAllDiscount,
   createDiscount,
   updateDiscount,
-  getDetailDiscount
+  getDetailDiscount,
+  getAllDiscountAdmin
 };

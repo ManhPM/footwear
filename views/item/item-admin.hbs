@@ -16,6 +16,7 @@
 <html lang="en">
 
 <head>
+  <base href="http://localhost:3005/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -41,7 +42,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
-        <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <img src="../assets/img/logos/p2m.png" class="navbar-brand-img h-100" alt="main_logo">
         <span class="ms-1 font-weight-bold">P2M Drink</span>
       </a>
     </div>
@@ -126,6 +127,7 @@
                  Đăng xuất
               </a>
             </li>
+             
           </ul>
         </div>
       </div>
@@ -151,33 +153,46 @@
                     </tr>
                   </thead>
                   <tbody>
+                    {{#each itemList}}
                     <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user1">
+                            <img src="{{this.image}}" class="avatar avatar-sm me-3" alt="user1">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Trà sữa trân châu đường đen</h6>
+                            <h6 class="mb-0 text-sm">{{this.name}}</h6>
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">Nước uống</p>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{this.name_type}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">30000</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.price}}</span>
                       </td>
+                      {{#ifcond this.status 1}}
                       <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">Online</span>
+                        <span class="badge badge-sm bg-gradient-success">Còn kinh doanh</span>
                       </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 2}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-danger">Ngừng kinh doanh</span>
+                      </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 2}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-warning">Hết hàng</span>
+                      </td>
+                      {{/ifcond}}
                       <td class="align-middle">
                         <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-info" data-toggle="tooltip" data-original-title="Edit user">
                           Edit
                         </a>
                       </td>
                       <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-success" data-toggle="tooltip" data-original-title="Edit user">
+                        <a href="/recipes/item/{{this.id_item}}" class="text-secondary font-weight-bold text-xs text-success" data-toggle="tooltip" data-original-title="Edit user">
                           Recipe
                         </a>
                       </td>
@@ -187,6 +202,7 @@
                         </a>
                       </td>
                     </tr>
+                    {{/each}}
                   </tbody>
                 </table>
               </div>

@@ -333,30 +333,21 @@ app.get("/", async (req, res) => {
         },
       });
       if (account.id_role == 1) {
-        const customer = await Account.sequelize.query(
-          "SELECT CU.*, A.username, R.name as role FROM roles as R, customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role",
-          {
-            type: QueryTypes.SELECT,
-            replacements: {
-              username: `${data.username}`,
-            },
-          }
-        );
-        res.status(200).render("account/profile", {
-          username: customer[0].username,
-          image: customer[0].image,
-          name: customer[0].name,
-          role: customer[0].role,
-          address: customer[0].address,
-          phone: customer[0].phone,
-          email: customer[0].email,
+        res.status(200).render("account/loginsucced",{
+          role: 1
         });
       } else if (account.id_role == 3 || account.id_role == 4) {
-        res.status(200).render("order/order");
+        res.status(200).render("account/loginsucced",{
+          role: 3
+        });
       } else if (account.id_role == 2) {
-        res.status(200).render("order/dashboard-manager");
+        res.status(200).render("account/loginsucced",{
+          role: 2
+        });
       } else {
-        res.status(200).render("order/dashboard-admin");
+        res.status(200).render("account/loginsucced",{
+          role: 5
+        });
       }
     }
   } catch (error) {

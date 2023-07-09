@@ -3,14 +3,14 @@ const { QueryTypes } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const getAllStaff = async (req, res) => {
   try {
-    const staffList = await Staff.sequelize.query(
-      "SELECT ST.name as name_store, A.username, S.* FROM staffs as S, stores as ST, accounts as A WHERE ST.id_store = S.id_store AND S.id_account = A.id_account",
+    const itemList = await Staff.sequelize.query(
+      "SELECT ST.name as name_store, A.username, R.name as role, S.* FROM staffs as S, roles as R, stores as ST, accounts as A WHERE ST.id_store = S.id_store AND S.id_account = A.id_account AND A.id_role != 5 AND A.id_role = R.id_role",
       {
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    res.status(201).json({staffList});
+    res.status(201).render("staff/staff",{itemList});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

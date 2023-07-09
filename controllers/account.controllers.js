@@ -157,33 +157,18 @@ const login = async (req, res) => {
   });
   const isAuth = bcrypt.compareSync(password, account.password);
   if (isAuth) {
-    const token = jwt.sign({ username: account.username }, "manhpham2k1", {
+    const token = jwt.sign({ username: account.username, id_role: account.id_role }, "manhpham2k1", {
       expiresIn: 15 * 24 * 60 * 60,
     });
     if (account.id_role == 1) {
-      const customer = await Account.sequelize.query(
-        "SELECT CU.*, A.username, R.name as role FROM roles as R, customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role",
-        {
-          type: QueryTypes.SELECT,
-          replacements: {
-            username,
-          },
-        }
-      );
       res
         .cookie("access_token", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
         })
         .status(200)
-        .render("account/profile", {
-          username: customer[0].username,
-          image: customer[0].image,
-          name: customer[0].name,
-          role: customer[0].role,
-          address: customer[0].address,
-          phone: customer[0].phone,
-          email: customer[0].email,
+        .render("account/loginsucced", {
+          role: 1
         });
     } else if (account.id_role == 3 || account.id_role == 4) {
       res
@@ -192,7 +177,9 @@ const login = async (req, res) => {
           secure: process.env.NODE_ENV === "production",
         })
         .status(200)
-        .render("order/order");
+        .render("account/loginsucced", {
+          role: 3
+        });
     } else if (account.id_role == 2) {
       res
         .cookie("access_token", token, {
@@ -200,7 +187,9 @@ const login = async (req, res) => {
           secure: process.env.NODE_ENV === "production",
         })
         .status(200)
-        .render("order/dashboard-manager");
+        .render("account/loginsucced", {
+          role: 2
+        });
     } else {
       res
         .cookie("access_token", token, {
@@ -208,7 +197,9 @@ const login = async (req, res) => {
           secure: process.env.NODE_ENV === "production",
         })
         .status(200)
-        .render("order/dashboard-admin");
+        .render("account/loginsucced", {
+          role: 5
+        });
     }
   } else {
     res
@@ -223,18 +214,18 @@ const logout = async (req, res, next) => {
 
 const getUserInfo = async (req, res) => {
   try {
-    const account = await Account.findOne({
-      where: {
-        username: req.username,
-      },
-    });
-    const customer = await Customer.findOne({
-      where: {
-        id_account: account.id_account,
-      },
-    });
-    res.status(200).json({
-      userInfo: customer,
+    const customer = await Account.sequelize.query(
+        "SELECT CU.*, A.username, R.name as role FROM customers as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            username: `${req.username}`,
+          },
+          raw: true
+        }
+      );
+    res.status(200).render("account/profile",{
+      userInfo: customer[0],
     });
   } catch (error) {
     res.status(500).json({
@@ -385,7 +376,7 @@ const forgotPassword = async (req, res) => {
       });
     } else {
       const account = await Account.sequelize.query(
-        "SELECT CU.email, A.* FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username AND A.",
+        "SELECT CU.email, A.* FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username",
         {
           type: QueryTypes.SELECT,
           replacements: {

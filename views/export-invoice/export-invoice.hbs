@@ -16,6 +16,7 @@
 <html lang="en">
 
 <head>
+  <base href="http://localhost:3005/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -41,7 +42,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
-        <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <img src="../assets/img/logos/p2m.png" class="navbar-brand-img h-100" alt="main_logo">
         <span class="ms-1 font-weight-bold">P2M Drink</span>
       </a>
     </div>
@@ -126,6 +127,7 @@
                  Đăng xuất
               </a>
             </li>
+             
           </ul>
         </div>
       </div>
@@ -136,46 +138,59 @@
           <div class="card mb-4">
             <div class="card-header pb-0">
               <h6>Bảng hoá đơn xuất<br>
-                <a href="" class="badge badge-sm bg-gradient-warning">Thêm mới</a></h6>
+                <a href="/exportinvoices/create" class="badge badge-sm bg-gradient-warning">Thêm mới</a></h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nhân viên</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Mã hoá đơn</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nhân viên</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ngày lập</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trạng thái</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Mô tả</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Trạng thái</th>
                       <th class="text-secondary opacity-7"></th>
                     </tr>
                   </thead>
                   <tbody>
+                    {{#each exportInvoiceList}}
                     <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Trà sữa trân châu đường đen</h6>
+                            <h6 class="mb-0 text-sm">#HD{{this.id_e_invoice}}</h6>
                           </div>
                         </div>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">30000</span>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">Online</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.name_staff}}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">30000</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{this.datetime}}</span>
                       </td>
-                      <td class="align-middle">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-info" data-toggle="tooltip" data-original-title="Edit user">
-                          Edit
-                        </a>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{this.description}}</span>
                       </td>
+                      {{#ifcond this.status 1}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-success">Hoàn thành</span>
+                      </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 0}}
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-warning">Chưa hoàn thành</span>
+                      </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 0}}
                       <td class="align-middle">
                         <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-warning" data-toggle="tooltip" data-original-title="Edit user">
                           Detail
+                        </a>
+                      </td>
+                      <td class="align-middle">
+                        <a href="/exportinvoices/detail/{{this.id_e_invoice}}" class="text-secondary font-weight-bold text-xs text-info" data-toggle="tooltip" data-original-title="Edit user">
+                          Edit
                         </a>
                       </td>
                       <td class="align-middle">
@@ -183,7 +198,17 @@
                           Add
                         </a>
                       </td>
+                      {{/ifcond}}
+                      {{#ifcond this.status 1}}
+                      <td class="align-middle">
+                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs text-warning" data-toggle="tooltip" data-original-title="Edit user">
+                          Detail
+                        </a>
+                      </td>
+                      {{/ifcond}}
+
                     </tr>
+                    {{/each}}
                   </tbody>
                 </table>
               </div>

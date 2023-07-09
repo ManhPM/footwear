@@ -16,6 +16,7 @@
 <html lang="en">
 
 <head>
+  <base href="http://localhost:3005/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -169,10 +170,10 @@
           <div class="col-auto my-auto">
             <div class="h-100">
               <h5 class="mb-1">
-                {{name}}
+                {{userInfo.name}}
               </h5>
               <p class="mb-0 font-weight-bold text-sm">
-                {{role}}
+                {{userInfo.role}}
               </p>
             </div>
           </div>
@@ -225,25 +226,25 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="example-text-input" class="form-control-label">Username</label>
-                      <input class="form-control" type="text" value="{{username}}" readonly="true">
+                      <input class="form-control" type="text" value="{{userInfo.username}}" readonly="true">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="example-text-input" class="form-control-label">Email address</label>
-                      <input class="form-control" type="email" value="{{email}}" readonly="true">
+                      <input class="form-control" type="email" value="{{userInfo.email}}" readonly="true">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="example-text-input" class="form-control-label">Address</label>
-                      <input class="form-control" type="text" value="{{address}}" readonly="true">
+                      <input class="form-control" type="text" value="{{userInfo.address}}" readonly="true">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="example-text-input" class="form-control-label">Phone</label>
-                      <input class="form-control" type="text" value="{{phone}}" readonly="true">
+                      <input class="form-control" type="text" value="{{userInfo.phone}}" readonly="true">
                     </div>
                   </div>
                 </div>

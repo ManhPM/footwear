@@ -3,10 +3,18 @@ const { QueryTypes } = require("sequelize");
 
 const getAllStore = async (req, res) => {
   try {
-    const storeList = await Store.findAll({});
-    res.status(201).json({storeList});
+    const itemList = await Store.findAll({raw: true});
+    res.status(201).render("store/store-admin",{itemList});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const createForm = async (req, res) => {
+  try {
+    res.status(200).render("store/store-create",{flag: 1});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
 };
 
@@ -45,14 +53,20 @@ const updateStore = async (req, res) => {
     const update = await Store.findOne({
       where: {
         id_store
-      }
+      },
     });
     update.name = name
     update.phone = phone
     update.address = address
     update.email = email
     await update.save();
-    res.status(200).json({message: "Cập nhật thành công!"});
+    const item = await Store.findOne({
+      raw: true,
+      where: {
+        id_store
+      }
+    });
+    res.status(200).render("store/store-create",{item, message: "Cập nhật thành công!",flag: 2});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -77,7 +91,12 @@ const updatePositionOfStore = async (req, res) => {
     update.storeLat = storeLat
     update.storeLng = storeLng
     await update.save();
-    res.status(200).json({message: "Cập nhật thành công!"});
+    const item = await Store.findOne({
+      where: {
+        id_store: staff[0].id_store
+      }
+    });
+    res.status(200).render("store/store-create",{item, message: "Cập nhật thành công!",flag: 2});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -87,11 +106,12 @@ const getDetailStore = async (req, res) => {
   const {id_store} = req.params
   try {
     const item = await Store.findOne({
+      raw: true,
       where: {
         id_store
       }
     });
-    res.status(200).json({item});
+    res.status(200).render("store/store-create",{item, flag: 2});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -103,5 +123,6 @@ module.exports = {
     getAllStoreForUser,
     createStore,
     updateStore,
-    updatePositionOfStore
+    updatePositionOfStore,
+    createForm
 };

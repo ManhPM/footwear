@@ -16,6 +16,7 @@
 <html lang="en">
 
 <head>
+  <base href="http://localhost:3005/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -44,10 +45,15 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-5 text-center mx-auto">
-            <h1 class="text-white mb-2 mt-5">Thêm cửa hàng</h1>
-            <p class="text-lead text-white">Điền đầy đủ những thông tin bên dưới để tiến hành quá trình thêm.</p>
+            <h1 class="text-white mb-2 mt-5">
+              {{#ifcond flag 1}}Thêm{{/ifcond}}
+              {{#ifcond flag 2}}Sửa{{/ifcond}}
+               cửa hàng</h1>
+            <p class="text-lead text-white">Điền đầy đủ những thông tin bên dưới để tiến hành quá trình 
+              {{#ifcond flag 1}}thêm{{/ifcond}}
+              {{#ifcond flag 2}}sửa{{/ifcond}}.</p>
             <div id="message">
-              <h4 class="bg-black text-white mb-2 mt-5"></h4>
+              <h4 class="bg-black text-white mb-2 mt-5">{{message}}</h4>
             </div>
           </div>
         </div>
@@ -58,25 +64,36 @@
         <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
           <div class="card z-index-0">
             <div class="card-body">
-              <form role="form">
+              {{#ifcond flag 1}}
+              <form action="/stores/create" method="POST">
+              {{/ifcond}}
+              {{#ifcond flag 2}}
+              <form action="/stores/update/{{item.id_store}}?_method=PUT" method="POST">
+              {{/ifcond}}
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
                 <div class="mb-3">
-                  <input type="email" required="true" name="address" class="form-control" placeholder="Email" aria-label="Email">
+                  <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ" value="{{item.address}}">
                 </div>
                 <div class="mb-3">
-                  <input type="email" required="true" name="address" class="form-control" placeholder="Email" aria-label="Email">
+                  <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại" value="{{item.phone}}">
                 </div>
                 <div class="mb-3">
-                  <input type="email" required="true" name="address" class="form-control" placeholder="Email" aria-label="Email">
+                  <input type="email" required="true" name="email" class="form-control" placeholder="Email" aria-label="Email" value="{{item.email}}">
+                </div>
+                <div class="mb-3">
+                  <input type="text" required="true" name="image" class="form-control" placeholder="Ảnh" aria-label="Ảnh" value="{{item.image}}">
                 </div>
                 <div class="text-center">
-                  <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">Thêm</button>
+                  <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">
+                    {{#ifcond flag 1}}Thêm{{/ifcond}}
+                    {{#ifcond flag 2}}Sửa{{/ifcond}}
+                  </button>
                 </div>
               </form>
               <div class="text-center">
-                <a href="" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
+                <a href="/stores/admin" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
               </div>
             </div>
           </div>

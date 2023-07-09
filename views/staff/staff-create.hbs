@@ -16,6 +16,7 @@
 <html lang="en">
 
 <head>
+  <base href="http://localhost:3005/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -44,10 +45,15 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-5 text-center mx-auto">
-            <h1 class="text-white mb-2 mt-5">Thêm nhân viên</h1>
-            <p class="text-lead text-white">Điền đầy đủ những thông tin bên dưới để tiến hành quá trình thêm.</p>
+            <h1 class="text-white mb-2 mt-5">
+              {{#ifcond flag 1}}Thêm{{/ifcond}}
+              {{#ifcond flag 2}}Sửa{{/ifcond}}
+               nhân viên</h1>
+            <p class="text-lead text-white">Điền đầy đủ những thông tin bên dưới để tiến hành quá trình 
+              {{#ifcond flag 1}}thêm{{/ifcond}}
+              {{#ifcond flag 2}}sửa{{/ifcond}}.</p>
             <div id="message">
-              <h4 class="bg-black text-white mb-2 mt-5"></h4>
+              <h4 class="bg-black text-white mb-2 mt-5">{{message}}</h4>
             </div>
           </div>
         </div>
@@ -58,33 +64,38 @@
         <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
           <div class="card z-index-0">
             <div class="card-body">
-              <form role="form">
+              {{#ifcond flag 1}}
+              <form action="/staffs/create" method="POST">
+              {{/ifcond}}
+              {{#ifcond flag 2}}
+              <form action="/staffs/update/{{item.id_staff}}?_method=PUT" method="POST">
+              {{/ifcond}}
                 <div class="mb-3">
-                  <input type="text" required="true" name="username" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" required="true" name="username" class="form-control" placeholder="Username" aria-label="Username" value="{{item.username}}">
                 </div>
                 <div class="mb-3">
                   <input type="password" required="true" name="password" class="form-control" placeholder="Password" aria-label="Username">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="name" class="form-control" placeholder="Name" aria-label="Username">
+                  <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="gender" class="form-control" placeholder="Gender" aria-label="Username">
+                  <input type="text" required="true" name="gender" class="form-control" placeholder="Giới tính" aria-label="Giới tính">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="birthday" class="form-control" placeholder="Birthday" aria-label="Username">
+                  <input type="text" required="true" name="birthday" class="form-control" placeholder="Ngày sinh" aria-label="Ngày sinh">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="email" required="true" name="email" class="form-control" placeholder="Email" aria-label="Email">
                 </div>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" required="true" name="description" class="form-control" placeholder="Mô tả" aria-label="Mô tả">
                 </div>
                 <div class="mb-3">
                   <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
@@ -93,11 +104,14 @@
                   <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
                 </div>
                 <div class="text-center">
-                  <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">Thêm</button>
+                  <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">
+                    {{#ifcond flag 1}}Thêm{{/ifcond}}
+                    {{#ifcond flag 2}}Sửa{{/ifcond}}
+                  </button>
                 </div>
               </form>
               <div class="text-center">
-                <a href="" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
+                <a href="/staffs" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
               </div>
             </div>
           </div>

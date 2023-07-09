@@ -5,7 +5,7 @@ const createType = async (req, res) => {
   const { name } = req.body
   try {
       await Type.create({ name })
-      res.status(201).json({message: "Tạo mới thành công!"})
+      res.status(201).render("type/type-create",{message: "Tạo mới thành công!", flag: 1})
   } catch (error) {
       res.status(500).json({message: "Đã có lỗi xảy ra!"})
   }
@@ -22,7 +22,13 @@ const updateType = async (req, res) => {
       })
       typeUpdate.name = name
       await typeUpdate.save();
-      res.status(201).json({message: "Cập nhật thành công!"})
+      const item = await Type.findOne({
+        raw: true,
+        where: {
+          id_type
+        }
+      });
+      res.status(201).render("type/type-create",{item,message: "Cập nhật thành công!",flag: 2})
   } catch (error) {
       res.status(500).json({message: "Đã có lỗi xảy ra. Cập nhật thất bại!"})
   }
@@ -43,15 +49,35 @@ const getAllType = async (req, res) => {
   }
 };
 
+const getAllTypeAdmin = async (req, res) => {
+  try {
+    const itemList = await Type.findAll({
+      raw: true
+    })
+    res.status(200).render("type/type",{itemList});
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
 const getDetailType = async (req, res) => {
   const {id_type} = req.params
   try {
     const item = await Type.findOne({
+      raw: true,
       where: {
         id_type
       }
     });
-    res.status(200).json({item});
+    res.status(200).render("type/type-create",{item, flag: 2});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+const createForm = async (req, res) => {
+  try {
+    res.status(200).render("type/type-create",{flag: 1});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -63,4 +89,6 @@ module.exports = {
     createType,
     updateType,
     getDetailType,
+    getAllTypeAdmin,
+    createForm,
 };

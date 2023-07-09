@@ -9,7 +9,7 @@ orderRouter.get("/ship", authenticate, authorize(["Shipper"]), getAllOrderForShi
 orderRouter.post("/report", authenticate, authorize(["Quản lý"]), createReport);
 orderRouter.get("/dashboard-manager", authenticate, authorize(["Quản lý"]), dashboardManager);
 orderRouter.get("/receive/:id_order", authenticate, authorize(["Shipper"]), receiveOrder);
-orderRouter.get("/detail/:id_order", getAllItemInOrder);
+orderRouter.get("/detail/:id_order", authenticate, getAllItemInOrder);
 orderRouter.get("/confirm/:id_order", authenticate, authorize(["Nhân viên"]), confirmOrder);
 orderRouter.get("/cancel/:id_order", authenticate, authorize(["Nhân viên","Khách hàng"]), cancelOrder);
 orderRouter.get("/thongkesanpham", authenticate, authorize(["Quản lý"]), thongKeSanPham);

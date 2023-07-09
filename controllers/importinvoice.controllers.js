@@ -17,7 +17,7 @@ const getAllImportInvoice = async (req, res) => {
     );
     if (info[0].id_role == 5) {
       const importInvoiceList = await Import_invoice.sequelize.query(
-        "SELECT II.*, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider",
+        "SELECT II.id_i_invoice, II.status, II.description, DATE_FORMAT(II.datetime, '%d/%m/%Y %H:%i') as datetime, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider",
         {
           type: QueryTypes.SELECT,
           raw: true,
@@ -33,15 +33,15 @@ const getAllImportInvoice = async (req, res) => {
           raw: true,
         }
       );
-      const importInvoiceList = await Import_invoice.sequelize.query(
-        "SELECT II.*, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider AND II.id_staff = :id_staff",
+      const itemList = await Import_invoice.sequelize.query(
+        "SELECT II.id_i_invoice, II.status, II.description, DATE_FORMAT(II.datetime, '%d/%m/%Y %H:%i') as datetime, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider AND II.id_staff = :id_staff",
         {
           replacements: { id_staff: staff[0].id_staff },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(200).json({ importInvoiceList });
+      res.status(200).render("import-invoice/import-invoice",{ itemList });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -51,23 +51,15 @@ const getAllImportInvoice = async (req, res) => {
 const getAllItemInImportInvoice = async (req, res) => {
   const { id_i_invoice } = req.params;
   try {
-    const itemInImportInvoiceList = await Import_invoice.sequelize.query(
-      "SELECT IID.*, UI.name as name_u_ingredient, UI.image FROM import_invoice_details as IID, import_invoices as II, unprocessed_ingredients as UI WHERE IID.id_i_invoice = II.id_i_invoice AND UI.id_u_ingredient = IID.id_u_ingredient AND II.id_i_invoice = :id_i_invoice",
+    const itemList = await Import_invoice.sequelize.query(
+      "SELECT IID.*, II.status, UI.name as name_u_ingredient, UI.image FROM import_invoice_details as IID, import_invoices as II, unprocessed_ingredients as UI WHERE IID.id_i_invoice = II.id_i_invoice AND UI.id_u_ingredient = IID.id_u_ingredient AND II.id_i_invoice = :id_i_invoice",
       {
         replacements: { id_i_invoice },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    const importinvoice = await Import_invoice.sequelize.query(
-      "SELECT II.*, (SELECT SUM(unit_price*quantity) FROM import_invoice_details WHERE id_i_invoice = II.id_i_invoice) as total, SA.name as name_staff, P.name as name_provider FROM import_invoices as II, providers as P, staffs as SA WHERE SA.id_staff = II.id_staff AND P.id_provider = II.id_provider AND II.id_i_invoice = :id_i_invoice",
-      {
-        replacements: { id_i_invoice },
-        type: QueryTypes.SELECT,
-        raw: true,
-      }
-    );
-    res.status(200).json({ importinvoice, itemInImportInvoiceList });
+    res.status(200).render("invoice-detail/invoice-detail",{ itemList, flag: 1 });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

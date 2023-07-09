@@ -1,15 +1,26 @@
-const { Ingredient, Staff } = require("../models");
+const { Ingredient, Store, Ingredient_store} = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const createIngredient = async (req, res) => {
   const { name, unit, image } = req.body;
   try {
-    await Ingredient.create({
+    const ingredient = await Ingredient.create({
       name,
       unit,
       image,
     });
-    res.status(200).json({ message: "Tạo mới thành công!" });
+    const store = await Store.findAll({
+    })
+    let i = 0
+    while(store[i]){
+      await Ingredient_store.create({
+        id_ingredient: ingredient.id_ingredient,
+        id_store: store[i].id_store,
+        quantity: 0
+      })
+      i++
+    }
+    res.status(201).render("type/type-create",{message: "Tạo mới thành công!", flag: 1})
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -28,7 +39,13 @@ const updateIngredient = async (req, res) => {
     update.unit = unit;
     update.image = image;
     await update.save();
-    res.status(200).json({ message: "Cập nhật thành công!" });
+    const item = await Ingredient.findOne({
+      raw: true,
+      where: {
+        id_ingredient
+      }
+    });
+    res.status(201).render("type/type-create",{item,message: "Cập nhật thành công!",flag: 2})
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -40,59 +57,108 @@ const getAllIngredient = async (req, res) => {
     const perPage = 12;
     const page = req.params.page || 1;
     const staff = await Ingredient.sequelize.query(
-      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      "SELECT S.*, A.id_role FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
       {
         replacements: { username: `${req.username}` },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    if (name) {
-      const itemList = await Ingredient.sequelize.query(
-        "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
-        {
-          replacements: {
-            id_store: staff[0].id_store,
-            name: `%${name}%`,
-            from: (page - 1) * perPage,
-            perPage: perPage,
-          },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const totalItems = await Ingredient.sequelize.query(
-        "SELECT COUNT(*) as total FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
-        {
-          replacements: {
-            name: `%${name}%`,
-          },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      res.status(201).json({ totalItems: totalItems[0].total, itemList });
-    } else {
-      const itemList = await Ingredient.sequelize.query(
-        "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store LIMIT :from,:perPage",
-        {
-          replacements: {
-            id_store: staff[0].id_store,
-            from: (page - 1) * perPage,
-            perPage: perPage,
-          },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const totalItems = await Ingredient.sequelize.query(
-        "SELECT COUNT(*) as total FROM ingredients",
-        {
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      res.status(201).json({ totalItems: totalItems[0].total, itemList });
+    if(staff[0].id_role == 5){
+      if (name) {
+        const itemList = await Ingredient.sequelize.query(
+          "SELECT I.* FROM ingredients as I WHERE I.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
+          {
+            replacements: {
+              name: `%${name}%`,
+              from: (page - 1) * perPage,
+              perPage: perPage,
+            },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        const totalItems = await Ingredient.sequelize.query(
+          "SELECT COUNT(*) as total FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
+          {
+            replacements: {
+              name: `%${name}%`,
+            },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        res.status(201).render("ingredient/ingredient-admin",{ total: totalItems[0].total, itemList});
+      } else {
+        const itemList = await Ingredient.sequelize.query(
+          "SELECT I.* FROM ingredients as I LIMIT :from,:perPage",
+          {
+            replacements: {
+              from: (page - 1) * perPage,
+              perPage: perPage,
+            },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        const totalItems = await Ingredient.sequelize.query(
+          "SELECT COUNT(*) as total FROM ingredients",
+          {
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        res.status(201).render("ingredient/ingredient-admin",{ total: totalItems[0].total, itemList });
+      }
+    }
+    else{
+      if (name) {
+        const itemList = await Ingredient.sequelize.query(
+          "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
+          {
+            replacements: {
+              id_store: staff[0].id_store,
+              name: `%${name}%`,
+              from: (page - 1) * perPage,
+              perPage: perPage,
+            },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        const totalItems = await Ingredient.sequelize.query(
+          "SELECT COUNT(*) as total FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
+          {
+            replacements: {
+              name: `%${name}%`,
+            },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        res.status(201).render("ingredient/ingredient",{ total: totalItems[0].total, itemList });
+      } else {
+        const itemList = await Ingredient.sequelize.query(
+          "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store LIMIT :from,:perPage",
+          {
+            replacements: {
+              id_store: staff[0].id_store,
+              from: (page - 1) * perPage,
+              perPage: perPage,
+            },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        const totalItems = await Ingredient.sequelize.query(
+          "SELECT COUNT(*) as total FROM ingredients",
+          {
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        res.status(201).render("ingredient/ingredient",{ total: totalItems[0].total, itemList });
+      }
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -175,13 +241,22 @@ const getDetailIngredient = async (req, res) => {
   const { id_ingredient } = req.params;
   try {
     const item = await Ingredient.findOne({
+      raw: true,
       where: {
         id_ingredient,
       },
     });
-    res.status(200).json({ item });
+    res.status(200).render("type/type-create",{item, flag: 2});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const createForm = async (req, res) => {
+  try {
+    res.status(200).render("type/type-create",{flag: 1});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
 };
 
@@ -191,4 +266,5 @@ module.exports = {
   processingIngredient,
   createIngredient,
   updateIngredient,
+  createForm,
 };
