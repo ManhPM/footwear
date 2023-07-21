@@ -3,7 +3,7 @@ const { Provider } = require("../models");
 const getAllProvider = async (req, res) => {
   try {
     const itemList = await Provider.findAll({raw: true});
-    res.status(201).render("provider/provider",{itemList});
+    res.status(201).render("provider/provider",{itemList, id_role: req.id_role});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

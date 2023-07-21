@@ -1,8 +1,14 @@
-const { Order, Order_detail, Item_store, Report, Report_detail } = require("../models");
+const {
+  Order,
+  Order_detail,
+  Item_store,
+  Report,
+  Report_detail,
+} = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllOrder = async (req, res) => {
-  const {id_order, status} = req.query
+  const { id_order, status } = req.query;
   const staff = await Order.sequelize.query(
     "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
     {
@@ -72,105 +78,26 @@ const getAllOrder = async (req, res) => {
       }
     } else if (req.id_role == 5) {
       //AD
-      if(status){
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { status, id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
+      const orderList = await Order.sequelize.query(
+        "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.status ASC",
+        {
+          replacements: { id_order, id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
         }
-        else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_store = :id_store",
-            {
-              replacements: { status, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
-        }
-      }
-      else{
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
-        }
-        else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.status ASC",
-            {
-              replacements: { id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
-        }
-      }
-    } 
-    else if (req.id_role == 3 || req.id_role == 2) {
+      );
+      res.status(200).render("order/order", { orderList, id_role: req.id_role });
+    } else if (req.id_role == 3 || req.id_role == 2) {
       // NV
-      if(status){
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { id_order, status, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
+      const orderList = await Order.sequelize.query(
+        "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
+        {
+          replacements: { id_store: staff[0].id_store },
+          type: QueryTypes.SELECT,
+          raw: true,
         }
-        else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status = :status AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
-            {
-              replacements: { status, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
-        }
-      }
-      else{
-        if(id_order){
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order AND O.id_store = :id_store",
-            {
-              replacements: { id_order, id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
-        }
-        else{
-          const orderList = await Order.sequelize.query(
-            "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
-            {
-              replacements: { id_store: staff[0].id_store },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).render("order/order",{ orderList });
-        }
-      }
+      );
+      res.status(200).render("order/order", { orderList, id_role: req.id_role });
     } else {
       // SP
       const shipper = await Order.sequelize.query(
@@ -182,14 +109,14 @@ const getAllOrder = async (req, res) => {
         }
       );
       const orderList = await Order.sequelize.query(
-        "SELECT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers AS S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status != 1 AND O.status != 2 AND O.status != 0 AND O.id_shipping_partner = S.id_shipping_partner AND O.id_shipper = :id_shipper ORDER BY O.time_order DESC",
+        "SELECT DISTINCT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers AS S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status != 1 AND O.status != 2 AND O.status != 0 AND O.id_shipping_partner = S.id_shipping_partner AND O.id_shipper = :id_shipper ORDER BY O.time_order DESC",
         {
           replacements: { id_shipper: shipper[0].id_shipper },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(200).render("order/order",{ orderList });
+      res.status(200).render("order/order", { orderList, flag: 2, id_role: req.id_role });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -206,15 +133,18 @@ const getAllOrderForShipper = async (req, res) => {
         raw: true,
       }
     );
-    const itemList = await Order.sequelize.query(
+    const orderList = await Order.sequelize.query(
       "SELECT DISTINCT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers as S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_shipping_partner = :id_shipping_partner AND O.status = 1 GROUP BY O.id_order ORDER BY O.time_order DESC",
       {
-        replacements: { id_shipping_partner: shipper[0].id_shipping_partner },
+        replacements: {
+          id_shipping_partner: shipper[0].id_shipping_partner,
+          id_role: req.id_role,
+        },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    res.status(200).json({ itemList });
+    res.status(200).render("order/order", { orderList, flag: 1 });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -237,20 +167,36 @@ const receiveOrder = async (req, res) => {
       }
     );
     if (order.status == 1) {
-      const date = new Date();
-      date.setHours(date.getHours() + 7);
-      order.id_shipper = shipper[0].id_shipper;
-      order.time_shipper_receive = date;
-      order.status = 3;
-      await order.save();
-      res.status(200).json({ message: "Nhận đơn thành công!" });
+      const check = await Order.findOne({
+        where: {
+          status: 3,
+          id_shipper: shipper[0].id_shipper,
+        },
+      });
+      if (!check) {
+        const date = new Date();
+        date.setHours(date.getHours() + 7);
+        order.id_shipper = shipper[0].id_shipper;
+        order.time_shipper_receive = date;
+        order.status = 3;
+        await order.save();
+        res.status(200).render("order/order-notification", {
+          message: "Nhận đơn thành công!",
+        });
+      } else {
+        res.status(200).render("order/order-notification", {
+          message: "Đang có đơn chưa giao không thể nhận thêm!",
+        });
+      }
     } else if (order.status == 3) {
       const date = new Date();
       date.setHours(date.getHours() + 7);
       order.time_shipper_delivered = date;
       order.status = 4;
       await order.save();
-      res.status(200).json({ message: "Đơn hàng giao thành công!" });
+      res.status(200).render("order/order-notification", {
+        message: "Đơn hàng giao thành công!",
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -276,17 +222,31 @@ const getAllItemInOrder = async (req, res) => {
         raw: true,
       }
     );
-    if(req.id_role == 5){
-      res.status(200).render("order/order-detail-admin",{ info: order[0], itemList });
-    }
-    else if(req.id_role == 1){
+    if (req.id_role == 5) {
+      res
+        .status(200)
+        .render("order/order-detail-admin", {
+          info: order[0],
+          itemList,
+          id_role: req.id_role,
+        });
+    } else if (req.id_role == 1) {
       res.status(200).json({ info: order[0], itemList });
-    }
-    else if(req.id_role == 4){
-      res.status(200).render("order/order-detail-deliver",{ info: order[0], itemList });
-    }
-    else{
-      res.status(200).render("order/order-detail-staff",{ info: order[0], itemList });
+    } else if (req.id_role == 4) {
+      res.status(200).render("order/order-detail-deliver", {
+        info: order[0],
+        itemList,
+        flag: 1,
+        id_role: req.id_role,
+      });
+    } else {
+      res
+        .status(200)
+        .render("order/order-detail-staff", {
+          info: order[0],
+          itemList,
+          id_role: req.id_role,
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -350,16 +310,24 @@ const confirmOrder = async (req, res) => {
         }
         order.status = 1;
         await order.save();
-        res.status(201).json({ message: "Xác nhận đơn hàng!" });
+        res
+          .status(201)
+          .render("order/order-notification", {
+            message: "Xác nhận đơn hàng!",
+          });
       } else {
         res
           .status(400)
-          .json({ message: "Số lượng sản phẩm không đủ. Không thể nhận đơn!" });
+          .render("order/order-notification", {
+            message: "Số lượng sản phẩm không đủ. Không thể nhận đơn!",
+          });
       }
     } else {
       res
         .status(400)
-        .json({ message: "Thao tác thất bại. Đơn hàng đã được xác nhận!" });
+        .render("order/order-notification", {
+          message: "Thao tác thất bại. Đơn hàng đã được xác nhận!",
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Thao tác thất bại!" });
@@ -377,13 +345,15 @@ const cancelOrder = async (req, res) => {
     if (order.status == 0) {
       order.status = 2;
       await order.save();
-      res.status(200).json({ message: "Đơn hàng đã được huỷ bỏ!" });
-    } else {
       res
-        .status(400)
-        .json({
-          message: "Thao tác thất bại. Đơn hàng đã được xác nhận hoặc đã huỷ!",
+        .status(200)
+        .render("order/order-notification", {
+          message: "Đơn hàng đã được huỷ bỏ!",
         });
+    } else {
+      res.status(400).render("order/order-notification", {
+        message: "Thao tác thất bại. Đơn hàng đã được xác nhận hoặc đã huỷ!",
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Thao tác thất bại!" });
@@ -465,15 +435,15 @@ const createReport = async (req, res) => {
       id_store: staff[0].id_store,
       revenue: doanhThu[0].total,
       date,
-      countOrder: doanhThu[0].countOrder
+      countOrder: doanhThu[0].countOrder,
     });
     let i = 0;
-    while(itemList[i]){
+    while (itemList[i]) {
       await Report_detail.create({
         id_report: report.id_report,
         id_item: itemList[i].id_item,
         sold: itemList[i].sold,
-        total: itemList[i].total
+        total: itemList[i].total,
       });
       i++;
     }
@@ -568,50 +538,56 @@ const dashboardManager = async (req, res) => {
         raw: true,
       }
     );
-      const itemList = await Order_detail.sequelize.query(
-        "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as sold, (SELECT CONCAT(FORMAT((SUM(order_details.quantity)*items.price), 0)) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as total, I.name FROM items as I, order_details as OD, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item ORDER BY sold DESC LIMIT 5",
-        {
-          replacements: { id_store: staff[0].id_store },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const orderList = await Order_detail.sequelize.query(
-        "SELECT O.id_order, O.status, C.name, C.phone, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner ORDER BY O.time_order ASC LIMIT 3",
-        {
-          replacements: { id_store: staff[0].id_store },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
+    const itemList = await Order_detail.sequelize.query(
+      "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as sold, (SELECT CONCAT(FORMAT((SUM(order_details.quantity)*items.price), 0)) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as total, I.name FROM items as I, order_details as OD, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item ORDER BY sold DESC LIMIT 5",
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const orderList = await Order_detail.sequelize.query(
+      "SELECT O.id_order, O.status, C.name, C.phone, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner ORDER BY O.time_order ASC LIMIT 3",
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
 
-      const info = await Order_detail.sequelize.query(
-        "SELECT(SELECT COUNT(*) from orders WHERE orders.id_store = :id_store) as total, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 0) as un_confirm, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 4) as finished, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 2) as canceled, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 1) as confirmed, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 3) as delivering",
-        {
-          replacements: { id_store: staff[0].id_store },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const date = new Date();
-      date.setHours(date.getHours() + 7);
-      const chart = await Order_detail.sequelize.query(
-        `SELECT(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 1) as jan,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 2) as feb,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 3) as mar,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 4) as apr,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 5) as may,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 6) as jun,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 7) as jul,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 8) as aug,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 9) as sep,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 10) as oct,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 11) as nov,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 12) as "dec"`,
-        {
-          replacements: { id_store: staff[0].id_store },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      const doanhThu = await Order_detail.sequelize.query(
-        "SELECT (SELECT IFNULL(CONCAT(FORMAT(SUM(O.item_fee), 0)),0) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as totalDay, (SELECT IFNULL(CONCAT(FORMAT(SUM(O.item_fee), 0)),0) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as totalMonth, (SELECT COUNT(*) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as countOrderDay,(SELECT COUNT(*) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as countOrderMonth",
-        {
-          replacements: { id_store: staff[0].id_store },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      res.status(200).render("order/dashboard-manager", {orderList, itemList,info:info[0], chart:chart[0], revenue:doanhThu[0]});
+    const info = await Order_detail.sequelize.query(
+      "SELECT(SELECT COUNT(*) from orders WHERE orders.id_store = :id_store) as total, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 0) as un_confirm, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 4) as finished, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 2) as canceled, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 1) as confirmed, (SELECT COUNT(*) from orders WHERE orders.id_store = :id_store AND orders.status = 3) as delivering",
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const date = new Date();
+    date.setHours(date.getHours() + 7);
+    const chart = await Order_detail.sequelize.query(
+      `SELECT(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 1) as jan,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 2) as feb,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 3) as mar,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 4) as apr,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 5) as may,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 6) as jun,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 7) as jul,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 8) as aug,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 9) as sep,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 10) as oct,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 11) as nov,(SELECT COUNT(*) from orders WHERE id_store = :id_store AND status = 4 AND YEAR(time_order) = YEAR(current_date()) AND MONTH(time_order) = 12) as "dec"`,
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const doanhThu = await Order_detail.sequelize.query(
+      "SELECT (SELECT IFNULL(CONCAT(FORMAT(SUM(O.item_fee), 0)),0) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as totalDay, (SELECT IFNULL(CONCAT(FORMAT(SUM(O.item_fee), 0)),0) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as totalMonth, (SELECT COUNT(*) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as countOrderDay,(SELECT COUNT(*) FROM orders AS O WHERE O.status = 4 AND O.id_store = :id_store AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as countOrderMonth",
+      {
+        replacements: { id_store: staff[0].id_store },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).render("order/dashboard-manager", {
+      orderList,
+      itemList,
+      info: info[0],
+      chart: chart[0],
+      revenue: doanhThu[0],
+    });
   } catch (error) {
     res.status(500).json({ message: error });
   }
@@ -731,5 +707,5 @@ module.exports = {
   thongKeDonHangAdmin,
   thongKeSanPhamAdmin,
   createReport,
-  dashboardManager
+  dashboardManager,
 };

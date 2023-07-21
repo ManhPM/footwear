@@ -45,10 +45,12 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-5 text-center mx-auto">
-            <h1 class="text-white mb-2 mt-5">Thêm chi tiết hoá đơn</h1>
-            <p class="text-lead text-white">Điền đầy đủ những thông tin bên dưới để tiến hành quá trình thêm.</p>
+            <h1 class="text-white mb-2 mt-5">
+              Chế biến sản phẩm</h1>
+            <p class="text-lead text-white">Điền đầy đủ những thông tin bên dưới để tiến hành quá trình 
+              chế biến</p>
             <div id="message">
-              <h4 class="bg-black text-white mb-2 mt-5"></h4>
+              <h4 class="bg-black text-white mb-2 mt-5">{{message}}</h4>
             </div>
           </div>
         </div>
@@ -59,28 +61,23 @@
         <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
           <div class="card z-index-0">
             <div class="card-body">
-              <form role="form">
+              <form action="/items/{{item.id_item}}" method="POST">
+              <label>Tên sản phẩm</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" readonly="true" class="form-control" value="{{item.name}}">
                 </div>
+              <label>Số lượng</label>
                 <div class="mb-3">
-                  <input type="email" required="true" name="address" class="form-control" placeholder="Email" aria-label="Email">
-                </div>
-                <div class="mb-3">
-                  <input type="email" required="true" name="address" class="form-control" placeholder="Email" aria-label="Email">
-                </div>
-                <div class="mb-3">
-                  <input type="email" required="true" name="address" class="form-control" placeholder="Email" aria-label="Email">
+                  <input type="text" required="true" name="quantity" class="form-control" placeholder="Số lượng" aria-label="Số lượng">
                 </div>
                 <div class="text-center">
-                  <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">Thêm</button>
+                  <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">
+                    Chế biến
+                  </button>
                 </div>
               </form>
               <div class="text-center">
-                <a href="" type="button" class="btn bg-gradient-info w-100 my-4 mb-2">Hoàn thành</a>
-              </div>
-              <div class="text-center">
-                <a href="" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
+                <a href="/items/store" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
               </div>
             </div>
           </div>

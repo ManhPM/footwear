@@ -2,6 +2,7 @@ const {
   Shipper,
   Customer,
   Staff,
+  Store,
   Discount,
   Import_invoice_detail,
   Export_invoice_detail,
@@ -27,15 +28,57 @@ const checkCreateAccount = (Model) => {
   };
 };
 
+const checkCreateAccountShipper = (Model) => {
+  return async (req, res, next) => {
+    const { username } = req.body;
+    const item = await Model.findOne({
+      raw: true,
+      where: {
+        username,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).render("shipper/shipper-create",{id_shipping_partner: item.id_shipping_partner, message: "Tài khoản đã tồn tại!", flag: 2});
+    }
+  };
+};
+
+const checkCreateAccountStaff = (Model) => {
+  return async (req, res, next) => {
+    const { username } = req.body;
+    const item = await Model.findOne({
+      raw: true,
+      where: {
+        username,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      const storeList = await Store.findAll({
+        raw: true,
+      });
+      const roleList = await Staff.sequelize.query(
+        "SELECT * FROM roles WHERE id_role != 1 AND id_role != 4",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        })
+      res.status(400).render("staff/staff-create",{storeList,roleList,item, message: "Tài khoản đã tồn tại!"});
+    }
+  };
+};
+
 const checkCreateItem = (Model) => {
   return async (req, res, next) => {
-    const { name, price, id_type } = req.body;
+    const { name, price } = req.body;
     const item = await Model.findOne({
       raw: true,
       where: {
         name,
         price,
-        id_type,
       },
     });
     if(!item){
@@ -245,14 +288,23 @@ const checkCreateEmail = async (req, res, next) => {
       },
     });
     if(customer || shipper || staff){
+      const storeList = await Store.findAll({
+        raw: true,
+      });
+      const roleList = await Staff.sequelize.query(
+        "SELECT * FROM roles WHERE id_role != 1 AND id_role != 4",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        })
       if(customer){
-        res.status(400).json({ message: "Email đã tồn tại!"});
+        res.status(400).render("staff/staff-create",{storeList, roleList, message: "Email đã tồn tại!", flag: 1});
       }
       if(shipper){
-        res.status(400).json({ message: "Email đã tồn tại!"});
+        res.status(400).render("staff/staff-create",{storeList, roleList, message: "Email đã tồn tại!", flag: 1});
       }
       if(staff){
-        res.status(400).render("staff/staff-create",{ message: "Email đã tồn tại!"});
+        res.status(400).render("staff/staff-create",{storeList, roleList, message: "Email đã tồn tại!", flag: 1});
       }
     }
     else {
@@ -273,12 +325,7 @@ const checkCreateDiscount = async (req, res, next) => {
       },
     });
     if(item){
-      if(!req.params.code){
         res.status(400).render("discount/discount-create",{item, message: "Mã giảm giá đã tồn tại!", flag: 1});
-      }
-      else{
-        res.status(400).render("discount/discount-create",{item, message: "Mã giảm giá đã tồn tại!", flag: 2});
-      }
     }
     else {
       next();
@@ -287,7 +334,6 @@ const checkCreateDiscount = async (req, res, next) => {
     res.status(500).json({ message: "Middleware Error!" });
   }
 }
-
 
 const checkPhoneCheckout = async (req, res, next) => {
   try {
@@ -395,22 +441,27 @@ const checkCreateRecipeIngredient = async (req, res, next) => {
 
 const checkCreateShippingPartner = (Model) => {
   return async (req, res, next) => {
-    const { name } = req.body;
+    try {
+      const { name, unit_price } = req.body;
     const item = await Model.findOne({
       raw: true,
       where: {
         name,
+        unit_price
       },
     });
     if (!item) {
       next();
     } else {
       if(req.params.id_shipping_partner){
-        res.status(400).render("shipping_partner/shipping_partner-create",{item, message: "Đơn vị vận chuyển đã tồn tại!", flag: 2});
+        res.status(400).render("shipping-partner/shipping-partner-create",{item, message: "Đơn vị vận chuyển đã tồn tại!", flag: 2});
       }
       else{
-        res.status(400).render("shipping_partner/shipping_partner-create",{item, message: "Đơn vị vận chuyển đã tồn tại!", flag: 1});
+        res.status(400).render("shipping-partner/shipping-partner-create",{item, message: "Đơn vị vận chuyển đã tồn tại!", flag: 1});
       }
+    }
+    } catch (error) {
+      res.status(500).json({message: "Middleware Error!"});
     }
   };
 };
@@ -509,5 +560,7 @@ module.exports = {
   checkCreateImportInvoiceDetail,
   checkCreateRecipeItem,
   checkCreateRecipeIngredient,
-  checkCreateDiscount
+  checkCreateDiscount,
+  checkCreateAccountStaff,
+  checkCreateAccountShipper
 };

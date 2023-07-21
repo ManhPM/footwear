@@ -65,11 +65,12 @@
           <div class="card z-index-0">
             <div class="card-body">
               {{#ifcond flag 1}}
-              <form action="/types/create" method="POST">
+              <form action="/payment_methods/create" method="POST">
               {{/ifcond}}
               {{#ifcond flag 2}}
-              <form action="/types/update/{{item.id_type}}?_method=PUT" method="POST">
+              <form action="/payment_methods/update/{{item.id_payment}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Tên phương thức thanh toán</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
@@ -81,7 +82,7 @@
                 </div>
               </form>
               <div class="text-center">
-                <a href="/types/admin" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
+                <a href="/payment_methods/admin" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
               </div>
             </div>
           </div>

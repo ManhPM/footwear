@@ -70,18 +70,27 @@
               {{#ifcond flag 2}}
               <form action="/discounts/update/{{item.code}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Mã giảm giá</label>
+              <div class="mb-3">
+                  <input type="text" readonly="true" name="code" class="form-control" placeholder="Mã giảm giá" aria-label="Mã giảm giá" value="{{item.code}}">
+                </div>
+                <label>Phần trăm giảm</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="discount_percent" class="form-control" placeholder="Phần trăm giảm" aria-label="Phần trăm giảm" value="{{item.discount_percent}}">
                 </div>
+                <label>Ngày kết thúc</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="end_date" class="form-control" placeholder="Ngày kết thúc" aria-label="Ngày kết thúc" value="{{item.end_date}}">
+                  <input type="date" required="true" name="end_date" class="form-control" data-date-format="DD MMMM YYYY" placeholder="Ngày kết thúc" aria-label="Ngày kết thúc">
                 </div>
+                <label>Số lượng tối thiểu</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="min_quantity" class="form-control" placeholder="Số lượng tối thiểu" aria-label="Số lượng tối thiểu" value="{{item.min_quantity}}">
                 </div>
+                <label>Số lượng còn lại</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="quantity" class="form-control" placeholder="Số lượng mã" aria-label="Số lượng mã" value="{{item.quantity}}">
                 </div>
+                <label>Mô tả</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="description" class="form-control" placeholder="Mô tả" aria-label="Mô tả" value="{{item.description}}">
                 </div>
@@ -93,7 +102,7 @@
                 </div>
               </form>
               <div class="text-center">
-                <a href="/discounts" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
+                <a href="/discounts/admin" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
               </div>
             </div>
           </div>

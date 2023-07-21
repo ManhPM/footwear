@@ -70,18 +70,23 @@
               {{#ifcond flag 2}}
               <form action="/stores/update/{{item.id_store}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Tên</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
+                <label>Địa chỉ</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ" value="{{item.address}}">
                 </div>
+                <label>Số điện thoại</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại" value="{{item.phone}}">
                 </div>
+                <label>Email</label>
                 <div class="mb-3">
                   <input type="email" required="true" name="email" class="form-control" placeholder="Email" aria-label="Email" value="{{item.email}}">
                 </div>
+                <label>Ảnh</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="image" class="form-control" placeholder="Ảnh" aria-label="Ảnh" value="{{item.image}}">
                 </div>

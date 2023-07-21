@@ -1,6 +1,6 @@
 const express = require("express");
 const {Ingredient} = require("../models")
-const { getAllIngredient, processingIngredient, createIngredient, updateIngredient, getDetailIngredient } = require("../controllers/ingredient.controllers");
+const { getAllIngredient, processingIngredient, createIngredient, updateIngredient, getDetailIngredient, createForm } = require("../controllers/ingredient.controllers");
 const {authorize} = require("../middlewares/auth/authorize.js")
 const {authenticate} = require("../middlewares/auth/authenticate.js");
 const { checkCreateIngredient } = require("../middlewares/validates/checkCreate");
@@ -8,9 +8,10 @@ const ingredientRouter = express.Router();
 
 ingredientRouter.get("/page/:page", authenticate, authorize(["Nhân viên","Quản lý","Admin"]), getAllIngredient);
 ingredientRouter.get("/", authenticate, authorize(["Nhân viên","Quản lý","Admin"]), getAllIngredient);
-ingredientRouter.get("/detail/:id_ingredient", authenticate, authorize(["Admin"]), getDetailIngredient);
+ingredientRouter.get("/detail/:id_ingredient/:flag", authenticate, authorize(["Admin","Nhân viên"]), getDetailIngredient);
 ingredientRouter.post("/process/:id_ingredient", authenticate, authorize(["Nhân viên","Quản lý"]), processingIngredient);
 ingredientRouter.post("/create", authenticate, authorize(["Admin"]), checkCreateIngredient(Ingredient), createIngredient);
+ingredientRouter.get("/createform", authenticate, authorize(["Admin"]), createForm);
 ingredientRouter.put("/update/:id_ingredient", authenticate, authorize(["Admin"]), checkCreateIngredient(Ingredient), updateIngredient);
 
 

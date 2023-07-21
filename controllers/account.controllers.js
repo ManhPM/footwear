@@ -65,16 +65,9 @@ const createAccountForCustomer = async (req, res) => {
 };
 
 const createAccountForShipper = async (req, res) => {
-  const {
-    username,
-    password,
-    name,
-    email,
-    phone,
-    address,
-    id_shipping_partner,
-    description,
-  } = req.body;
+  const { id_shipping_partner } = req.params;
+  const { username, password, name, email, phone, address, description } =
+    req.body;
   try {
     //tạo ra một chuỗi ngẫu nhiên
     const salt = bcrypt.genSaltSync(10);
@@ -94,8 +87,16 @@ const createAccountForShipper = async (req, res) => {
       description,
       id_shipping_partner,
     });
-    res.status(200).json({
+    const item = await Shipper.findOne({
+      where: {
+        id_account: newAccount.id_account,
+      },
+      raw: true,
+    });
+    res.status(200).render("shipper/shipper-create", {
       message: "Đăng ký thành công!",
+      flag: 1,
+      item,
     });
   } catch (error) {
     res.status(500).json({
@@ -157,9 +158,13 @@ const login = async (req, res) => {
   });
   const isAuth = bcrypt.compareSync(password, account.password);
   if (isAuth) {
-    const token = jwt.sign({ username: account.username, id_role: account.id_role }, "manhpham2k1", {
-      expiresIn: 15 * 24 * 60 * 60,
-    });
+    const token = jwt.sign(
+      { username: account.username, id_role: account.id_role },
+      "manhpham2k1",
+      {
+        expiresIn: 15 * 24 * 60 * 60,
+      }
+    );
     if (account.id_role == 1) {
       res
         .cookie("access_token", token, {
@@ -168,7 +173,7 @@ const login = async (req, res) => {
         })
         .status(200)
         .render("account/loginsucced", {
-          role: 1
+          role: 1,
         });
     } else if (account.id_role == 3 || account.id_role == 4) {
       res
@@ -178,7 +183,7 @@ const login = async (req, res) => {
         })
         .status(200)
         .render("account/loginsucced", {
-          role: 3
+          role: 3,
         });
     } else if (account.id_role == 2) {
       res
@@ -188,7 +193,7 @@ const login = async (req, res) => {
         })
         .status(200)
         .render("account/loginsucced", {
-          role: 2
+          role: 2,
         });
     } else {
       res
@@ -198,7 +203,7 @@ const login = async (req, res) => {
         })
         .status(200)
         .render("account/loginsucced", {
-          role: 5
+          role: 5,
         });
     }
   } else {
@@ -214,19 +219,53 @@ const logout = async (req, res, next) => {
 
 const getUserInfo = async (req, res) => {
   try {
-    const customer = await Account.sequelize.query(
-        "SELECT CU.*, A.username, R.name as role FROM customers as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role",
+    if (req.id_role == 4) {
+      const customer = await Account.sequelize.query(
+        `SELECT CU.*, A.username, R.name as role, SP.name as name_shipping_partner FROM shippers as CU, accounts as A, shipping_partners as SP, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role AND CU.id_shipping_partner = SP.id_shipping_partner`,
         {
           type: QueryTypes.SELECT,
           replacements: {
             username: `${req.username}`,
           },
-          raw: true
+          raw: true,
         }
       );
-    res.status(200).render("account/profile",{
-      userInfo: customer[0],
-    });
+      res.status(200).render("account/profile", {
+        userInfo: customer[0],
+      });
+    }
+    else if(req.id_role == 1){
+      const customer = await Account.sequelize.query(
+        `SELECT CU.*, A.username, R.name as role as image FROM customers as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role`,
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            username: `${req.username}`,
+          },
+          raw: true,
+        }
+      );
+      res.status(200).json({
+        userInfo: customer[0],
+      });
+    }
+    else{
+      console.log(req.id_role)
+      const customer = await Account.sequelize.query(
+        `SELECT CU.*, A.username, R.name as role FROM staffs as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role`,
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            username: `${req.username}`,
+          },
+          raw: true,
+        }
+      );
+      res.status(200).render("account/profile", {
+        userInfo: customer[0],
+        flag: 1,
+      });
+    }
   } catch (error) {
     res.status(500).json({
       message: "Lấy thông tin user thất bại!",

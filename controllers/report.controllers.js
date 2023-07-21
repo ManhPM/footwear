@@ -4,18 +4,6 @@ const { QueryTypes } = require("sequelize");
 const getAllReport = async (req, res) => {
   const { date } = req.query;
   try {
-    if(date){
-      const itemList = await Order.sequelize.query(
-        "SELECT R.*, DATE_FORMAT(R.date,'%d-%m-%Y') as date, S.name as name_store FROM reports as R, stores as S WHERE date LIKE :date AND R.id_store = S.id_store",
-        {
-          replacements: { date: `%${date}%` },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      res.status(201).render("report/report", { itemList });
-    }
-    else {
       const itemList = await Order.sequelize.query(
         "SELECT R.*, DATE_FORMAT(R.date,'%d-%m-%Y') as date, S.name as name_store FROM reports as R, stores as S WHERE R.id_store = S.id_store",
         {
@@ -23,8 +11,7 @@ const getAllReport = async (req, res) => {
           raw: true,
         }
       );
-      res.status(201).render("report/report", { itemList });
-    }
+      res.status(201).render("report/report", { itemList, id_role: req.id_role });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

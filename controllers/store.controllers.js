@@ -4,7 +4,7 @@ const { QueryTypes } = require("sequelize");
 const getAllStore = async (req, res) => {
   try {
     const itemList = await Store.findAll({raw: true});
-    res.status(201).render("store/store-admin",{itemList});
+    res.status(201).render("store/store-admin",{itemList, id_role: req.id_role});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

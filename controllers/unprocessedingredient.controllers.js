@@ -17,32 +17,6 @@ const getAllUnprocessedIngredient = async (req, res) => {
       }
     );
     if(req.id_role == 5){
-      if(name){
-        const totalItems = await Unprocessed_ingredient.sequelize.query(
-          "SELECT COUNT(*) as total FROM unprocessed_ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
-          {
-            replacements: {
-              name: `%${name}%`,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        const itemList = await Unprocessed_ingredient.sequelize.query(
-          "SELECT UI.* FROM unprocessed_ingredients as UI WHERE UI.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
-          {
-            replacements: {
-              name: `%${name}%`,
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(201).render("unprocessed-ingredient/unprocessed-ingredient-admin",{totalItems: totalItems[0].total, itemList});
-      }
-      else{
         const totalItems = await Unprocessed_ingredient.sequelize.query(
           "SELECT COUNT(*) as total FROM unprocessed_ingredients",
           {
@@ -61,37 +35,9 @@ const getAllUnprocessedIngredient = async (req, res) => {
             raw: true,
           }
         );
-        res.status(201).render("unprocessed-ingredient/unprocessed-ingredient-admin",{totalItems: totalItems[0].total, itemList});
-      }
+        res.status(201).render("unprocessed-ingredient/unprocessed-ingredient-admin",{totalItems: totalItems[0].total, itemList, id_role: req.id_role});
     }
     else {
-      if(name){
-        const totalItems = await Unprocessed_ingredient.sequelize.query(
-          "SELECT COUNT(*) as total FROM unprocessed_ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
-          {
-            replacements: {
-              name: `%${name}%`,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        const itemList = await Unprocessed_ingredient.sequelize.query(
-          "SELECT UI.*, US.quantity FROM unprocessed_ingredients as UI, unprocessed_ingredient_stores as US WHERE US.id_store = :id_store AND US.id_u_ingredient = UI.id_u_ingredient AND UI.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
-          {
-            replacements: {
-              id_store: staff[0].id_store,
-              name: `%${name}%`,
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(201).render("unprocessed-ingredient/unprocessed-ingredient",{totalItems: totalItems[0].total, itemList});
-      }
-      else{
         const totalItems = await Unprocessed_ingredient.sequelize.query(
           "SELECT COUNT(*) as total FROM unprocessed_ingredients",
           {
@@ -111,8 +57,7 @@ const getAllUnprocessedIngredient = async (req, res) => {
             raw: true,
           }
         );
-        res.status(201).render("unprocessed-ingredient/unprocessed-ingredient",{totalItems: totalItems[0].total, itemList});
-      }
+        res.status(201).render("unprocessed-ingredient/unprocessed-ingredient",{totalItems: totalItems[0].total, itemList, id_role: req.id_role});
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });

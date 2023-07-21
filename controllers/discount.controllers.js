@@ -19,7 +19,7 @@ const getAllDiscountAdmin = async (req, res) => {
         raw: true,
       }
     );
-    res.status(201).render("discount/discount",{discountList});
+    res.status(201).render("discount/discount",{discountList, id_role: req.id_role});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -30,9 +30,8 @@ const createDiscount = async (req, res) => {
   try {
     const start_date = new Date();
     start_date.setHours(start_date.getHours() + 7);
-    console.log(code, discount_percent, end_date, min_quantity, quantity, description)
     await Discount.create({code, discount_percent, start_date, end_date, min_quantity, quantity, description});
-    res.status(201).json({message: "Tạo mới thành công!"});
+    res.status(201).render("discount/discount-create",{message: "Tạo mới thành công!", flag: 1})
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -53,7 +52,13 @@ const updateDiscount = async (req, res) => {
     update.quantity = quantity
     update.description = description
     await update.save();
-    res.status(200).json({message: "Cập nhật thành công!"});
+    const item = await Discount.findOne({
+      raw: true,
+      where: {
+        code
+      }
+    });
+    res.status(201).render("discount/discount-create",{item,message: "Cập nhật thành công!",flag: 2})
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -63,11 +68,20 @@ const getDetailDiscount = async (req, res) => {
   const {code} = req.params
   try {
     const item = await Discount.findOne({
+      raw: true,
       where: {
-        code
-      }
+        code,
+      },
     });
-    res.status(200).json({item});
+    res.status(200).render("discount/discount-create",{item, flag: 2});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+const createForm = async (req, res) => {
+  try {
+    res.status(200).render("discount/discount-create",{flag: 1});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -78,5 +92,6 @@ module.exports = {
   createDiscount,
   updateDiscount,
   getDetailDiscount,
-  getAllDiscountAdmin
+  getAllDiscountAdmin,
+  createForm
 };

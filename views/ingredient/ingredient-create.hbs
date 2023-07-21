@@ -70,9 +70,11 @@
               {{#ifcond flag 2}}
               <form action="/ingredients/update/{{item.id_ingredient}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Tên nguyên liệu</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
+                <label>Đơn vị tính</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="unit" class="form-control" placeholder="Đơn vị tính" aria-label="Đơn vị tính" value="{{item.unit}}">
                 </div>

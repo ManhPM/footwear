@@ -1,4 +1,4 @@
-const { Ingredient, Store, Ingredient_store} = require("../models");
+const { Ingredient, Store, Ingredient_store } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const createIngredient = async (req, res) => {
@@ -9,18 +9,22 @@ const createIngredient = async (req, res) => {
       unit,
       image,
     });
-    const store = await Store.findAll({
-    })
-    let i = 0
-    while(store[i]){
+    const store = await Store.findAll({});
+    let i = 0;
+    while (store[i]) {
       await Ingredient_store.create({
         id_ingredient: ingredient.id_ingredient,
         id_store: store[i].id_store,
-        quantity: 0
-      })
-      i++
+        quantity: 0,
+      });
+      i++;
     }
-    res.status(201).render("type/type-create",{message: "Tạo mới thành công!", flag: 1})
+    res
+      .status(201)
+      .render("ingredient/ingredient-create", {
+        message: "Tạo mới thành công!",
+        flag: 1,
+      });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -42,10 +46,16 @@ const updateIngredient = async (req, res) => {
     const item = await Ingredient.findOne({
       raw: true,
       where: {
-        id_ingredient
-      }
+        id_ingredient,
+      },
     });
-    res.status(201).render("type/type-create",{item,message: "Cập nhật thành công!",flag: 2})
+    res
+      .status(201)
+      .render("ingredient/ingredient-create", {
+        item,
+        message: "Cập nhật thành công!",
+        flag: 2,
+      });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -64,101 +74,51 @@ const getAllIngredient = async (req, res) => {
         raw: true,
       }
     );
-    if(staff[0].id_role == 5){
-      if (name) {
-        const itemList = await Ingredient.sequelize.query(
-          "SELECT I.* FROM ingredients as I WHERE I.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
-          {
-            replacements: {
-              name: `%${name}%`,
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        const totalItems = await Ingredient.sequelize.query(
-          "SELECT COUNT(*) as total FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
-          {
-            replacements: {
-              name: `%${name}%`,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(201).render("ingredient/ingredient-admin",{ total: totalItems[0].total, itemList});
-      } else {
-        const itemList = await Ingredient.sequelize.query(
-          "SELECT I.* FROM ingredients as I LIMIT :from,:perPage",
-          {
-            replacements: {
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        const totalItems = await Ingredient.sequelize.query(
-          "SELECT COUNT(*) as total FROM ingredients",
-          {
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(201).render("ingredient/ingredient-admin",{ total: totalItems[0].total, itemList });
-      }
-    }
-    else{
-      if (name) {
-        const itemList = await Ingredient.sequelize.query(
-          "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store AND I.name COLLATE UTF8_GENERAL_CI LIKE :name LIMIT :from,:perPage",
-          {
-            replacements: {
-              id_store: staff[0].id_store,
-              name: `%${name}%`,
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        const totalItems = await Ingredient.sequelize.query(
-          "SELECT COUNT(*) as total FROM ingredients WHERE name COLLATE UTF8_GENERAL_CI LIKE :name",
-          {
-            replacements: {
-              name: `%${name}%`,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(201).render("ingredient/ingredient",{ total: totalItems[0].total, itemList });
-      } else {
-        const itemList = await Ingredient.sequelize.query(
-          "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store LIMIT :from,:perPage",
-          {
-            replacements: {
-              id_store: staff[0].id_store,
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        const totalItems = await Ingredient.sequelize.query(
-          "SELECT COUNT(*) as total FROM ingredients",
-          {
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(201).render("ingredient/ingredient",{ total: totalItems[0].total, itemList });
-      }
+    if (staff[0].id_role == 5) {
+      const itemList = await Ingredient.sequelize.query(
+        "SELECT I.* FROM ingredients as I",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const totalItems = await Ingredient.sequelize.query(
+        "SELECT COUNT(*) as total FROM ingredients",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res
+        .status(201)
+        .render("ingredient/ingredient-admin", {
+          total: totalItems[0].total,
+          itemList, id_role: req.id_role
+        });
+    } else {
+      const itemList = await Ingredient.sequelize.query(
+        "SELECT I.*, SI.quantity FROM ingredients as I, ingredient_stores as SI WHERE I.id_ingredient = SI.id_ingredient AND SI.id_store = :id_store",
+        {
+          replacements: {
+            id_store: staff[0].id_store,
+          },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const totalItems = await Ingredient.sequelize.query(
+        "SELECT COUNT(*) as total FROM ingredients",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res
+        .status(201)
+        .render("ingredient/ingredient", {
+          total: totalItems[0].total,
+          itemList, id_role: req.id_role
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -199,6 +159,12 @@ const processingIngredient = async (req, res) => {
         i++;
       }
     }
+    const item = await Ingredient.findOne({
+      raw: true,
+      where: {
+        id_ingredient,
+      },
+    });
     if (isEnough == 1) {
       let j = 0;
       while (ingredientList[j]) {
@@ -228,9 +194,19 @@ const processingIngredient = async (req, res) => {
           raw: true,
         }
       );
-      res.status(201).json({ ingredientList });
+      res
+        .status(201)
+        .render("ingredient/ingredient-process", {
+          item,
+          message: "Chế biến thành công!",
+        });
     } else {
-      res.status(401).json({ message: "Số lượng nguyên liệu không đủ!" });
+      res
+        .status(401)
+        .render("ingredient/ingredient-process", {
+          item,
+          message: "Số lượng nguyên liệu không đủ!",
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -238,7 +214,7 @@ const processingIngredient = async (req, res) => {
 };
 
 const getDetailIngredient = async (req, res) => {
-  const { id_ingredient } = req.params;
+  const { id_ingredient, flag } = req.params;
   try {
     const item = await Ingredient.findOne({
       raw: true,
@@ -246,7 +222,11 @@ const getDetailIngredient = async (req, res) => {
         id_ingredient,
       },
     });
-    res.status(200).render("type/type-create",{item, flag: 2});
+    if (flag == "update") {
+      res.status(200).render("ingredient/ingredient-create", { item, flag: 2 });
+    } else {
+      res.status(200).render("ingredient/ingredient-process", { item });
+    }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -254,9 +234,9 @@ const getDetailIngredient = async (req, res) => {
 
 const createForm = async (req, res) => {
   try {
-    res.status(200).render("type/type-create",{flag: 1});
+    res.status(200).render("ingredient/ingredient-create", { flag: 1 });
   } catch (error) {
-    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
 };
 

@@ -410,9 +410,38 @@
                             <tr class="visibleMobile">
                               <td height="20"></td>
                             </tr>
+                            {{#ifcond info.status 1}}
                             <tr>
                               <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
-                                <a class="btn bg-gradient-success w-100 my-4 mb-2">Nhận đơn</a>
+                                <a href="/orders/receive/{{info.id_order}}" class="btn bg-gradient-success w-100 my-4 mb-2">Nhận đơn</a>
+                              </td>
+                            </tr>
+                            {{/ifcond}}
+                            {{#ifcond info.status 3}}
+                            <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders/receive/{{info.id_order}}" class="btn bg-gradient-success w-100 my-4 mb-2">Hoàn thành</a>
+                              </td>
+                            </tr>
+                            {{/ifcond}}
+                          </tbody>
+                        </table>
+                        <table width="220" border="0" cellpadding="0" cellspacing="0" align="right" class="col">
+                          <tbody>
+                            <tr class="hiddenMobile">
+                              <td height="35"></td>
+                            </tr>
+                            <tr class="visibleMobile">
+                              <td height="20"></td>
+                            </tr>
+                            <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders" class="btn bg-gradient-info w-100 my-4 mb-2">Quay lại</a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders/ship" class="btn bg-gradient-info w-100 my-4 mb-2">Danh sách đơn cần giao</a>
                               </td>
                             </tr>
                           </tbody>

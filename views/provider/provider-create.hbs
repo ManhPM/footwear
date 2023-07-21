@@ -70,12 +70,15 @@
               {{#ifcond flag 2}}
               <form action="/providers/update/{{item.id_provider}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Tên nhà cung cấp</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
+                <label>Địa chỉ</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ" value="{{item.address}}">
                 </div>
+                <label>Số điện thoại</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại" value="{{item.phone}}">
                 </div>

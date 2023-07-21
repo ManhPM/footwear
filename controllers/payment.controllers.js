@@ -12,7 +12,7 @@ const getAllPaymentMethod = async (req, res) => {
 const getAllPaymentMethodAdmin = async (req, res) => {
   try {
     const itemList = await Payment_method.findAll({raw: true});
-    res.status(201).render("payment/payment-admin",{itemList});
+    res.status(201).render("payment/payment-admin",{itemList, id_role: req.id_role});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -46,7 +46,6 @@ const updatePaymentMethod = async (req, res) => {
       }
     });
     res.status(201).render("payment/payment-create",{item,message: "Cập nhật thành công!",flag: 2})
-    res.status(200).json({message: "Cập nhật thành công!"});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }

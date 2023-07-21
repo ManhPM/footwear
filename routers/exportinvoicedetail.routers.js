@@ -1,15 +1,14 @@
 const express = require("express");
-const {Export_invoice_detail} = require("../models")
-const { getDetailExportInvoiceDetail, deleteExportInvoiceDetail, updateExportInvoiceDetail, createExportInvoiceDetail } = require("../controllers/exportinvoicedetail.controllers");
+const { getDetailExportInvoiceDetail, deleteExportInvoiceDetail, updateExportInvoiceDetail, createExportInvoiceDetail, createForm } = require("../controllers/exportinvoicedetail.controllers");
 const {authorize} = require("../middlewares/auth/authorize.js")
 const {authenticate} = require("../middlewares/auth/authenticate.js");
-const { checkCreateExportInvoiceDetail } = require("../middlewares/validates/checkCreate");
 const exportinvoiceDetailRouter = express.Router();
 
 exportinvoiceDetailRouter.get("/detail/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), getDetailExportInvoiceDetail);
-exportinvoiceDetailRouter.post("/", authenticate, authorize(["Quản lý"]), checkCreateExportInvoiceDetail, createExportInvoiceDetail);
-exportinvoiceDetailRouter.delete("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteExportInvoiceDetail);
-exportinvoiceDetailRouter.delete("/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteExportInvoiceDetail);
+exportinvoiceDetailRouter.get("/createform/:id_e_invoice", authenticate, authorize(["Quản lý"]), createForm);
+exportinvoiceDetailRouter.post("/create/:id_e_invoice", authenticate, authorize(["Quản lý"]), createExportInvoiceDetail);
+exportinvoiceDetailRouter.put("/update/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), updateExportInvoiceDetail);
+exportinvoiceDetailRouter.delete("/delete/:id_e_invoice/:id_u_ingredient", authenticate, authorize(["Quản lý"]), deleteExportInvoiceDetail);
 
 module.exports = {  
     exportinvoiceDetailRouter,

@@ -65,19 +65,29 @@
           <div class="card z-index-0">
             <div class="card-body">
               {{#ifcond flag 1}}
-              <form action="/items/create" method="POST">
+              <form action="/items/create" method="POST" id="editform">
+              <label>Loại</label><br>
+              <select style="width: 300px" name="id_type" form="editform">
+                <option value="" selected disabled hidden>Chọn loại</option>
+                {{#each typeList}}
+                    <option value="{{this.id_type}}">{{this.name}}</option>
+                {{/each}}
+                </select><br>
               {{/ifcond}}
               {{#ifcond flag 2}}
               <form action="/items/update/{{item.id_item}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Tên</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
+                <label>Giá</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ" value="{{item.address}}">
+                  <input type="text" required="true" name="price" class="form-control" placeholder="Giá" aria-label="Giá" value="{{item.price}}">
                 </div>
+                <label>Ảnh</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại" value="{{item.phone}}">
+                  <input type="text" name="image" class="form-control" placeholder="Ảnh" aria-label="Ảnh" value="{{item.image}}">
                 </div>
                 <div class="text-center">
                   <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">

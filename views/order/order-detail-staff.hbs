@@ -410,11 +410,13 @@
                             <tr class="visibleMobile">
                               <td height="20"></td>
                             </tr>
+                            {{#ifcond info.status 0}}
                             <tr>
                               <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
-                                <a class="btn bg-gradient-success w-100 my-4 mb-2">Nhận đơn</a>
+                                <a href="/orders/confirm/{{info.id_order}}" class="btn bg-gradient-success w-100 my-4 mb-2">Nhận đơn</a>
                               </td>
                             </tr>
+                            {{/ifcond}}
                           </tbody>
                         </table>
 
@@ -427,11 +429,18 @@
                             <tr class="visibleMobile">
                               <td height="20"></td>
                             </tr>
-                            <tr>
+                              <tr>
                               <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
-                                <a class="btn bg-gradient-danger w-100 my-4 mb-2">Huỷ đơn</a>
+                                <a href="/orders" class="btn bg-gradient-info w-100 my-4 mb-2">Quay lại</a>
                               </td>
                             </tr>
+                            {{#ifcond this.status 0}}
+                            <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders/cancel/{{info.id_order}}" class="btn bg-gradient-danger w-100 my-4 mb-2">Huỷ đơn</a>
+                              </td>
+                            </tr>
+                            {{/ifcond}}
                           </tbody>
                         </table>
                       </td>

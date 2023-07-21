@@ -164,7 +164,11 @@
         <div class="row gx-4">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative">
-              <img src="https://thuthuatnhanh.com/wp-content/uploads/2021/02/Avatar-ngau-dep.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+              {{#ifcond flag 1}}
+              <img src="https://cdn3.iconfinder.com/data/icons/drinks-part-1/112/44-drinks-1_barista-male-caucasian-4-512.png" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+              {{else}}
+              <img src="https://cdn2.cellphones.com.vn/x/media/wysiwyg/Shipper.png" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+              {{/ifcond}}
             </div>
           </div>
           <div class="col-auto my-auto">
@@ -196,12 +200,6 @@
                 </li>
                 </ul>
                 <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                <li class="nav-item">
-                    <a href="/account/edit" class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center ">
-                    <i class="fa fa-picture-o" aria-hidden="true"></i>
-                    <span class="ms-2">Update Avatar</span>
-                  </a>
-                </li>
               </ul>
             </div>
           </div>
@@ -209,15 +207,9 @@
       </div>
     </div>
     <div class="container-fluid py-4">
-      <div class="row">
+      <div class="row"> 
         <div class="col-md-16">
           <div class="card">
-            <div class="card-header pb-0">
-              <div class="d-flex align-items-center">
-                <p class="mb-0">Edit Profile</p>
-                <button class="btn btn-primary btn-sm ms-auto">Edit</button>
-              </div>
-            </div>
             <!-- FORM DATA -->
             <form action="">
               <div class="card-body">
@@ -247,6 +239,33 @@
                       <input class="form-control" type="text" value="{{userInfo.phone}}" readonly="true">
                     </div>
                   </div>
+                  {{#ifcond flag 1}}
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">Giới tính</label>
+                      <input class="form-control" type="text" value="{{userInfo.gender}}" readonly="true">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">Ngày sinh</label>
+                      <input class="form-control" type="text" value="{{userInfo.birthday}}" readonly="true">
+                    </div>
+                  </div>
+                  {{else}}
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">Đơn vị vận chuyển</label>
+                      <input class="form-control" type="text" value="{{userInfo.name_shipping_partner}}" readonly="true">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">Mô tả</label>
+                      <input class="form-control" type="text" value="{{userInfo.description}}" readonly="true">
+                    </div>
+                  </div>
+                  {{/ifcond}}
                 </div>
               </div>
             </form>

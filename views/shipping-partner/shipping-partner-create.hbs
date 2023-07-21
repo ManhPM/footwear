@@ -65,14 +65,20 @@
           <div class="card z-index-0">
             <div class="card-body">
               {{#ifcond flag 1}}
-              <form action="/shippingpartners/create" method="POST">
+              <form action="/shipping_partners/create" method="POST">
               {{/ifcond}}
               {{#ifcond flag 2}}
-              <form action="/shippingpartners/update/{{item.id_shipping_partner}}?_method=PUT" method="POST">
+              <form action="/shipping_partners/update/{{item.id_shipping_partner}}?_method=PUT" method="POST">
               {{/ifcond}}
+              <label>Tên</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
+                <label>Địa chỉ</label>
+                <div class="mb-3">
+                  <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ" value="{{item.address}}">
+                </div>
+                <label>Đơn giá/1 km</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="unit_price" class="form-control" placeholder="Đơn giá" aria-label="Đơn giá" value="{{item.unit_price}}">
                 </div>
@@ -84,7 +90,7 @@
                 </div>
               </form>
               <div class="text-center">
-                <a href="/shippingpartners" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
+                <a href="/shipping_partners/admin" type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Quay lại</a>
               </div>
             </div>
           </div>

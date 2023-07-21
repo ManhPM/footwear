@@ -54,7 +54,7 @@ const getAllTypeAdmin = async (req, res) => {
     const itemList = await Type.findAll({
       raw: true
     })
-    res.status(200).render("type/type",{itemList});
+    res.status(200).render("type/type",{itemList, id_role: req.id_role});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

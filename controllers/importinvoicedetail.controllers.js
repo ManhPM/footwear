@@ -2,7 +2,8 @@ const { Import_invoice_detail, Import_invoice } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const createImportInvoiceDetail = async (req, res) => {
-  const { quantity, id_i_invoice, id_u_ingredient, unit_price } = req.body;
+  const { id_i_invoice } = req.params
+  const { quantity, id_u_ingredient, unit_price } = req.body;
   try {
     await Import_invoice_detail.create({
       id_i_invoice,
@@ -10,7 +11,21 @@ const createImportInvoiceDetail = async (req, res) => {
       quantity,
       unit_price
     });
-    res.status(200).json({ message: "Tạo mới thành công!" });
+    const item = await Import_invoice.findOne({
+      where: {
+        id_i_invoice,
+      },
+      raw: true
+    })
+    const unprocessedingredientList = await Import_invoice.sequelize.query(
+      "SELECT * FROM unprocessed_ingredients WHERE id_u_ingredient NOT IN(SELECT id_u_ingredient FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice)",
+      {
+        replacements: { id_i_invoice },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).render("import-invoice/import-invoice-detail-create",{item, unprocessedingredientList, message: "Tạo mới thành công!", flag: 1 });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -18,7 +33,7 @@ const createImportInvoiceDetail = async (req, res) => {
 
 const updateImportInvoiceDetail = async (req, res) => {
   const { id_i_invoice, id_u_ingredient } = req.params;
-  const { quantity } = req.body;
+  const { quantity, unit_price } = req.body;
   try {
     const check = await Import_invoice.findOne({
       where: {
@@ -27,14 +42,22 @@ const updateImportInvoiceDetail = async (req, res) => {
     });
     if (check.status != 1) {
       await Import_invoice_detail.sequelize.query(
-        "UPDATE import_invoice_details SET quantity = :quantity WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
+        "UPDATE import_invoice_details SET quantity = :quantity, unit_price = :unit_price WHERE id_i_invoice = :id_i_invoice AND id_u_ingredient = :id_u_ingredient",
         {
-          replacements: { id_i_invoice, id_u_ingredient, quantity },
+          replacements: { id_i_invoice, id_u_ingredient, quantity, unit_price },
           type: QueryTypes.UPDATE,
           raw: true,
         }
       );
-      res.status(200).json({ message: "Cập nhật thành công!" });
+      const item = await Import_invoice_detail.sequelize.query(
+        "SELECT * FROM import_invoice_details WHERE id_u_ingredient = :id_u_ingredient AND id_i_invoice = :id_i_invoice",
+        {
+          replacements: { id_i_invoice, id_u_ingredient },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(200).render("import-invoice/import-invoice-detail-create",{item:item[0], message: "Cập nhật thành công!", flag: 2 });
     } else {
       res
         .status(400)
@@ -60,7 +83,13 @@ const deleteImportInvoiceDetail = async (req, res) => {
           id_u_ingredient,
         },
       });
-      res.status(200).json({ message: "Xoá thành công!" });
+      const item = await Import_invoice.findOne({
+        where: {
+          id_i_invoice,
+        },
+        raw: true
+      })
+      res.status(200).render("import-invoice/import-invoice-detail-notification",{item, message: "Xoá thành công!" });
     } else {
       res.status(400).json({ message: "Không thể xoá hoá đơn đã hoàn thành!" });
     }
@@ -80,9 +109,32 @@ const getDetailImportInvoiceDetail = async (req, res) => {
         raw: true,
       }
     );
-    res.status(200).json({ item });
+    res.status(200).render("import-invoice/import-invoice-detail-create",{ item:item[0] , flag: 2});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const createForm = async (req, res) => {
+  const {id_i_invoice} = req.params
+  try {
+    const unprocessedingredientList = await Import_invoice.sequelize.query(
+      "SELECT * FROM unprocessed_ingredients WHERE id_u_ingredient NOT IN(SELECT id_u_ingredient FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice)",
+      {
+        replacements: { id_i_invoice },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const item = await Import_invoice.findOne({
+      where: {
+        id_i_invoice,
+      },
+      raw: true
+    })
+    res.status(200).render("import-invoice/import-invoice-detail-create",{unprocessedingredientList, flag: 1, item});
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
 };
 
@@ -90,5 +142,6 @@ module.exports = {
     createImportInvoiceDetail,
     updateImportInvoiceDetail,
     deleteImportInvoiceDetail,
-    getDetailImportInvoiceDetail
+    getDetailImportInvoiceDetail,
+    createForm
 };

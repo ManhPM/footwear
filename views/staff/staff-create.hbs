@@ -65,43 +65,62 @@
           <div class="card z-index-0">
             <div class="card-body">
               {{#ifcond flag 1}}
-              <form action="/staffs/create" method="POST">
+              <form action="/staffs/create" method="POST" id="editform">
               {{/ifcond}}
               {{#ifcond flag 2}}
-              <form action="/staffs/update/{{item.id_staff}}?_method=PUT" method="POST">
+              <form action="/staffs/update/{{item.id_staff}}?_method=PUT" method="POST" id="editform">
               {{/ifcond}}
+                {{#ifcond flag 1}}
+                <label>Cửa hàng</label><br>
+              <select style="width: 300px" name="id_store" form="editform">
+                <option value="" selected disabled hidden>Chọn cửa hàng</option>
+                {{#each storeList}}
+                    <option value="{{this.id_store}}">{{this.name}}</option>
+                {{/each}}
+                </select><br>
+                <label>Chức vụ</label><br>
+              <select style="width: 300px" name="id_role" form="editform">
+                <option value="" selected disabled hidden>Chọn chức vụ</option>
+                {{#each roleList}}
+                    <option value="{{this.id_role}}">{{this.name}}</option>
+                {{/each}}
+                </select><br>
+                  <label>Tài khoản</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="username" class="form-control" placeholder="Username" aria-label="Username" value="{{item.username}}">
                 </div>
+                <label>Mật khẩu</label>
                 <div class="mb-3">
-                  <input type="password" required="true" name="password" class="form-control" placeholder="Password" aria-label="Username">
+                  <input type="password" required="true" name="password" class="form-control" placeholder="Username" aria-label="Username">
                 </div>
+                {{/ifcond}}
+                <label>Tên nhân viên</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên">
+                  <input type="text" required="true" name="name" class="form-control" placeholder="Tên" aria-label="Tên" value="{{item.name}}">
                 </div>
+                <label>Giới tính</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="gender" class="form-control" placeholder="Giới tính" aria-label="Giới tính">
+                  <input type="text" required="true" name="gender" class="form-control" placeholder="Giới tính" aria-label="Giới tính" value="{{item.gender}}">
                 </div>
+                <label>Ngày sinh (mm/dd/yyyy)</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="birthday" class="form-control" placeholder="Ngày sinh" aria-label="Ngày sinh">
+                  <input type="date" required="true" name="birthday" class="form-control" placeholder="mm-dd-yyyy" aria-label="Ngày sinh" value="{{item.datetime}}">
                 </div>
+                <label>Địa chỉ</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ">
+                  <input type="text" required="true" name="address" class="form-control" placeholder="Địa chỉ" aria-label="Địa chỉ" value="{{item.address}}">
                 </div>
+                <label>Số điện thoại</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại">
+                  <input type="text" required="true" name="phone" class="form-control" placeholder="Số điện thoại" aria-label="Số điện thoại" value="{{item.phone}}">
                 </div>
+                <label>Email</label>
                 <div class="mb-3">
-                  <input type="email" required="true" name="email" class="form-control" placeholder="Email" aria-label="Email">
+                  <input type="email" required="true" name="email" class="form-control" placeholder="Email" aria-label="Email" value="{{item.email}}">
                 </div>
+                <label>Mô tả</label>
                 <div class="mb-3">
-                  <input type="text" required="true" name="description" class="form-control" placeholder="Mô tả" aria-label="Mô tả">
-                </div>
-                <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
-                </div>
-                <div class="mb-3">
-                  <input type="text" required="true" name="address" class="form-control" placeholder="Username" aria-label="Username">
+                  <input type="text" name="description" class="form-control" placeholder="Mô tả" aria-label="Mô tả" value="{{item.description}}">
                 </div>
                 <div class="text-center">
                   <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">
