@@ -18,7 +18,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
- 
+      reviewed: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
     });
   },
   async down(queryInterface, Sequelize) {

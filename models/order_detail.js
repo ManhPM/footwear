@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     quantity: DataTypes.INTEGER,
+    reviewed: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Order_detail',

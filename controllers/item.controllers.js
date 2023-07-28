@@ -48,13 +48,11 @@ const updateItem = async (req, res) => {
         id_item,
       },
     });
-    res
-      .status(201)
-      .render("item/item-create", {
-        item,
-        message: "Cập nhật thành công!",
-        flag: 2,
-      });
+    res.status(201).render("item/item-create", {
+      item,
+      message: "Cập nhật thành công!",
+      flag: 2,
+    });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -77,23 +75,18 @@ const deleteItem = async (req, res) => {
           id_item,
         },
       });
-      if(itemUpdate.status == 0){
+      if (itemUpdate.status == 0) {
         itemUpdate.status = 1;
         await itemUpdate.save();
-        res
-          .status(200)
-          .render("item/item-notification", {
-            message: "Sản phẩm đã có thể kinh doanh!",
-          });
-      }
-      else{
+        res.status(200).render("item/item-notification", {
+          message: "Sản phẩm đã có thể kinh doanh!",
+        });
+      } else {
         itemUpdate.status = 0;
         await itemUpdate.save();
-        res
-          .status(200)
-          .render("item/item-notification", {
-            message: "Xoá sản phẩm thành công!",
-          });
+        res.status(200).render("item/item-notification", {
+          message: "Xoá sản phẩm thành công!",
+        });
       }
     } else {
       res.status(400).json({
@@ -116,11 +109,10 @@ const getAllItemInStore = async (req, res) => {
           raw: true,
         }
       );
-      res
-        .status(200)
-        .render("item/item-admin", {
-          itemList, id_role: req.id_role
-        });
+      res.status(200).render("item/item-admin", {
+        itemList,
+        id_role: req.id_role,
+      });
     } else {
       const staff = await Item.sequelize.query(
         "SELECT S.*, A.id_role FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
@@ -141,11 +133,10 @@ const getAllItemInStore = async (req, res) => {
           raw: true,
         }
       );
-      res
-        .status(200)
-        .render("item/item-staff", {
-          itemList, id_role: req.id_role
-        });
+      res.status(200).render("item/item-staff", {
+        itemList,
+        id_role: req.id_role,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -153,173 +144,31 @@ const getAllItemInStore = async (req, res) => {
 };
 
 const getAllItem = async (req, res) => {
-  const { name, id_type } = req.query;
-  let { typesort } = req.query;
-  if (!typesort) {
-    typesort = 1;
-  }
-  const perPage = 12;
-  const page = req.params.page || 1;
+  const { id_type } = req.query;
   try {
-    if (name) {
       if (id_type) {
-        const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND T.id_type = :id_type AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+        const itemList = await Item.sequelize.query(
+          "SELECT DISTINCT I.id_item, I.id_type, I.name, I.image, FORMAT(I.price, 0) as price, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC",
           {
             replacements: {
-              name: `%${name}%`,
-              perPage: perPage,
               id_type: id_type,
             },
             type: QueryTypes.SELECT,
             raw: true,
           }
         );
-        if (typesort == 1) {
-          const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
-            {
-              replacements: {
-                id_type: id_type,
-                name: `%${name}%`,
-                from: (page - 1) * perPage,
-                perPage: perPage,
-                id_type: id_type,
-              },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        } else {
-          const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
-            {
-              replacements: {
-                id_type: id_type,
-                name: `%${name}%`,
-                from: (page - 1) * perPage,
-                perPage: perPage,
-                id_type: id_type,
-              },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        }
-      } else {
-        const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name",
+        res.status(200).json({ itemList });
+      } 
+      else {
+        const itemList = await Item.sequelize.query(
+          "SELECT I.*, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 ORDER BY I.price ASC",
           {
-            replacements: { name: `%${name}%`, perPage: perPage },
             type: QueryTypes.SELECT,
             raw: true,
           }
         );
-        if (typesort == 1) {
-          const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price ASC LIMIT :from,:perPage",
-            {
-              replacements: {
-                name: `%${name}%`,
-                from: (page - 1) * perPage,
-                perPage: perPage,
-              },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        } else {
-          const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name ORDER BY I.price DESC LIMIT :from,:perPage",
-            {
-              replacements: {
-                name: `%${name}%`,
-                from: (page - 1) * perPage,
-                perPage: perPage,
-              },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        }
+        res.status(200).json({ itemList });
       }
-    } else {
-      if (id_type) {
-        const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) as totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type",
-          {
-            replacements: { id_type: id_type },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        if (typesort == 1) {
-          const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC LIMIT :from,:perPage",
-            {
-              replacements: {
-                id_type: id_type,
-                from: (page - 1) * perPage,
-                perPage: perPage,
-              },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        } else {
-          const itemList = await Item.sequelize.query(
-            "SELECT DISTINCT I.*, T.name as name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price DESC LIMIT :from,:perPage",
-            {
-              replacements: {
-                id_type: id_type,
-                from: (page - 1) * perPage,
-                perPage: perPage,
-              },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        }
-      } else {
-        const count = await Item.sequelize.query(
-          "SELECT COUNT(I.id_item) AS totalPage FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0",
-          {
-            replacements: { perPage: perPage },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        if (typesort == 1) {
-          //gia tang dan
-          const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 ORDER BY I.price ASC LIMIT :from,:perPage",
-            {
-              replacements: { from: (page - 1) * perPage, perPage: perPage },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        } else {
-          // gia giam dan
-          const itemList = await Item.sequelize.query(
-            "SELECT I.*, T.name AS name_type FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 ORDER BY I.price DESC LIMIT :from,:perPage",
-            {
-              replacements: { from: (page - 1) * perPage, perPage: perPage },
-              type: QueryTypes.SELECT,
-              raw: true,
-            }
-          );
-          res.status(200).json({ totalItems: count[0].totalPage, itemList });
-        }
-      }
-    }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -329,14 +178,31 @@ const getDetailItem = async (req, res) => {
   const { id_item } = req.params;
   try {
     const item = await Item.sequelize.query(
-      "SELECT I.*, T.name as name_type, (SELECT COUNT(id_item) FROM items WHERE id_item = I.id_item) as countLike FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
+      "SELECT I.*, T.name as name_type FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
       {
         replacements: { id_item: id_item },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    res.status(200).render("item/item-create", { item:item[0], flag: 2 });
+    res.status(200).render("item/item-create", { item: item[0], flag: 2 });
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const getDetailItemUser = async (req, res) => {
+  const { id_item } = req.params;
+  try {
+    const item = await Item.sequelize.query(
+      "SELECT I.id_item, I.id_type, I.name, I.image, FORMAT(I.price, 0) as price, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
+      {
+        replacements: { id_item: id_item },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).json({ item });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -376,14 +242,14 @@ const getItems = async (req, res) => {
 
 const getTopping = async (req, res) => {
   try {
-    const items = await Item.sequelize.query(
-      "SELECT I.* FROM items as I WHERE I.id_type = 4",
+    const itemList = await Item.sequelize.query(
+      "SELECT I.id_item, I.id_type, I.name, I.image, FORMAT(I.price, 0) as price FROM items as I WHERE I.id_type = 4",
       {
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
-    res.status(200).json({ items });
+    res.status(200).json({ itemList });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -462,14 +328,15 @@ const processingItem = async (req, res) => {
       );
       res
         .status(201)
-        .render("item/item-process", { message: "Chế biến thành công!", item: item[0]});
-    } else {
-      res
-        .status(401)
         .render("item/item-process", {
-          message: "Số lượng nguyên liệu không đủ!",
-          item: item[0]
+          message: "Chế biến thành công!",
+          item: item[0],
         });
+    } else {
+      res.status(401).render("item/item-process", {
+        message: "Số lượng nguyên liệu không đủ!",
+        item: item[0],
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
@@ -486,7 +353,7 @@ const createForm = async (req, res) => {
 };
 
 const processForm = async (req, res) => {
-  const {id_item} = req.params
+  const { id_item } = req.params;
   try {
     const item = await Item.sequelize.query(
       "SELECT I.*, T.name as name_type FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
@@ -496,7 +363,7 @@ const processForm = async (req, res) => {
         raw: true,
       }
     );
-    res.status(200).render("item/item-process",{item: item[0]});
+    res.status(200).render("item/item-process", { item: item[0] });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -514,5 +381,6 @@ module.exports = {
   getTopping,
   getAllItemInStore,
   createForm,
-  processForm
+  processForm,
+  getDetailItemUser,
 };

@@ -587,6 +587,7 @@ const dashboardManager = async (req, res) => {
       info: info[0],
       chart: chart[0],
       revenue: doanhThu[0],
+      id_role: req.id_role
     });
   } catch (error) {
     res.status(500).json({ message: error });

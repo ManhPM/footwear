@@ -166,15 +166,27 @@ const login = async (req, res) => {
       }
     );
     if (account.id_role == 1) {
-      res
-        .cookie("access_token", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-        })
-        .status(200)
-        .render("account/loginsucced", {
-          role: 1,
-        });
+      const customer = await Customer.findOne({
+        where: {
+          id_account: account.id_account,
+        },
+      });
+      const refreshToken = jwt.sign(
+        { username: account.username, id_role: account.id_role  },
+        "manhpham2k1",
+        {
+          expiresIn: 30 * 24 * 60 * 60,
+        }
+      );
+      res.status(200).json({
+        message: "Đăng nhập thành công!",
+        token,
+        refreshToken,
+        userInfo: customer,
+        expireTimeToken: 15 * 60 * 60 * 24,
+        expireTimeRefreshToken: 30 * 60 * 60 * 24,
+        id_role: account.id_role,
+      });
     } else if (account.id_role == 3 || account.id_role == 4) {
       res
         .cookie("access_token", token, {
@@ -236,7 +248,7 @@ const getUserInfo = async (req, res) => {
     }
     else if(req.id_role == 1){
       const customer = await Account.sequelize.query(
-        `SELECT CU.*, A.username, R.name as role as image FROM customers as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role`,
+        "SELECT CU.*, A.username, R.name as role FROM customers as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role",
         {
           type: QueryTypes.SELECT,
           replacements: {

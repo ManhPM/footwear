@@ -3,8 +3,8 @@ const { QueryTypes } = require("sequelize");
 
 const getAllShippingPartner = async (req, res) => {
   try {
-    const itemList = await Shipping_partner.findAll({raw: true});
-    res.status(201).json("shipping-partner/shipping-partner",{itemList});
+    const itemList = await Shipping_partner.findAll();
+    res.status(201).json({itemList});
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }

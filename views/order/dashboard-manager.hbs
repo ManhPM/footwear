@@ -78,7 +78,14 @@
             <span class="nav-link-text ms-1">Nhân viên</span>
           </a>
         </li>
-        {{/ifcond}}
+                <li class="nav-item">
+          <a class="nav-link " href="/types/admin">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-glass text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Loại hàng</span>
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link " href="/orders">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -87,16 +94,6 @@
             <span class="nav-link-text ms-1">Đơn hàng</span>
           </a>
         </li>
-        {{#ifcond id_role 5}}
-        <li class="nav-item">
-          <a class="nav-link " href="/types/admin">
-            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="fa fa-glass text-primary text-sm opacity-10"></i>
-            </div>
-            <span class="nav-link-text ms-1">Loại hàng</span>
-          </a>
-        </li>
-        {{/ifcond}}
         <li class="nav-item">
           <a class="nav-link " href="/items/store">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -121,7 +118,74 @@
             <span class="nav-link-text ms-1">Nguyên liệu thô</span>
           </a>
         </li>
+        {{/ifcond}}
+        {{#ifcond id_role 3}}
+        <li class="nav-item">
+          <a class="nav-link " href="/orders">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Đơn hàng</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/items/store">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-coffee text-danger text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Sản phẩm</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/ingredients">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-tags text-warning text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Nguyên liệu</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/unprocessedingredients">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-tag text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Nguyên liệu thô</span>
+          </a>
+        </li>
+        {{/ifcond}}
         {{#ifcond id_role 2}}
+        <li class="nav-item">
+          <a class="nav-link " href="/orders">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-credit-card text-success text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Đơn hàng</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/items/store">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-coffee text-danger text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Sản phẩm</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/ingredients">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-tags text-warning text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Nguyên liệu</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/unprocessedingredients">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fa fa-tag text-primary text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">Nguyên liệu thô</span>
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link " href="/importinvoices">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

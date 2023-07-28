@@ -19,6 +19,7 @@ const { reportRouter } = require("./report.routers");
 const { importinvoiceDetailRouter } = require("./importinvoicedetail.routers");
 const { exportinvoiceDetailRouter } = require("./exportinvoicedetail.routers");
 const { recipeRouter } = require("./recipe.routers");
+const { reviewRouter } = require("./review.routers");
 const rootRouter = express.Router();
 
 rootRouter.use("/items", itemRouter);
@@ -35,6 +36,7 @@ rootRouter.use("/ingredients", ingredientRouter);
 rootRouter.use("/unprocessedingredients", unprocessedIngredientRouter);
 rootRouter.use("/stores", storeRouter);
 rootRouter.use("/staffs", staffRouter);
+rootRouter.use("/reviews", reviewRouter);
 rootRouter.use("/discounts", discountRouter);
 rootRouter.use("/shipping_partners", shippingPartnerRouter);
 rootRouter.use("/reports", reportRouter);

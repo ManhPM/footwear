@@ -118,24 +118,33 @@ const checkCreateType = (Model) => {
 };
 
 const checkCreateReview = (Model) => {
-  return async (req, res, next) => {
-    const { id_order } = req.query;
-    const order = await Model.findOne({
-      where: {
-        id_order,
-      },
-    });
-    if (order.status == 1) {
-      next();
-    } else {
-      res
-        .status(400)
-        .json({
-          message:
-            "Đơn hàng đã bị huỷ hoặc chưa được xác nhận. Không thể đánh giá!",
-        });
-    }
-  };
+  try {
+    return async (req, res, next) => {
+      const { id_order } = req.query;
+      const order = await Model.findOne({
+        where: {
+          id_order,
+        },
+      });
+      if (order.status == 4) {
+        next();
+      } else {
+        res
+          .status(400)
+          .json({
+            message:
+              "Đơn hàng đã bị huỷ hoặc chưa được xác nhận. Không thể đánh giá!",
+          });
+      }
+    };
+  } catch (error) {
+    res
+          .status(501)
+          .json({
+            message:
+              "Middleware Error!",
+          });
+  }
 };
 
 const checkCreateProvider = (Model) => {
