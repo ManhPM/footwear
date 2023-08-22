@@ -11,7 +11,6 @@ module.exports = {
       id_customer: {
         type: Sequelize.INTEGER,
         references: { model: "Customers", key: "id_customer" },
-        allowNull: false
       },
       id_store: {
         type: Sequelize.INTEGER,
@@ -30,7 +29,6 @@ module.exports = {
       id_shipping_partner: {
         type: Sequelize.INTEGER,
         references: { model: "Shipping_partners", key: "id_shipping_partner" },
-        allowNull: false
       },
       time_order: {
         type: Sequelize.DATE,

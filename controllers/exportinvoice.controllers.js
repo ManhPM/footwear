@@ -2,6 +2,7 @@ const { Export_invoice, Export_invoice_detail } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllExportInvoice = async (req, res) => {
+  const {flag} = req.params
   try {
     const staff = await Export_invoice.sequelize.query(
       "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND S.id_account = A.id_account",
@@ -19,9 +20,16 @@ const getAllExportInvoice = async (req, res) => {
         raw: true,
       }
     );
-    res
+    if(flag){
+      res
+      .status(200)
+      .render("export-invoice/export-invoice-print", { exportInvoiceList, id_role: req.id_role });
+    }
+    else{
+      res
       .status(200)
       .render("export-invoice/export-invoice", { exportInvoiceList, id_role: req.id_role });
+    }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -45,7 +53,7 @@ const getAllItemInExportInvoice = async (req, res) => {
       raw: true,
     });
     if (item.status) {
-      res.status(200).render("export-invoice/export-invoice-detail", {
+      res.status(200).render("export-invoice/export-invoice-detail-print", {
         item,
         itemList,
         flag: 0, id_role: req.id_role

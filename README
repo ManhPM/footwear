@@ -1,12 +1,20 @@
 ## CREATE DATABASE WITH UTF-8
 
 ## SETTING DATABASE
+SELECT @@sql_mode 
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 ## MIGRATE DATABASE
 npx sequelize db:migrate:undo:all
 npx sequelize db:migrate
 npx sequelize db:seed:all
+
+## VNPAY
+NCB
+9704198526191432198
+NGUYEN VAN A
+07/15
+123456
 
 ## SETUP
 npm i

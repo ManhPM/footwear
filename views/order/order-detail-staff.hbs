@@ -411,11 +411,30 @@
                               <td height="20"></td>
                             </tr>
                             {{#ifcond info.status 0}}
-                            <tr>
+                              {{#if info.name_shipping_partner}}
+                              <tr>
                               <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
                                 <a href="/orders/confirm/{{info.id_order}}" class="btn bg-gradient-success w-100 my-4 mb-2">Nhận đơn</a>
                               </td>
-                            </tr>
+                              </tr>
+                              {{else}}
+                              <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders/confirm/{{info.id_order}}" class="btn bg-gradient-success w-100 my-4 mb-2">Hoàn thành</a>
+                              </td>
+                              </tr>
+                              <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders/order/{{info.id_order}}" class="btn bg-gradient-warning w-100 my-4 mb-2">Cập nhật thông tin</a>
+                              </td>
+                              </tr>
+                              {{/if}}
+                              {{else}}
+                              <tr>
+                              <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                <a href="/orders/detail/{{info.id_order}}/1" class="btn bg-gradient-warning w-100 my-4 mb-2">In hoá đơn</a>
+                              </td>
+                              </tr>
                             {{/ifcond}}
                           </tbody>
                         </table>
@@ -434,12 +453,23 @@
                                 <a href="/orders" class="btn bg-gradient-info w-100 my-4 mb-2">Quay lại</a>
                               </td>
                             </tr>
-                            {{#ifcond this.status 0}}
-                            <tr>
+                              
+                              {{#ifcond info.status 0}}
+                              {{#if info.name_shipping_partner}}
+                              {{else}}
+                              <tr>
                               <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
-                                <a href="/orders/cancel/{{info.id_order}}" class="btn bg-gradient-danger w-100 my-4 mb-2">Huỷ đơn</a>
+                                <a href="/orders/getdetail/{{info.id_order}}" class="btn bg-gradient-primary w-100 my-4 mb-2">Chi tiết hoá đơn</a>
                               </td>
-                            </tr>
+                              </tr>
+                              {{#ifcond info.status 0}}
+                              <tr>
+                                <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                  <a href="/orders/cancel/{{info.id_order}}" class="btn bg-gradient-danger w-100 my-4 mb-2">Huỷ đơn</a>
+                                </td>
+                              </tr>
+                              {{/ifcond}}
+                              {{/if}}
                             {{/ifcond}}
                           </tbody>
                         </table>

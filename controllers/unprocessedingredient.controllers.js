@@ -1,13 +1,16 @@
 const { Unprocessed_ingredient, Store, Unprocessed_ingredient_store } = require("../models");
 const { QueryTypes } = require("sequelize");
-var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
+const cloudinary = require("cloudinary").v2;    
+
+async function handleUpload(file) {
+  const res = await cloudinary.uploader.upload(file, {
+    resource_type: "auto",
+  });
+  return res;
+}
 
 const getAllUnprocessedIngredient = async (req, res) => {
-  const {name} = req.query
   try {
-    const perPage = 12;
-    const page = req.params.page || 1;
     const staff = await Unprocessed_ingredient.sequelize.query(
       "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
       {
@@ -25,12 +28,8 @@ const getAllUnprocessedIngredient = async (req, res) => {
           }
         );
         const itemList = await Unprocessed_ingredient.sequelize.query(
-          "SELECT UI.* FROM unprocessed_ingredients as UI LIMIT :from,:perPage",
+          "SELECT UI.* FROM unprocessed_ingredients as UI",
           {
-            replacements: {
-              from: (page - 1) * perPage,
-              perPage: perPage,
-            },
             type: QueryTypes.SELECT,
             raw: true,
           }
@@ -46,12 +45,10 @@ const getAllUnprocessedIngredient = async (req, res) => {
           }
         );
         const itemList = await Unprocessed_ingredient.sequelize.query(
-          "SELECT UI.*, US.quantity FROM unprocessed_ingredients as UI, unprocessed_ingredient_stores as US WHERE US.id_store = :id_store AND US.id_u_ingredient = UI.id_u_ingredient LIMIT :from,:perPage",
+          "SELECT UI.*, US.quantity FROM unprocessed_ingredients as UI, unprocessed_ingredient_stores as US WHERE US.id_store = :id_store AND US.id_u_ingredient = UI.id_u_ingredient",
           {
             replacements: {
               id_store: staff[0].id_store,
-              from: (page - 1) * perPage,
-              perPage: perPage,
             },
             type: QueryTypes.SELECT,
             raw: true,
@@ -67,9 +64,13 @@ const getAllUnprocessedIngredient = async (req, res) => {
 const createUnprocessedIngredient= async (req, res) => {
   const {name, unit} = req.body
   try {
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI);
     const unprocessed_ingredient = await Unprocessed_ingredient.create({
       name,
       unit,
+      image: cldRes.url
     });
     const store = await Store.findAll({
     })
@@ -97,6 +98,12 @@ const updateUnprocessedIngredient= async (req, res) => {
         id_u_ingredient
       }
     })
+    if(req.file){
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cldRes = await handleUpload(dataURI);
+      update.image = cldRes.url;
+    }
     update.name = name
     update.unit = unit
     await update.save();

@@ -4,11 +4,13 @@ const {
   Item_store,
   Report,
   Report_detail,
+  Payment_method
 } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllOrder = async (req, res) => {
   const { id_order, status } = req.query;
+  const {flag} = req.params
   const staff = await Order.sequelize.query(
     "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
     {
@@ -66,7 +68,7 @@ const getAllOrder = async (req, res) => {
         }
         else{
           const orderList = await Order.sequelize.query(
-            "SELECT O.id_order, O.delivery_fee, O.discount_fee, O.item_fee, O.total, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O WHERE O.id_customer = :id_customer ORDER BY O.status DESC",
+            "SELECT O.id_order, O.delivery_fee, O.discount_fee, O.item_fee, O.total, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order FROM orders as O WHERE O.id_customer = :id_customer ORDER BY O.status ASC",
             {
               replacements: { id_customer: customer[0].id_customer },
               type: QueryTypes.SELECT,
@@ -79,25 +81,36 @@ const getAllOrder = async (req, res) => {
     } else if (req.id_role == 5) {
       //AD
       const orderList = await Order.sequelize.query(
-        "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.status ASC",
+        "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, (SELECT name FROM customers WHERE id_customer = O.id_customer) as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment ORDER BY O.status ASC",
         {
           replacements: { id_order, id_store: staff[0].id_store },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(200).render("order/order", { orderList, id_role: req.id_role });
+      if(flag == 1){
+        res.status(200).render("order/order-print", { orderList, id_role: req.id_role });
+      }
+      else{
+        res.status(200).render("order/order", { orderList, id_role: req.id_role });
+      }
     } else if (req.id_role == 3 || req.id_role == 2) {
       // NV
       const orderList = await Order.sequelize.query(
-        "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.time_order DESC, O.status ASC",
+        "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_store = :id_store ORDER BY O.status ASC",
         {
           replacements: { id_store: staff[0].id_store },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(200).render("order/order", { orderList, id_role: req.id_role });
+      if(flag == 1){
+        res.status(200).render("order/order-print", { orderList, id_role: req.id_role });
+      }
+      else{
+        res.status(200).render("order/order", { orderList, id_role: req.id_role });
+      }
+
     } else {
       // SP
       const shipper = await Order.sequelize.query(
@@ -109,7 +122,7 @@ const getAllOrder = async (req, res) => {
         }
       );
       const orderList = await Order.sequelize.query(
-        "SELECT DISTINCT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers AS S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status != 1 AND O.status != 2 AND O.status != 0 AND O.id_shipping_partner = S.id_shipping_partner AND O.id_shipper = :id_shipper ORDER BY O.time_order DESC",
+        "SELECT (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, C.name as name_customer, C.phone, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers AS S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.status != 1 AND O.status != 2 AND O.status != 0 AND O.id_shipping_partner = S.id_shipping_partner AND O.id_shipper = :id_shipper ORDER BY O.time_order DESC",
         {
           replacements: { id_shipper: shipper[0].id_shipper },
           type: QueryTypes.SELECT,
@@ -134,7 +147,7 @@ const getAllOrderForShipper = async (req, res) => {
       }
     );
     const orderList = await Order.sequelize.query(
-      "SELECT DISTINCT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers as S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_shipping_partner = :id_shipping_partner AND O.status = 1 GROUP BY O.id_order ORDER BY O.time_order DESC",
+      "SELECT O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P, shippers as S WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_shipping_partner = :id_shipping_partner AND O.status = 1 GROUP BY O.id_order ORDER BY O.time_order DESC",
       {
         replacements: {
           id_shipping_partner: shipper[0].id_shipping_partner,
@@ -144,7 +157,7 @@ const getAllOrderForShipper = async (req, res) => {
         raw: true,
       }
     );
-    res.status(200).render("order/order", { orderList, flag: 1 });
+    res.status(200).render("order/order", { orderList, flag: 1, id_role: req.id_role });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -203,8 +216,39 @@ const receiveOrder = async (req, res) => {
   }
 };
 
-const getAllItemInOrder = async (req, res) => {
+const getAllDetailOrder = async (req, res) => {
   const { id_order } = req.params;
+  try {
+    const itemList = await Order.sequelize.query(
+      "SELECT OD.*, I.image, I.name, I.price, (I.price*OD.quantity) as amount FROM orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.id_order = :id_order",
+      {
+        replacements: { id_order: id_order },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const order = await Order.sequelize.query(
+      "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order",
+      {
+        replacements: { id_order: id_order },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+      res
+        .status(200)
+        .render("order/order-detail", {
+          info: order[0],
+          itemList,
+          id_role: req.id_role,
+        });
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const getAllItemInOrder = async (req, res) => {
+  const { id_order, flag } = req.params;
   try {
     const itemList = await Order.sequelize.query(
       "SELECT OD.*, I.image, I.name, I.price, (I.price*OD.quantity) as amount FROM orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.id_order = :id_order",
@@ -240,14 +284,57 @@ const getAllItemInOrder = async (req, res) => {
         id_role: req.id_role,
       });
     } else {
-      res
+      if(flag){
+        res
+        .status(200)
+        .render("order/order-detail-print", {
+          info: order[0],
+          itemList,
+          id_role: req.id_role,
+        });
+      }
+      else{
+        res
         .status(200)
         .render("order/order-detail-staff", {
           info: order[0],
           itemList,
           id_role: req.id_role,
         });
+      }
     }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+
+const getAllItemInOrderToChange = async (req, res) => {
+  const { id_order } = req.params;
+  try {
+    const itemList = await Order.sequelize.query(
+      "SELECT OD.*, I.image, I.name, I.price, (I.price*OD.quantity) as amount FROM orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.id_order = :id_order",
+      {
+        replacements: { id_order: id_order },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const order = await Order.sequelize.query(
+      "SELECT (SELECT name FROM shippers WHERE id_shipper = O.id_shipper) as name_shipper, (SELECT name FROM shipping_partners WHERE id_shipping_partner = O.id_shipping_partner) as name_shipping_partner, O.id_order, O.delivery_fee, O.item_fee, O.total, C.name as name_customer, C.phone, O.description, O.status, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, P.name as name_payment FROM orders as O, customers as C, payment_methods as P WHERE O.id_customer = C.id_customer AND O.id_payment = P.id_payment AND O.id_order = :id_order",
+      {
+        replacements: { id_order: id_order },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+      res
+        .status(200)
+        .render("order/order-detail", {
+          info: order[0],
+          itemList,
+          id_role: req.id_role,
+        });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -262,65 +349,129 @@ const confirmOrder = async (req, res) => {
       },
     });
     if (order.status == 0) {
-      const itemListInOrder = await Order_detail.findAll({
-        where: {
-          id_order,
-        },
-      });
-      const staff = await Order.sequelize.query(
-        "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
-        {
-          replacements: { username: `${req.username}` },
-          type: QueryTypes.SELECT,
-          raw: true,
-        }
-      );
-      let i = 0;
-      let check = 0;
-      while (itemListInOrder[i]) {
-        const itemOfStore = await Item_store.findOne({
+      if(order.id_shipping_partner){
+        const itemListInOrder = await Order_detail.findAll({
           where: {
-            id_item: itemListInOrder[i].id_item,
-            id_store: staff[0].id_store,
+            id_order,
           },
         });
-        if (itemOfStore.quantity >= itemListInOrder[i].quantity) {
-          i++;
+        const staff = await Order.sequelize.query(
+          "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+          {
+            replacements: { username: `${req.username}` },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        let i = 0;
+        let check = 0;
+        while (itemListInOrder[i]) {
+          const itemOfStore = await Item_store.findOne({
+            where: {
+              id_item: itemListInOrder[i].id_item,
+              id_store: staff[0].id_store,
+            },
+          });
+          if (itemOfStore.quantity >= itemListInOrder[i].quantity) {
+            i++;
+          } else {
+            check = 1;
+            break;
+          }
+        }
+        if (check == 0) {
+          let j = 0;
+          while (itemListInOrder[j]) {
+            await Order.sequelize.query(
+              "UPDATE item_stores SET quantity = quantity - (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
+              {
+                replacements: {
+                  id_item: itemListInOrder[j].id_item,
+                  quantity: itemListInOrder[j].quantity,
+                  id_store: staff[0].id_store,
+                },
+                type: QueryTypes.UPDATE,
+                raw: true,
+              }
+            );
+            j++;
+          }
+          order.status = 1;
+          await order.save();
+          res
+            .status(201)
+            .render("order/order-notification", {
+              message: "Xác nhận đơn hàng!",
+            });
         } else {
-          check = 1;
-          break;
+          res
+            .status(400)
+            .render("order/order-notification", {
+              message: "Số lượng sản phẩm không đủ. Không thể hoàn thành đơn!",
+            });
         }
       }
-      if (check == 0) {
-        let j = 0;
-        while (itemListInOrder[j]) {
-          await Order.sequelize.query(
-            "UPDATE item_stores SET quantity = quantity - (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
-            {
-              replacements: {
-                id_item: itemListInOrder[j].id_item,
-                quantity: itemListInOrder[j].quantity,
-                id_store: staff[0].id_store,
-              },
-              type: QueryTypes.UPDATE,
-              raw: true,
-            }
-          );
-          j++;
+      else{
+        const itemListInOrder = await Order_detail.findAll({
+          where: {
+            id_order,
+          },
+        });
+        const staff = await Order.sequelize.query(
+          "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+          {
+            replacements: { username: `${req.username}` },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        let i = 0;
+        let check = 0;
+        while (itemListInOrder[i]) {
+          const itemOfStore = await Item_store.findOne({
+            where: {
+              id_item: itemListInOrder[i].id_item,
+              id_store: staff[0].id_store,
+            },
+          });
+          if (itemOfStore.quantity >= itemListInOrder[i].quantity) {
+            i++;
+          } else {
+            check = 1;
+            break;
+          }
         }
-        order.status = 1;
-        await order.save();
-        res
-          .status(201)
-          .render("order/order-notification", {
-            message: "Xác nhận đơn hàng!",
-          });
-      } else {
-        res
-          .status(400)
-          .render("order/order-notification", {
-            message: "Số lượng sản phẩm không đủ. Không thể nhận đơn!",
-          });
+        if (check == 0) {
+          let j = 0;
+          while (itemListInOrder[j]) {
+            await Order.sequelize.query(
+              "UPDATE item_stores SET quantity = quantity - (:quantity) WHERE id_item = :id_item AND id_store = :id_store",
+              {
+                replacements: {
+                  id_item: itemListInOrder[j].id_item,
+                  quantity: itemListInOrder[j].quantity,
+                  id_store: staff[0].id_store,
+                },
+                type: QueryTypes.UPDATE,
+                raw: true,
+              }
+            );
+            j++;
+          }
+          order.status = 4;
+          await order.save();
+          res
+            .status(201)
+            .render("order/order-notification", {
+              message: "Hoàn thành đơn hàng!",
+            });
+        } else {
+          res
+            .status(400)
+            .render("order/order-notification", {
+              message: "Số lượng sản phẩm không đủ. Không thể hoàn thành!",
+            });
+        }
       }
     } else {
       res
@@ -333,6 +484,32 @@ const confirmOrder = async (req, res) => {
     res.status(500).json({ message: "Thao tác thất bại!" });
   }
 };
+
+const updateOrder = async (req, res) => {
+  const {id_order} = req.params
+  const {description} = req.body
+  try {
+    const update = await Order.findOne({
+      where: {
+        id_order
+      }
+    });
+    update.description = description
+    await update.save();
+    const item = await Order.findOne({
+      raw: true,
+      where: {
+        id_order
+      }
+    });
+    console.log(item)
+    res.status(201).render("order/order-create",{item,message: "Cập nhật thành công!",flag: 2})
+  } catch (error) {
+    res.status(500).json({message: "Đã có lỗi xảy ra!"});
+  }
+};
+
+
 
 const cancelOrder = async (req, res) => {
   const { id_order } = req.params;
@@ -413,18 +590,20 @@ const createReport = async (req, res) => {
         raw: true,
       }
     );
+    console.log(1)
     const date = new Date();
     date.setHours(date.getHours() + 7);
     const itemList = await Order_detail.sequelize.query(
-      "SELECT I.id_item, (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND DAY(orders.time_order) = DAY(current_date()) AND MONTH(orders.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND DAY(orders.time_order) = DAY(current_date()) AND MONTH(orders.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as total FROM order_details as OD, orders as O, items as I WHERE O.id_order = OD.id_order AND O.status = 4 AND OD.id_item = I.id_item AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date()) ",
+      "SELECT I.id_item, (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND DAY(orders.time_order) = DAY(current_date()) AND MONTH(orders.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND DAY(orders.time_order) = DAY(current_date()) AND MONTH(orders.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())) as total FROM order_details as OD, orders as O, items as I WHERE O.id_order = OD.id_order AND O.status = 4 AND OD.id_item = I.id_item AND O.id_store = :id_store AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date()) GROUP BY I.id_item",
       {
         replacements: { id_store: staff[0].id_store },
         type: QueryTypes.SELECT,
         raw: true,
       }
     );
+    console.log(1)
     const doanhThu = await Order_detail.sequelize.query(
-      "SELECT SUM(O.item_fee) as total, COUNT(O.id_order) as countOrder FROM orders as O WHERE O.id_store = :id_store AND O.status = 4 AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())",
+      "SELECT IFNULL(SUM(O.item_fee), 0) as total, COUNT(O.id_order) as countOrder FROM orders as O WHERE O.id_store = :id_store AND O.status = 4 AND DAY(O.time_order) = DAY(current_date()) AND MONTH(O.time_order) = MONTH(current_date()) AND YEAR(O.time_order) = YEAR(current_date())",
       {
         replacements: { id_store: staff[0].id_store },
         type: QueryTypes.SELECT,
@@ -447,7 +626,7 @@ const createReport = async (req, res) => {
       });
       i++;
     }
-    res.status(200).json({ message: "Tạo mới báo cáo thành công!" });
+    res.status(200).render("report/report-notification",{ message: "Tạo mới báo cáo thành công!" });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -696,6 +875,260 @@ const thongKeDonHangAdmin = async (req, res) => {
   }
 };
 
+const createOrderDetailForm = async (req, res) => {
+  const {id_order} = req.params
+  try{
+    const itemList = await Order.sequelize.query(
+      "SELECT * FROM items WHERE id_item NOT IN(SELECT id_item FROM order_details WHERE id_order = :id_order)",
+      {
+        replacements: { id_order },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const item = await Order.findOne({
+      where: {
+        id_order,
+      },
+      raw: true
+    })
+    res.status(200).render("order/order-detail-create",{item, itemList, flag: 1});
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const getDetailOrder = async (req, res) => {
+  const {id_order} = req.params
+  try{
+    const paymentList = await Payment_method.findAll({ raw: true });
+    const item = await Order.findOne({
+      where: {
+        id_order,
+      },
+      raw: true
+    })
+    res.status(200).render("order/order-create", {
+      paymentList,
+      flag: 2,
+      item
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const createOrderDetail = async (req, res) => {
+  const {id_order} = req.params
+  const {quantity, id_item} = req.body
+  try {
+    const staff = await Order.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    const checkQuantity = await Item_store.findOne({
+      where: {
+        id_item,
+        id_store: staff[0].id_store
+      }
+    });
+    if(checkQuantity.quantity >= quantity){
+      await Order_detail.create({id_order, id_item, quantity, reviewed: 1})
+      const item = await Order.findOne({
+        where: {
+          id_order,
+        },
+        raw: true
+      })
+      const total = await Order.sequelize.query(
+        "SELECT IFNULL(SUM(OD.quantity*I.price),0) AS total FROM items as I, order_details as OD WHERE OD.id_item = I.id_item AND OD.id_order = :id_order",
+        {
+          replacements: { id_order },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      await Order.sequelize.query(
+        "UPDATE orders SET total = :total, item_fee = :total WHERE id_order = :id_order",
+        {
+          replacements: { id_order, total: total[0].total },
+          type: QueryTypes.UPDATE,
+          raw: true,
+        }
+      );
+      const itemList = await Order.sequelize.query(
+        "SELECT * FROM items WHERE id_item NOT IN(SELECT id_item FROM order_details WHERE id_order = :id_order)",
+        {
+          replacements: { id_order },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(200).render("order/order-detail-create",{item, itemList, message: "Tạo mới thành công!", flag: 1 });
+    }
+    else{
+      const item = await Order.findOne({
+        where: {
+          id_order,
+        },
+        raw: true
+      })
+      const itemList = await Order.sequelize.query(
+        "SELECT * FROM items WHERE id_item NOT IN(SELECT id_item FROM order_details WHERE id_order = :id_order)",
+        {
+          replacements: { id_order },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(400).render("order/order-detail-create",{item, itemList, message: "Số lượng sản phẩm không đủ!", flag: 1});
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const updateOrderDetail = async (req, res) => {
+  const {id_order, id_item} = req.params
+  const {quantity} = req.body
+  try {
+    const check = await Order.findOne({
+      where: {
+        id_order
+      }
+    });
+    if(check.status != 1){
+      const staff = await Order.sequelize.query(
+        "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+        {
+          replacements: { username: `${req.username}` },
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const checkQuantity = await Item_store.findOne({
+        where: {
+          id_item,
+          id_store: staff[0].id_store
+        }
+      });
+      if(checkQuantity.quantity >= quantity){
+        await Order_detail.sequelize.query(
+          "UPDATE order_details SET quantity = :quantity WHERE id_order = :id_order AND id_item = :id_item",
+          {
+            replacements: { id_order, id_item, quantity },
+            type: QueryTypes.UPDATE,
+            raw: true,
+          }
+        );
+        const total = await Order.sequelize.query(
+          "SELECT IFNULL(SUM(OD.quantity*I.price),0) AS total FROM items as I, order_details as OD WHERE OD.id_item = I.id_item AND OD.id_order = :id_order",
+          {
+            replacements: { id_order },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        await Order.sequelize.query(
+          "UPDATE orders SET total = :total, item_fee = :total WHERE id_order = :id_order",
+          {
+            replacements: { id_order, total: total[0].total },
+            type: QueryTypes.UPDATE,
+            raw: true,
+          }
+        );
+        const item = await Order_detail.sequelize.query(
+          "SELECT * FROM order_details WHERE id_item = :id_item AND id_order = :id_order",
+          {
+            replacements: { id_order, id_item },
+            type: QueryTypes.SELECT,
+            raw: true,
+          }
+        );
+        res.status(200).render("order/order-detail-create",{item:item[0], message: "Cập nhật thành công!", flag: 2});
+      }
+      else{
+        res.status(400).json({ message: "Số lượng sản phẩm không đủ!" });
+      }
+    }
+    else{
+      res.status(400).json({ message: "Không thể cập nhật hoá đơn đã hoàn thành!" });
+    }
+    
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const getDetailOrderDetail = async (req, res) => {
+  const { id_order, id_item } = req.params;
+  try {
+    const item = await Order_detail.sequelize.query(
+      "SELECT * FROM order_details WHERE id_order = :id_order AND id_item = :id_item",
+      {
+        replacements: { id_order, id_item },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).render("order/order-detail-create",{ item:item[0] , flag: 2});
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
+const deleteOrderDetail = async (req, res) => {
+  const {id_order, id_item} = req.params
+  try {
+    const check = await Order.findOne({
+      where: {
+        id_order
+      }
+    });
+    if(check.status != 1){
+      await Order_detail.destroy({
+        where: {
+          id_order,
+          id_item
+        }
+      });
+      const total = await Order.sequelize.query(
+        "SELECT IFNULL(SUM(OD.quantity*I.price),0) AS total FROM items as I, order_details as OD WHERE OD.id_item = I.id_item AND OD.id_order = :id_order",
+        {
+          replacements: { id_order },
+          type: QueryTypes.SELECT,
+          raw: true,
+        } 
+      );
+      await Order.sequelize.query(
+        "UPDATE orders SET total = :total, item_fee = :total WHERE id_order = :id_order",
+        {
+          replacements: { id_order, total: total[0].total },
+          type: QueryTypes.UPDATE,
+          raw: true,
+        }
+      );
+      const item = await Order.findOne({
+        where: {
+          id_order,
+        },
+        raw: true
+      })
+      res.status(200).render("order/order-detail-notification",{item, message: "Xoá thành công!" });
+    }
+    else{
+      res.status(400).json({ message: "Không thể xoá hoá đơn đã hoàn thành!" });
+    }
+  
+  } catch (error) {
+    res.status(500).json({ message: "Đã có lỗi xảy ra!" });
+  }
+};
+
 module.exports = {
   getAllOrder,
   getAllItemInOrder,
@@ -709,4 +1142,13 @@ module.exports = {
   thongKeSanPhamAdmin,
   createReport,
   dashboardManager,
+  getAllDetailOrder,
+  updateOrder,
+  getAllItemInOrderToChange,
+  getDetailOrderDetail,
+  updateOrderDetail,
+  createOrderDetailForm,
+  createOrderDetail,
+  deleteOrderDetail,
+  getDetailOrder
 };

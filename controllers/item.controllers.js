@@ -1,12 +1,22 @@
 const { Item, Store, Item_store, Type } = require("../models");
-const { QueryTypes, NUMBER } = require("sequelize");
+const { QueryTypes } = require("sequelize");
+const cloudinary = require("cloudinary").v2;    
 
+async function handleUpload(file) {
+  const res = await cloudinary.uploader.upload(file, {
+    resource_type: "auto",
+  });
+  return res;
+}
 const createItem = async (req, res) => {
   const { id_type, image, name, price } = req.body;
   try {
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI);
     const item = await Item.create({
       id_type,
-      image,
+      image: cldRes.url,
       name,
       price,
       status: 1,
@@ -31,17 +41,22 @@ const createItem = async (req, res) => {
 
 const updateItem = async (req, res) => {
   const { id_item } = req.params;
-  const { image, name, price } = req.body;
+  const { name, price } = req.body;
   try {
-    const itemUpdate = await Item.findOne({
+    const update = await Item.findOne({
       where: {
         id_item,
       },
     });
-    itemUpdate.name = name;
-    itemUpdate.image = image;
-    itemUpdate.price = price;
-    await itemUpdate.save();
+    if(req.file){
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cldRes = await handleUpload(dataURI);
+      update.image = cldRes.url;
+    }
+    update.name = name;
+    update.price = price;
+    await update.save();
     const item = await Item.findOne({
       raw: true,
       where: {
@@ -148,7 +163,7 @@ const getAllItem = async (req, res) => {
   try {
       if (id_type) {
         const itemList = await Item.sequelize.query(
-          "SELECT DISTINCT I.id_item, I.id_type, I.name, I.image, FORMAT(I.price, 0) as price, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC",
+          "SELECT I.id_item, I.id_type, I.name, I.image, FORMAT(I.price, 0) as price, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND I.status != 0 AND T.id_type = :id_type ORDER BY I.price ASC",
           {
             replacements: {
               id_type: id_type,

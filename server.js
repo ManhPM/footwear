@@ -1,9 +1,10 @@
 const express = require("express");
-const { Account, Customer, Cart, Wishlist } = require("./models");
+const { Account, Customer, Cart, Wishlist, Order } = require("./models");
 const { sequelize } = require("./models");
 const { rootRouter } = require("./routers");
 const { QueryTypes } = require("sequelize");
 const cookieParser = require("cookie-parser");
+
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
@@ -12,8 +13,6 @@ const port = 3005;
 const app = express();
 const cors = require("cors");
 const configfb = require("./config/configfb");
-const configPayment = require("./config/configpayment");
-const stripe = require("stripe")(configPayment.SECRET_KEY);
 const bcrypt = require("bcryptjs");
 const expHBS = require("express-handlebars");
 const methodOverride = require("method-override");
@@ -22,6 +21,9 @@ const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const GOOGLE_CLIENT_ID =
   "975421124869-n4irtjs1qrm9eq8hpddlpo5rma85rihn.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
+var vnpay = require('./routers/vnpay');
+
+
 
 app.use(cookieParser());
 app.use(cors());
@@ -29,6 +31,7 @@ app.use(cors());
 app.use(express.json());
 //cài static file
 app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   express.urlencoded({
     extended: true,
@@ -59,43 +62,64 @@ var hbs = expHBS.create({
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
+app.use('/vnpay', vnpay);
 
 app.use(
   bodyParser.urlencoded({
     extended: false,
   })
 );
+const Multer = require("multer");
+const storage = new Multer.memoryStorage();
+const upload = Multer({
+  storage,
+});
+const cloudinary = require("cloudinary").v2;
+          
+cloudinary.config({ 
+  cloud_name: 'dpgjnngzt', 
+  api_key: '319856232651771', 
+  api_secret: '5xGhpeWELq0pVIlt1jQRTCk1DKA' 
+});
+async function handleUpload(file) {
+  const res = await cloudinary.uploader.upload(file, {
+    resource_type: "auto",
+  });
+  return res;
+}
+
+const {authenticate} = require("./middlewares/auth/authenticate")
+app.post("/upload", authenticate, upload.single("my_file"), async (req, res) => {
+  try {
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI);
+    const account = await Account.sequelize.query(
+      "SELECT id_account FROM accounts WHERE username = :username",
+      {
+        replacements: {
+          username: `${req.username}`,
+        },
+        type: QueryTypes.SELECT,
+      }
+    );
+    await Account.sequelize.query(
+      "UPDATE customers SET image = :image WHERE id_account = :id_account",
+      {
+        replacements: {
+          image: `${cldRes.url}`,
+          id_account: account[0].id_account
+        },
+        type: QueryTypes.UPDATE,
+      }
+    );
+    res.status(200).json({message: "Cập nhật ảnh đại diện thành công!"})
+  } catch (error) {
+    res.status(500).json({message: "Lỗi upload!"})
+  }
+});
 
 app.use(bodyParser.json());
-// app.get('/', (req,res) => {
-//   res.render('Home',{
-//     key:configPayment.PUBLISHABLE_KEY,
-//     name: "Nguyễn Thành Trung",
-//     amount: "150000"
-//   })
-// })
-// app.post('/payment', (req,res) => {
-//   console.log(req.body)
-//   stripe.customers.create({
-//     email: req.body.stripeEmail,
-//     source: req.body.stripeToken,
-//     name: 'Phạm Minh Mạnh',
-//   })
-//   .then((customer) => {
-//     return stripe.charges.create({
-//       amount: 150000,
-//       description: "Thanh toán hoá đơn đặt hàng",
-//       currency: "VND",
-//       customer: customer.id
-//     })
-//   })
-//   .then((charge) => {
-//     res.status(200).json({message: "Thanh toán thành công!"})
-//   })
-//   .catch((err) => {
-//     res.status(500).json({message: "Lỗi!"})
-//   })
-// })
 
 /*  PASSPORT SETUP  */
 

@@ -244,6 +244,7 @@ const getUserInfo = async (req, res) => {
       );
       res.status(200).render("account/profile", {
         userInfo: customer[0],
+        id_role: req.id_role
       });
     }
     else if(req.id_role == 1){
@@ -262,7 +263,6 @@ const getUserInfo = async (req, res) => {
       });
     }
     else{
-      console.log(req.id_role)
       const customer = await Account.sequelize.query(
         `SELECT CU.*, A.username, R.name as role FROM staffs as CU, accounts as A, roles as R WHERE A.id_account = CU.id_account AND A.username = :username AND A.id_role = R.id_role`,
         {
@@ -276,6 +276,7 @@ const getUserInfo = async (req, res) => {
       res.status(200).render("account/profile", {
         userInfo: customer[0],
         flag: 1,
+        id_role: req.id_role
       });
     }
   } catch (error) {
@@ -360,7 +361,6 @@ const uploadAvatar = async (req, res) => {
         id_account: account.id_account,
       },
     });
-    console.log("cc");
     update.image = image;
     await update.save();
     res.status(200).json({ message: "Cập nhật ảnh đại diện thành công!" });
@@ -412,20 +412,52 @@ const changePassword = async (req, res) => {
   }
 };
 
-const forgotPassword = async (req, res) => {
-  const { username } = req.body;
+const changePasswordUser = async (req, res) => {
+  const { oldPassword, newPassword, repeatPassword } = req.body;
   try {
-    const randomID = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);
-    const isExist = await Account.findOne({
+    const accountUpdate = await Account.findOne({
       where: {
-        forgot: randomID,
+        username: req.username,
       },
     });
-    if (isExist !== null) {
-      res.status(400).json({
-        message: `Có lỗi xảy ra vui lòng thử lại!`,
-      });
+    const isAuth = bcrypt.compareSync(oldPassword, accountUpdate.password);
+    if (isAuth) {
+      if (newPassword == repeatPassword) {
+        if (newPassword == oldPassword) {
+          res.status(400).json({
+            message: "Mật khẩu mới không được giống với mật khẩu cũ!",
+          });
+        } else {
+          //tạo ra một chuỗi ngẫu nhiên
+          const salt = bcrypt.genSaltSync(10);
+          //mã hoá salt + password
+          const hashPassword = bcrypt.hashSync(newPassword, salt);
+          accountUpdate.password = hashPassword;
+          await accountUpdate.save();
+          res.status(201).json({
+            message: "Đổi mật khẩu thành công!",
+          });
+        }
+      } else {
+        res.status(400).json({
+          message: "Mật khẩu lặp lại không đúng!",
+        });
+      }
     } else {
+      res.status(400).json({
+        message: "Mật khẩu không chính xác!",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Thao tác thất bại!",
+    });
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  const { username, email } = req.body;
+  try {
       const account = await Account.sequelize.query(
         "SELECT CU.email, A.* FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username",
         {
@@ -434,19 +466,18 @@ const forgotPassword = async (req, res) => {
             username: username,
           },
         }
-      );
-      if (account[0].isActive == 0) {
-        res.status(400).json({
-          message: `Địa chỉ email chưa được xác minh!`,
-        });
-      } else {
+      )
+      if(account[0].username == username && account[0].email == email){
+        const randomPassword = (Math.random() + 1).toString(36).substring(2);
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassword = bcrypt.hashSync(randomPassword, salt);
         await Account.sequelize.query(
-          "UPDATE accounts SET forgot = :randomID WHERE username = :username",
+          "UPDATE accounts SET password = :password WHERE username = :username",
           {
             type: QueryTypes.UPDATE,
             replacements: {
-              randomID: randomID,
-              username: username,
+              password: hashPassword,
+              username
             },
           }
         );
@@ -456,26 +487,36 @@ const forgotPassword = async (req, res) => {
           secure: false, // true for 465, false for other ports
           auth: {
             user: "n19dccn107@student.ptithcm.edu.vn", // generated ethereal user
-            pass: "bqztpfkmmbpzmdxl", // generated ethereal password
+            pass: "dzwedtbaoqsmrkob", // generated ethereal password
           },
         });
         // send mail with defined transport object
         await transporter.sendMail({
-          from: "n19dccn107@student.ptithcm.edu.vn", // sender address
+          from: "P2M MILKTEA SECURITY", // sender address
           to: `${account[0].email}`, // list of receivers
-          subject: "FORGOT PASSWORD", // Subject line
-          text: "FORGOT PASSWORD", // plain text body
-          html: `Mã xác nhận của bạn là: ${randomID}`, // html body
+          subject: "Lấy lại mật khẩu", // Subject line
+          text: "Lấy lại mật khẩu", // plain text body
+          html: `<div>P2M Milktea.</div>
+          <div>Lấy lại mật khẩu mới.</div>
+          <br>
+          <div>
+            <div>Mật khẩu mới của bạn là: <span style="color:blue;">${randomPassword}</span></div>
+          </div>
+          <br>
+          <div>
+            <div>97 Man Thiện Phường Hiệp Phú Thành phố Thủ Đức</div>
+          </div>
+          `, // htm, // html body
         });
-        var s2 = account[0].email;
-        var s1 = s2.substring(0, s2.length - 15);
-        var s3 = s2.substring(s2.length - 15, s2.length);
-        var email = s1 + s3.replace(/\S/gi, "*");
         res.status(200).json({
-          message: `Mã xác minh đã được gửi về email: ${email} vui lòng kiểm tra hòm thư!`,
+          message: `Mật khẩu mới đã được gửi về email vui lòng kiểm tra hòm thư!`,
         });
       }
-    }
+      else{
+        res.status(400).json({
+          message: `Thông tin chưa chính xác!`,
+        });
+      }
   } catch (error) {
     console.log(error);
   }
@@ -551,4 +592,5 @@ module.exports = {
   getUserInfo,
   logout,
   edit,
+  changePasswordUser
 };

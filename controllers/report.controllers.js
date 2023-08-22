@@ -2,16 +2,30 @@ const { Order } = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const getAllReport = async (req, res) => {
-  const { date } = req.query;
+  const {flag} = req.params
   try {
+    const staff = await Order.sequelize.query(
+      "SELECT S.* FROM staffs as S, accounts as A WHERE A.username = :username AND A.id_account = S.id_account",
+      {
+        replacements: { username: `${req.username}` },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
       const itemList = await Order.sequelize.query(
-        "SELECT R.*, DATE_FORMAT(R.date,'%d-%m-%Y') as date, S.name as name_store FROM reports as R, stores as S WHERE R.id_store = S.id_store",
+        "SELECT R.*, DATE_FORMAT(R.date,'%d-%m-%Y') as date, S.name as name_store FROM reports as R, stores as S WHERE R.id_store = S.id_store AND S.id_store = :id_store ORDER BY R.date DESC",
         {
+          replacements: { id_store: staff[0].id_store },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(201).render("report/report", { itemList, id_role: req.id_role });
+      if(flag){
+        res.status(201).render("report/report-print", { itemList, id_role: req.id_role });
+      }
+      else{
+        res.status(201).render("report/report", { itemList, id_role: req.id_role });
+      }
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -36,7 +50,7 @@ const getReportDetail = async (req, res) => {
         raw: true,
       }
     );
-    res.status(201).render("report/report-detail", { itemList, report: report[0] });
+    res.status(201).render("report/report-detail", { itemList, report: report[0], id_role: req.id_role });
   } catch (error) {
     res.status(500).json({ message: "Đã có lỗi xảy ra!" });
   }
@@ -44,5 +58,5 @@ const getReportDetail = async (req, res) => {
 
 module.exports = {
     getAllReport,
-    getReportDetail
+    getReportDetail,
 };

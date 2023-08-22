@@ -28,6 +28,23 @@ const checkCreateAccount = (Model) => {
   };
 };
 
+const checkCreateAccountCustomer = (Model) => {
+  return async (req, res, next) => {
+    const { username } = req.body;
+    const item = await Model.findOne({
+      raw: true,
+      where: {
+        username,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Tài khoản đã tồn tại!"});
+    }
+  };
+};
+
 const checkCreateAccountShipper = (Model) => {
   return async (req, res, next) => {
     const { username } = req.body;
@@ -171,13 +188,15 @@ const checkCreateProvider = (Model) => {
 };
 const checkCreateStore = (Model) => {
   return async (req, res, next) => {
-    const { name, phone, address } = req.body;
+    const { name, phone, address, storeLat, storeLng } = req.body;
     const item = await Model.findOne({
       raw: true,
       where: {
         name,
         address,
         phone,
+        storeLng,
+        storeLat
       },
     });
     if (!item) {
@@ -215,11 +234,12 @@ const checkCreatePayment = (Model) => {
 };
 const checkCreateUnprocessedIngredient = (Model) => {
   return async (req, res, next) => {
-    const { name } = req.body;
+    const { name, unit } = req.body;
     const item = await Model.findOne({
       raw: true,
       where: {
         name,
+        unit
       },
     });
     if (!item) {
@@ -236,11 +256,11 @@ const checkCreateUnprocessedIngredient = (Model) => {
 };
 const checkCreateIngredient = (Model) => {
   return async (req, res, next) => {
-    const { name } = req.body;
     const item = await Model.findOne({
       raw: true,
       where: {
-        name,
+        name: req.body.name,
+        unit: req.body.unit,
       },
     });
     if (!item) {
@@ -324,6 +344,35 @@ const checkCreateEmail = async (req, res, next) => {
   }
 }
 
+const checkCreateEmailCustomer = async (req, res, next) => {
+  const { email } = req.body
+  try {
+    const customer = await Customer.findOne({
+      where: {
+        email,
+      },
+    });
+    const shipper = await Shipper.findOne({
+      where: {
+        email,
+      },
+    });
+    const staff = await Staff.findOne({
+      where: {
+        email,
+      },
+    });
+    if(customer || shipper || staff){
+        res.status(400).json({ message: "Email đã tồn tại!"});
+    }
+    else {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Middleware Error!" });
+  }
+}
+
 const checkCreateDiscount = async (req, res, next) => {
   const { code } = req.body
   try {
@@ -365,6 +414,7 @@ const checkPhoneCheckout = async (req, res, next) => {
   }
 }
 
+
 const checkDiscountCode = async (req, res, next) => {
   const {code} = req.body
   try {
@@ -374,18 +424,23 @@ const checkDiscountCode = async (req, res, next) => {
           code,
         },
       });
-      if(discount.quantity > 0){
-        const date = new Date();
-        date.setHours(date.getHours() + 7);
-        if(discount.end_date >= date){
-          next();
+      if(discount){
+        if(discount.quantity > 0){
+          const date = new Date();
+          date.setHours(date.getHours() + 7);
+          if(discount.end_date >= date){
+            next();
+          }
+          else {
+            res.status(400).json({ message: "Mã giảm giá đã hết hạn sử dụng!" });
+          }
         }
         else {
-          res.status(400).json({ message: "Mã xác nhận đã hết hạn sử dụng!" });
+          res.status(400).json({ message: "Mã giảm giá đã hết lượt sử dụng!"});
         }
       }
-      else {
-        res.status(400).json({ message: "Mã xác nhận đã hết lượt sử dụng!"});
+      else{
+        res.status(400).json({ message: "Mã giảm giá không tồn tại!"});
       }
     }
     else {
@@ -571,5 +626,7 @@ module.exports = {
   checkCreateRecipeIngredient,
   checkCreateDiscount,
   checkCreateAccountStaff,
-  checkCreateAccountShipper
+  checkCreateAccountShipper,
+  checkCreateAccountCustomer,
+  checkCreateEmailCustomer
 };

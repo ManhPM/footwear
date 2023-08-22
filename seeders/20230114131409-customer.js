@@ -28,6 +28,14 @@ module.exports = {
         address: "Xã Quang Trung, Huyện Thống Nhất, Tỉnh Đồng Nai",
         image: "https://thuthuatnhanh.com/wp-content/uploads/2021/02/Avatar-ngau-dep.jpg"
       },
+      {
+        id_account: 2,
+        name: "Khách đặt tại quán",
+        email: "khachdattaiquan@gmail.com",
+        phone: "0000000000",
+        address: "Khách đặt tại quán",
+        image: ""
+      },
     ]);
   },
 

@@ -138,7 +138,13 @@ const createForm = async (req, res) => {
 const createFormShipper = async (req, res) => {
   const {id_shipping_partner} = req.params
   try {
-    res.status(200).render("shipper/shipper-create",{flag: 1, id_shipping_partner});
+    const item = await Shipping_partner.findOne({
+      raw: true,
+      where: {
+        id_shipping_partner
+      }
+    });
+    res.status(200).render("shipper/shipper-create",{flag: 1, item});
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }

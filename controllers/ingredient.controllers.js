@@ -1,13 +1,23 @@
 const { Ingredient, Store, Ingredient_store } = require("../models");
 const { QueryTypes } = require("sequelize");
+const cloudinary = require("cloudinary").v2;    
+
+async function handleUpload(file) {
+  const res = await cloudinary.uploader.upload(file, {
+    resource_type: "auto",
+  });
+  return res;
+}
 
 const createIngredient = async (req, res) => {
-  const { name, unit, image } = req.body;
   try {
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI);
     const ingredient = await Ingredient.create({
-      name,
-      unit,
-      image,
+      name: req.body.name,
+      unit: req.body.unit,
+      image: cldRes.url,
     });
     const store = await Store.findAll({});
     let i = 0;
@@ -32,16 +42,21 @@ const createIngredient = async (req, res) => {
 
 const updateIngredient = async (req, res) => {
   const { id_ingredient } = req.params;
-  const { name, unit, image } = req.body;
+  const { name, unit } = req.body;
   try {
     const update = await Ingredient.findOne({
       where: {
         id_ingredient,
       },
     });
+    if(req.file){
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cldRes = await handleUpload(dataURI);
+      update.image = cldRes.url;
+    }
     update.name = name;
     update.unit = unit;
-    update.image = image;
     await update.save();
     const item = await Ingredient.findOne({
       raw: true,

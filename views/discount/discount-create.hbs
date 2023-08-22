@@ -66,14 +66,19 @@
             <div class="card-body">
               {{#ifcond flag 1}}
               <form action="/discounts/create" method="POST">
+              <label>Mã giảm giá</label>
+              <div class="mb-3">
+                  <input type="text" name="code" class="form-control" placeholder="Mã giảm giá" aria-label="Mã giảm giá" value="{{item.code}}">
+                </div>
               {{/ifcond}}
               {{#ifcond flag 2}}
               <form action="/discounts/update/{{item.code}}?_method=PUT" method="POST">
-              {{/ifcond}}
               <label>Mã giảm giá</label>
               <div class="mb-3">
                   <input type="text" readonly="true" name="code" class="form-control" placeholder="Mã giảm giá" aria-label="Mã giảm giá" value="{{item.code}}">
                 </div>
+              {{/ifcond}}
+              
                 <label>Phần trăm giảm</label>
                 <div class="mb-3">
                   <input type="text" required="true" name="discount_percent" class="form-control" placeholder="Phần trăm giảm" aria-label="Phần trăm giảm" value="{{item.discount_percent}}">

@@ -16,9 +16,6 @@ module.exports = {
         name: "Ví điện tử",
       },
       {
-        name: "Thẻ ghi nợ",
-      },
-      {
         name: "Thanh toán khi nhận hàng",
       },
     ]);

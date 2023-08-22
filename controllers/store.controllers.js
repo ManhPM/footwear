@@ -1,6 +1,15 @@
 const { Store } = require("../models");
 const { QueryTypes } = require("sequelize");
 
+const cloudinary = require("cloudinary").v2;    
+
+async function handleUpload(file) {
+  const res = await cloudinary.uploader.upload(file, {
+    resource_type: "auto",
+  });
+  return res;
+}
+
 const getAllStore = async (req, res) => {
   try {
     const itemList = await Store.findAll({raw: true});
@@ -33,14 +42,20 @@ const getAllStoreForUser = async (req, res) => {
   }
 };
 
-
-
 const createStore = async (req, res) => {
-  const {name, phone, address, email} = req.body
+  const {name, phone, address, email, storeLng, storeLat} = req.body
   try {
-    console.log(name, phone, address, email)
-    await Store.create({name, phone, address, email});
-    res.status(201).json({message: "Tạo mới thành công!"});
+    console.log(req.file)
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI);
+    await Store.create({name, phone, address, email, storeLng, storeLat, image: cldRes.url});
+    res
+      .status(201)
+      .render("store/store-create", {
+        message: "Tạo mới thành công!",
+        flag: 1,
+      });
   } catch (error) {
     res.status(500).json({message: "Đã có lỗi xảy ra!"});
   }
@@ -48,17 +63,25 @@ const createStore = async (req, res) => {
 
 const updateStore = async (req, res) => {
   const {id_store} = req.params
-  const {name, phone, address, email} = req.body
+  const {name, phone, address, email, storeLng, storeLat} = req.body
   try {
     const update = await Store.findOne({
       where: {
         id_store
       },
     });
+    if(req.file){
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cldRes = await handleUpload(dataURI);
+      update.image = cldRes.url;
+    }
     update.name = name
     update.phone = phone
     update.address = address
     update.email = email
+    update.storeLng = storeLng
+    update.storeLat = storeLat
     await update.save();
     const item = await Store.findOne({
       raw: true,
