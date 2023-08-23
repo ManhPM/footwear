@@ -1,6 +1,6 @@
 {
   "development": {
-    "host": "127.0.0.1",
+    "host": "bubvmp7xcurr0mbnpx7i-mysql.services.clever-cloud.com",
     "dialect": "mysql"
   },
   "test": {
