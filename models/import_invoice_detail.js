@@ -29,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Import_invoice_detail',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Import_invoice_detail;
 };

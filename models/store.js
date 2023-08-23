@@ -26,9 +26,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     storeLat: {
       type: DataTypes.STRING,
+      underscored: false,
     },
     storeLng: {
       type: DataTypes.STRING,
+      underscored: false,
     },
     image: {
       type: DataTypes.STRING,
@@ -50,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
   }, {
+    tableName: 'stores',
     sequelize,
     modelName: 'Store',
     timestamps: false,

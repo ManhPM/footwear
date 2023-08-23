@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Payment_method',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Payment_method;
 };

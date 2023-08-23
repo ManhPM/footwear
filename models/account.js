@@ -25,11 +25,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     username: DataTypes.STRING,
     password: DataTypes.STRING,
-    isActive: DataTypes.INTEGER,
+    isActive: {
+      type: DataTypes.INTEGER,
+    },
   }, {
+    tableName: 'accounts',
     sequelize,
     modelName: 'Account',
-    timestamps: false
+    timestamps: false,
   });
   return Account;
 };

@@ -29,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Unprocessed_ingredient',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Unprocessed_ingredient;
 };

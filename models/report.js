@@ -20,9 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     revenue: DataTypes.INTEGER,
-    countOrder: DataTypes.INTEGER,
+    countOrder: {
+      type: DataTypes.INTEGER,
+      underscored: false,
+    },
     date: DataTypes.DATE
   }, {
+    tableName: 'reports',
     sequelize,
     modelName: 'Report',
     timestamps: false,

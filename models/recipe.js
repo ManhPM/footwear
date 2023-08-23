@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Recipe',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Recipe;
 };

@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Order_detail',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Order_detail;
 };

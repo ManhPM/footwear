@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Wishlist_detail',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Wishlist_detail;
 };

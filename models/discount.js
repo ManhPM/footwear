@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Discount',
-    timestamps: false
+    timestamps: false,
+    underscored: true
   });
   return Discount;
 };
