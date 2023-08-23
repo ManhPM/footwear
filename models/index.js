@@ -19,8 +19,11 @@ let sequelize;
 // }
 
 // == DEPOLOY ==
+const DB_USERNAME = "uk0i6dmxu7d8zh01"
+const DB_PASSWORD = "G7iMzeuh02vF8WQOfYrx"
+const DB_DBNAME = "bubvmp7xcurr0mbnpx7i"
 
-  sequelize = new Sequelize(process.env.DB_DBNAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, config);
+  sequelize = new Sequelize(DB_DBNAME, DB_USERNAME, DB_PASSWORD, config);
 
 fs
   .readdirSync(__dirname)
