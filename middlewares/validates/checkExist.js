@@ -41,7 +41,6 @@ const checkExistAccountAdmin = (Model) => {
 
 
 module.exports = {
-  checkExistItem,
   checkExistAccount,
   checkExistAccountAdmin
 };

@@ -30,3 +30,6 @@ npm start
 DB_PASSWORD G7iMzeuh02vF8WQOfYrx
 DB_USERNAME uk0i6dmxu7d8zh01
 DB_DBNAME bubvmp7xcurr0mbnpx7i
+
+"host": "bubvmp7xcurr0mbnpx7i-mysql.services.clever-cloud.com",
+"host": "127.0.0.1",
