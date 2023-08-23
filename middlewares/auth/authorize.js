@@ -2,8 +2,9 @@ const { Account } = require("../../models");
 const { QueryTypes } = require("sequelize");
 
 const authorize = (arrType) => async (req, res, next) => {
-    const { username } = req;
-    const role = await Account.sequelize.query(
+    try {
+      const { username } = req;
+      const role = await Account.sequelize.query(
         "SELECT R.name FROM roles as R, accounts AS A WHERE A.id_role = R.id_role AND A.username = :username",
         {
           type: QueryTypes.SELECT,
@@ -16,6 +17,9 @@ const authorize = (arrType) => async (req, res, next) => {
         next();
     }else {
         res.status(403).json({message: "Bạn không có quyền sử dụng chức năng này!" });
+    }
+    } catch (error) {
+      res.status(503).json({message: "Authorize Error!", error: error });
     }
 };
 
