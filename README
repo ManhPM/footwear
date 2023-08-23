@@ -26,3 +26,7 @@ npm start
 #     "start": "nodemon server.js",
 #     "test": "echo \"Error: no test specified\" && exit 1"
 # },
+
+DB_PASSWORD G7iMzeuh02vF8WQOfYrx
+DB_USERNAME uk0i6dmxu7d8zh01
+DB_DBNAME bubvmp7xcurr0mbnpx7i
