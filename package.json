@@ -1,20 +1,8 @@
 {
-  "name": "phuclongmilktea",
-  "version": "1.0.0",
-  "description": "phuclongmilktea",
-  "main": "index.js",
-  "engines": {
-    "node": "18.x"
-  },
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
-  "keywords": [
-    "phuclongmilktea"
-  ],
-  "author": "PhamMinhManh",
-  "license": "ISC",
   "dependencies": {
     "await": "^0.2.6",
     "bcryptjs": "^2.4.3",
