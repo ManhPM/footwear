@@ -1,7 +1,6 @@
 "use strict";
 
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export async function up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Unprocessed_ingredients", [
       {
         name: "Đường kính trắng (đường cát)",
@@ -35,7 +34,7 @@ module.exports = {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  export async function down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

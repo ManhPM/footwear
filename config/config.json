@@ -1,6 +1,9 @@
 {
   "development": {
-    "host": "bubvmp7xcurr0mbnpx7i-mysql.services.clever-cloud.com",
+    "username": "root",
+    "password": 15092001,
+    "database": "bookstore",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {

@@ -1,7 +1,6 @@
 'use strict';
 
-module.exports = {
-  async up (queryInterface, Sequelize) {
+export async function up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Stores", [
       {
         storeLat: "10.85025804481258",
@@ -24,7 +23,7 @@ module.exports = {
     ]);
   },
 
-  async down (queryInterface, Sequelize) {
+  export async function down (queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

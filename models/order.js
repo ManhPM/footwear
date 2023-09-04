@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+import { Model } from "sequelize";
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
     /**
@@ -9,7 +7,14 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Shipper, Shipping_partner, Customer, Payment_method, Order_detail, Store}) {
+    static associate({
+      Shipper,
+      Shipping_partner,
+      Customer,
+      Payment_method,
+      Order_detail,
+      Store,
+    }) {
       this.belongsTo(Shipper, { foreignKey: "id_shipper" });
       this.belongsTo(Shipping_partner, { foreignKey: "id_shipping_partner" });
       this.belongsTo(Customer, { foreignKey: "id_customer" });
@@ -18,27 +23,30 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(Store, { foreignKey: "id_store" });
     }
   }
-  Order.init({
-    id_order: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
+  Order.init(
+    {
+      id_order: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      time_order: DataTypes.DATE,
+      time_confirm: DataTypes.DATE,
+      time_shipper_receive: DataTypes.DATE,
+      time_shipper_delivered: DataTypes.DATE,
+      delivery_fee: DataTypes.INTEGER,
+      item_fee: DataTypes.INTEGER,
+      discount_fee: DataTypes.INTEGER,
+      total: DataTypes.INTEGER,
+      status: DataTypes.INTEGER,
+      description: DataTypes.STRING,
     },
-    time_order: DataTypes.DATE,
-    time_confirm: DataTypes.DATE,
-    time_shipper_receive: DataTypes.DATE,
-    time_shipper_delivered: DataTypes.DATE,
-    delivery_fee: DataTypes.INTEGER,
-    item_fee: DataTypes.INTEGER,
-    discount_fee: DataTypes.INTEGER,
-    total: DataTypes.INTEGER,
-    status: DataTypes.INTEGER,
-    description: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Order',
-    timestamps: false,
-    underscored: true
-  });
+    {
+      sequelize,
+      modelName: "Order",
+      timestamps: false,
+      underscored: true,
+    }
+  );
   return Order;
 };

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+import { Model } from "sequelize";
 module.exports = (sequelize, DataTypes) => {
   class Discount extends Model {
     /**
@@ -13,22 +11,25 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Discount.init({
-    code: {
-      type: DataTypes.STRING,
-      primaryKey: true,
+  Discount.init(
+    {
+      code: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+      },
+      discount_percent: DataTypes.INTEGER,
+      start_date: DataTypes.DATE,
+      end_date: DataTypes.DATE,
+      min_quantity: DataTypes.INTEGER,
+      quantity: DataTypes.INTEGER,
+      description: DataTypes.STRING,
     },
-    discount_percent: DataTypes.INTEGER,
-    start_date: DataTypes.DATE,
-    end_date: DataTypes.DATE,
-    min_quantity: DataTypes.INTEGER,
-    quantity: DataTypes.INTEGER,
-    description: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Discount',
-    timestamps: false,
-    underscored: true
-  });
+    {
+      sequelize,
+      modelName: "Discount",
+      timestamps: false,
+      underscored: true,
+    }
+  );
   return Discount;
 };

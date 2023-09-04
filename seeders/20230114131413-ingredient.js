@@ -1,7 +1,6 @@
 "use strict";
 
-module.exports = {
-  async up(queryInterface, Sequelize) {
+export async function up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Ingredients", [
       { name: "Trà sữa đào", unit: "ml", image: "https://gongcha.com.vn/wp-content/uploads/2021/12/Tra-Sua-Dao.png" },
       { name: "Trà sữa xoài", unit: "ml", image: "https://dayphache.edu.vn/wp-content/uploads/2019/04/mon-tra-sua-xoai.jpg" },
@@ -40,7 +39,7 @@ module.exports = {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  export async function down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

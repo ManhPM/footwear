@@ -1,7 +1,6 @@
 'use strict';
 
-module.exports = {
-  async up (queryInterface, Sequelize) {
+export async function up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Providers", [
       {
         name: "Nông Sản Sao Khuê - Công Ty TNHH Thương Mại Xuất Nhập Khẩu Sao Khuê",
@@ -26,7 +25,7 @@ module.exports = {
     ]);
   },
 
-  async down (queryInterface, Sequelize) {
+  export async function down (queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

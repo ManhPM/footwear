@@ -1,7 +1,6 @@
 'use strict';
 
-module.exports = {
-  async up (queryInterface, Sequelize) {
+export async function up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Export_invoice_details", [
       {
         id_u_ingredient: 1,
@@ -18,7 +17,7 @@ module.exports = {
     ]);
 },
 
-  async down (queryInterface, Sequelize) {
+  export async function down (queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

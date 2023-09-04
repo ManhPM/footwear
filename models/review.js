@@ -1,6 +1,6 @@
 "use strict";
-const { Model } = require("sequelize");
-module.exports = (sequelize, DataTypes) => {
+import { Model } from "sequelize";
+export default (sequelize, DataTypes) => {
   class Review extends Model {
     /**
      * Helper method for defining associations.
@@ -33,12 +33,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       rating: { type: DataTypes.INTEGER, allowNull: false },
       comment: DataTypes.STRING,
-      datetime: { 
+      datetime: {
         primaryKey: true,
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
-      image: { 
+      image: {
         type: DataTypes.STRING,
       },
     },

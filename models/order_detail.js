@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+import { Model } from "sequelize";
 module.exports = (sequelize, DataTypes) => {
   class Order_detail extends Model {
     /**
@@ -9,27 +7,30 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Item, Order}) {
+    static associate({ Item, Order }) {
       this.belongsTo(Item, { foreignKey: "id_item" });
       this.belongsTo(Order, { foreignKey: "id_order" });
     }
   }
-  Order_detail.init({
-    id_order: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
+  Order_detail.init(
+    {
+      id_order: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+      },
+      id_item: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+      },
+      quantity: DataTypes.INTEGER,
+      reviewed: DataTypes.INTEGER,
     },
-    id_item: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-    },
-    quantity: DataTypes.INTEGER,
-    reviewed: DataTypes.INTEGER,
-  }, {
-    sequelize,
-    modelName: 'Order_detail',
-    timestamps: false,
-    underscored: true
-  });
+    {
+      sequelize,
+      modelName: "Order_detail",
+      timestamps: false,
+      underscored: true,
+    }
+  );
   return Order_detail;
 };
