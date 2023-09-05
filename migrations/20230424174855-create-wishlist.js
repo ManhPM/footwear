@@ -1,19 +1,22 @@
 "use strict";
-export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable("Wishlists", {
-    id_wishlist: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: Sequelize.INTEGER,
-    },
-    id_customer: {
-      type: Sequelize.INTEGER,
-      references: { model: "Customers", key: "id_customer" },
-      allowNull: false,
-    },
-  });
-}
-export async function down(queryInterface, Sequelize) {
-  await queryInterface.dropTable("Wishlists");
-}
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("Wishlists", {
+      id_user: {
+        allowNull: false,
+        references: { model: "Users", key: "id_user" },
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      id_item: {
+        type: Sequelize.INTEGER,
+        references: { model: "Items", key: "id_item" },
+        primaryKey: true,
+        allowNull: false,
+      },
+    });
+  },
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("Wishlists");
+  },
+};

@@ -1,7 +1,6 @@
 {
   "name": "be-bookstore",
   "version": "1.0.0",
-  "type": "module",
   "main": "server.js",
   "engines": {
     "node": "18.x"
@@ -37,6 +36,7 @@
     "morgan": "~1.8.1",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
+    "node-fetch": "^2.6.1",
     "node-localstorage": "^2.2.1",
     "node-navigator": "^1.0.1",
     "nodemailer": "^6.8.0",

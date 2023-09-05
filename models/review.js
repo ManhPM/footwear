@@ -1,42 +1,31 @@
 "use strict";
-import { Model } from "sequelize";
-export default (sequelize, DataTypes) => {
+const { Model } = require("sequelize");
+const date = new Date();
+date.setHours(date.getHours() + 7);
+module.exports = (sequelize, DataTypes) => {
   class Review extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-      Review.belongsTo(models.Customer, { foreignKey: "id_customer" });
-      Review.belongsTo(models.Item, { foreignKey: "id_item" });
+    static associate({ User, Item }) {
+      Review.belongsTo(User, { foreignKey: "id_user" });
+      Review.belongsTo(Item, { foreignKey: "id_item" });
     }
   }
   Review.init(
     {
-      id_customer: {
+      id_user: {
         primaryKey: true,
         type: DataTypes.INTEGER,
-        references: {
-          model: "Customer",
-          key: "id_customer",
-        },
       },
       id_item: {
         primaryKey: true,
         type: DataTypes.INTEGER,
-        references: {
-          model: "Item",
-          key: "id_item",
-        },
       },
       rating: { type: DataTypes.INTEGER, allowNull: false },
       comment: DataTypes.STRING,
-      datetime: {
+      createAt: {
         primaryKey: true,
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: date,
       },
       image: {
         type: DataTypes.STRING,
@@ -46,7 +35,6 @@ export default (sequelize, DataTypes) => {
       sequelize,
       modelName: "Review",
       timestamps: false,
-      underscored: true,
     }
   );
   return Review;

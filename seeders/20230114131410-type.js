@@ -1,41 +1,16 @@
 "use strict";
 
-export async function up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
+module.exports = {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Types", [
-      {
-        id_type: 1,
-        name: "Trà sữa",
-      },
-      {
-        id_type: 2,
-        name: "Đồ ăn nhẹ",
-      },
-      {
-        id_type: 3,
-        name: "Bánh ngọt",
-      },
-      {
-        id_type: 4,
-        name: "Topping",
-      },
+      { name: "Tiểu thuyết tình cảm" },
+      { name: "Khoa học viễn tưởng" },
+      { name: "Huyền bí và giả tưởng" },
+      { name: "Văn hóa và xã hội" },
+      { name: "Thiếu nhi" },
+      { name: "Truyện tranh" },
     ]);
   },
 
-  export async function down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  },
+  async down(queryInterface, Sequelize) {},
 };

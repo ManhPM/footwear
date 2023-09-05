@@ -1,6 +1,7 @@
-'use strict';
+"use strict";
 
-export async function up (queryInterface, Sequelize) {
+module.exports = {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Report_details", [
       {
         id_report: 1,
@@ -65,12 +66,5 @@ export async function up (queryInterface, Sequelize) {
     ]);
   },
 
-  export async function down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  }
+  async down(queryInterface, Sequelize) {},
 };

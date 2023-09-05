@@ -1,26 +1,14 @@
 "use strict";
-import { Model } from "sequelize";
+const { Model } = require("sequelize");
+const date = new Date();
+date.setHours(date.getHours() + 7);
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate({
-      Shipper,
-      Shipping_partner,
-      Customer,
-      Payment_method,
-      Order_detail,
-      Store,
-    }) {
-      this.belongsTo(Shipper, { foreignKey: "id_shipper" });
-      this.belongsTo(Shipping_partner, { foreignKey: "id_shipping_partner" });
-      this.belongsTo(Customer, { foreignKey: "id_customer" });
+    static associate({ User, Payment_method, Order_detail, Discount }) {
+      this.belongsTo(User, { foreignKey: "id_user" });
+      this.belongsTo(Discount, { foreignKey: "id_discount" });
       this.belongsTo(Payment_method, { foreignKey: "id_payment" });
-      this.hasOne(Order_detail, { foreignKey: "id_order" });
-      this.belongsTo(Store, { foreignKey: "id_store" });
+      this.hasMany(Order_detail, { foreignKey: "id_order" });
     }
   }
   Order.init(
@@ -30,13 +18,16 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      time_order: DataTypes.DATE,
+      time_order: {
+        type: DataTypes.DATE,
+        defaultValue: date,
+      },
+      id_shipper: DataTypes.INTEGER,
       time_confirm: DataTypes.DATE,
       time_shipper_receive: DataTypes.DATE,
       time_shipper_delivered: DataTypes.DATE,
       delivery_fee: DataTypes.INTEGER,
       item_fee: DataTypes.INTEGER,
-      discount_fee: DataTypes.INTEGER,
       total: DataTypes.INTEGER,
       status: DataTypes.INTEGER,
       description: DataTypes.STRING,
@@ -45,7 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Order",
       timestamps: false,
-      underscored: true,
     }
   );
   return Order;

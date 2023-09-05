@@ -1,54 +1,51 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Items", {
-      id_item: {
+    await queryInterface.createTable("Users", {
+      id_user: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      id_type: {
-        type: Sequelize.INTEGER,
-        references: { model: "Types", key: "id_type" },
-        allowNull: false,
-      },
-      authorName: {
+      role: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      language: {
+      username: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        default: 0,
-      },
-      name: {
+      password: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       image: {
         type: Sequelize.STRING,
+      },
+      fullName: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
-      numberOfVolumes: Sequelize.INTEGER,
-      price: {
-        type: Sequelize.INTEGER,
+      email: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
-      description: Sequelize.STRING,
-      publicDate: Sequelize.DATE,
-      publicComName: Sequelize.STRING,
-      status: {
+      phone: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      isActive: {
         type: Sequelize.INTEGER,
-        defaultValue: 1,
+        defaultValue: 0,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Items");
+    await queryInterface.dropTable("Users");
   },
 };

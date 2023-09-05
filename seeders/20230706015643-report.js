@@ -1,46 +1,35 @@
-'use strict';
+"use strict";
 
-export async function up (queryInterface, Sequelize) {
+module.exports = {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Reports", [
       {
-        id_store: 1,
-        date: "2023-08-11",
+        createAt: "2023-08-11",
         countOrder: 3,
         revenue: 1100000,
       },
       {
-        id_store: 1,
-        date: "2023-08-10",
+        createAt: "2023-08-10",
         countOrder: 5,
         revenue: 550000,
       },
       {
-        id_store: 1,
-        date: "2023-08-12",
+        createAt: "2023-08-12",
         countOrder: 10,
         revenue: 660000,
       },
       {
-        id_store: 2,
-        date: "2023-08-11",
+        createAt: "2023-08-11",
         countOrder: 5,
         revenue: 550000,
       },
       {
-        id_store: 2,
-        date: "2023-08-10",
+        createAt: "2023-08-10",
         countOrder: 10,
         revenue: 660000,
       },
     ]);
   },
 
-  export async function down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  }
+  async down(queryInterface, Sequelize) {},
 };

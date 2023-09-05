@@ -1,14 +1,9 @@
 "use strict";
-import { Model } from "sequelize";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Type extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate({ Item }) {
-      this.hasOne(Item, { foreignKey: "id_type" });
+      this.hasMany(Item, { foreignKey: "id_type" });
     }
   }
   Type.init(
@@ -24,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Type",
       timestamps: false,
-      underscored: true,
     }
   );
   return Type;

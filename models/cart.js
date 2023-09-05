@@ -1,28 +1,29 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Wishlist extends Model {
+  class Cart extends Model {
     static associate({ User, Item }) {
       this.belongsTo(User, { foreignKey: "id_user" });
       this.belongsTo(Item, { foreignKey: "id_item" });
     }
   }
-  Wishlist.init(
+  Cart.init(
     {
-      id_item: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-      },
       id_user: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
+      id_item: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+      },
+      quantity: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "Wishlist",
+      modelName: "Cart",
       timestamps: false,
     }
   );
-  return Wishlist;
+  return Cart;
 };

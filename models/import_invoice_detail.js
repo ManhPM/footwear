@@ -1,16 +1,10 @@
 "use strict";
-import { Model } from "sequelize";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Import_invoice_detail extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate({ Import_invoice, Unprocessed_ingredient }) {
+    static associate({ Import_invoice, Item }) {
       this.belongsTo(Import_invoice, { foreignKey: "id_i_invoice" });
-      this.belongsTo(Unprocessed_ingredient, { foreignKey: "id_u_ingredient" });
-      // define association here
+      this.belongsTo(Item, { foreignKey: "id_item" });
     }
   }
   Import_invoice_detail.init(
@@ -19,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
-      id_u_ingredient: {
+      id_item: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
@@ -30,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Import_invoice_detail",
       timestamps: false,
-      underscored: true,
     }
   );
   return Import_invoice_detail;

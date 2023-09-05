@@ -1,13 +1,25 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import rootRouter from "./routers/index.js";
-import { Sequelize } from "sequelize";
+const express = require("express");
+const { Customer, Cart, Wishlist, Order } = require("./models");
+const { sequelize } = require("./models");
+const { rootRouter } = require("./routers");
+const { QueryTypes } = require("sequelize");
+const cookieParser = require("cookie-parser");
 
-dotenv.config();
+const bodyParser = require("body-parser");
+const session = require("express-session");
+const jwt = require("jsonwebtoken");
+const path = require("path");
+const port = 4000;
 const app = express();
-const port = process.env.PORT || 3005;
+const cors = require("cors");
+const configfb = require("./config/configfb");
+const bcrypt = require("bcryptjs");
+const FacebookStrategy = require("passport-facebook").Strategy;
+const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
+const GOOGLE_CLIENT_ID =
+  "975421124869-n4irtjs1qrm9eq8hpddlpo5rma85rihn.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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";
+
 const corsOptions = {
   origin: process.env.ENV === "dev" ? true : "https://holidate.vercel.app",
   credentials: true,
@@ -18,15 +30,6 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use("/api/v1", rootRouter);
-
-const sequelize = new Sequelize({
-  dialect: "mysql",
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-});
 
 //lắng nghe sự kiện kết nối
 app.listen(port, async () => {

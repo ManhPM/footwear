@@ -1,235 +1,220 @@
 "use strict";
 
-export async function up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
+module.exports = {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Order_details", [
       {
         id_order: 1,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 1,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 1,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 1,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 1,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 2,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 2,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 2,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 2,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 2,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 3,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 3,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 3,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 3,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 3,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 4,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 4,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 4,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 4,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 4,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 5,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 5,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 5,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 5,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 5,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 6,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 6,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 6,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 6,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 6,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 7,
         id_item: 1,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 7,
         id_item: 2,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 7,
         id_item: 3,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 7,
         id_item: 4,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
       {
         id_order: 7,
         id_item: 5,
         quantity: 1,
-        reviewed: 1
+        reviewed: 1,
       },
     ]);
   },
 
-  export async function down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  },
+  async down(queryInterface, Sequelize) {},
 };

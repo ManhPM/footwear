@@ -1,22 +1,18 @@
 "use strict";
-import { Model } from "sequelize";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Discount extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+    static associate({ Order }) {
+      this.hasMany(Order, { foreignKey: "id_discount" });
     }
   }
   Discount.init(
     {
-      code: {
+      id_discount: {
         type: DataTypes.STRING,
         primaryKey: true,
       },
+      code: DataTypes.STRING,
       discount_percent: DataTypes.INTEGER,
       start_date: DataTypes.DATE,
       end_date: DataTypes.DATE,
@@ -28,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Discount",
       timestamps: false,
-      underscored: true,
     }
   );
   return Discount;

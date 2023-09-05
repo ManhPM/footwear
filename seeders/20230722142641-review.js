@@ -1,53 +1,48 @@
 "use strict";
 
-export async function up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
+module.exports = {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Reviews", [
-      {
-        id_item: 1,
-        id_customer: 2,
-        rating: 5,
-        comment: "Món ăn rất tuyệt vơi",
-        datetime: "2023-08-11 07:30:00",
-      },
-      {
-        id_item: 2,
-        id_customer: 2,
-        rating: 3,
-        comment: "Món ăn tạm được",
-        datetime: "2023-08-11 08:30:00",
-      },
-      {
-        id_item: 1,
-        id_customer: 1,
-        rating: 5,
-        comment: "Được đấy",
-        datetime: "2023-08-12 16:30:00",
-      },
-      {
-        id_item: 4,
-        id_customer: 1,
-        rating: 1,
-        comment: "Tệ lắm nha",
-        datetime: "2023-08-12 05:30:00",
-      },
+      { id_user: 1, id_item: 69, rating: 3, createAt: "2023-7-4" },
+      { id_user: 3, id_item: 66, rating: 4, createAt: "2023-7-10" },
+      { id_user: 3, id_item: 68, rating: 4, createAt: "2023-7-15" },
+      { id_user: 6, id_item: 76, rating: 2, createAt: "2023-8-1" },
+      { id_user: 6, id_item: 77, rating: 1, createAt: "2023-7-12" },
+      { id_user: 2, id_item: 69, rating: 1, createAt: "2023-7-13" },
+      { id_user: 6, id_item: 27, rating: 4, createAt: "2023-7-10" },
+      { id_user: 5, id_item: 33, rating: 2, createAt: "2023-7-17" },
+      { id_user: 5, id_item: 73, rating: 5, createAt: "2023-7-19" },
+      { id_user: 2, id_item: 17, rating: 5, createAt: "2023-7-8" },
+      { id_user: 2, id_item: 53, rating: 5, createAt: "2023-7-16" },
+      { id_user: 2, id_item: 65, rating: 2, createAt: "2023-7-23" },
+      { id_user: 1, id_item: 23, rating: 4, createAt: "2023-7-10" },
+      { id_user: 1, id_item: 57, rating: 4, createAt: "2023-7-30" },
+      { id_user: 2, id_item: 43, rating: 2, createAt: "2023-7-8" },
+      { id_user: 2, id_item: 64, rating: 2, createAt: "2023-7-3" },
+      { id_user: 4, id_item: 7, rating: 4, createAt: "2023-7-9" },
+      { id_user: 2, id_item: 71, rating: 4, createAt: "2023-7-3" },
+      { id_user: 1, id_item: 73, rating: 5, createAt: "2023-7-8" },
+      { id_user: 3, id_item: 75, rating: 3, createAt: "2023-8-1" },
+      { id_user: 3, id_item: 15, rating: 2, createAt: "2023-7-4" },
+      { id_user: 6, id_item: 33, rating: 5, createAt: "2023-7-25" },
+      { id_user: 5, id_item: 26, rating: 4, createAt: "2023-7-25" },
+      { id_user: 2, id_item: 52, rating: 3, createAt: "2023-7-17" },
+      { id_user: 6, id_item: 71, rating: 5, createAt: "2023-7-7" },
+      { id_user: 5, id_item: 50, rating: 2, createAt: "2023-7-19" },
+      { id_user: 5, id_item: 46, rating: 3, createAt: "2023-7-2" },
+      { id_user: 6, id_item: 30, rating: 3, createAt: "2023-7-13" },
+      { id_user: 4, id_item: 34, rating: 1, createAt: "2023-7-4" },
+      { id_user: 2, id_item: 24, rating: 4, createAt: "2023-7-6" },
+      { id_user: 5, id_item: 49, rating: 5, createAt: "2023-7-17" },
+      { id_user: 5, id_item: 52, rating: 4, createAt: "2023-7-7" },
+      { id_user: 2, id_item: 32, rating: 1, createAt: "2023-7-21" },
+      { id_user: 4, id_item: 7, rating: 4, createAt: "2023-7-23" },
+      { id_user: 4, id_item: 6, rating: 4, createAt: "2023-7-1" },
+      { id_user: 3, id_item: 48, rating: 5, createAt: "2023-7-14" },
+      { id_user: 1, id_item: 35, rating: 1, createAt: "2023-7-29" },
+      { id_user: 1, id_item: 12, rating: 5, createAt: "2023-7-13" },
     ]);
   },
 
-  export async function down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  },
+  async down(queryInterface, Sequelize) {},
 };
