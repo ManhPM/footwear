@@ -65,28 +65,6 @@ const createItemInCart = async (req, res) => {
   }
 };
 
-const updateItemInCart = async (req, res) => {
-  const { id_item } = req.params;
-  const { quantity } = req.body;
-  try {
-    const itemInCart = await Cart.findOne({
-      where: {
-        id_item,
-        id_user: req.user.id,
-      },
-    });
-    if (quantity <= 0) {
-      res.status(400).json({ message: "Số lượng phải lớn hơn 0!" });
-    } else {
-      itemInCart.quantity = quantity;
-      await itemInCart.save();
-      res.status(201).json({ message: "Điều chỉnh số lượng thành công!" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const increaseNumItemInCart = async (req, res) => {
   const { id_item } = req.params;
   try {
@@ -285,7 +263,6 @@ function deg2rad(deg) {
 
 module.exports = {
   getAllItemInCart,
-  updateItemInCart,
   createItemInCart,
   increaseNumItemInCart,
   decreaseNumItemInCart,

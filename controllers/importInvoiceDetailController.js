@@ -18,25 +18,6 @@ const createImportInvoiceDetail = async (req, res) => {
   }
 };
 
-const getAllItemToImport = async (req, res) => {
-  const { id_i_invoice } = req.params;
-  try {
-    const unprocessedingredientList = await Import_invoice.sequelize.query(
-      "SELECT * FROM unprocessed_ingredients WHERE id_item NOT IN(SELECT id_item FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice)",
-      {
-        replacements: { id_i_invoice },
-        type: QueryTypes.SELECT,
-        raw: true,
-      }
-    );
-    res.status(200).json({
-      data: unprocessedingredientList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const updateImportInvoiceDetail = async (req, res) => {
   const { quantity, unit_price, id_i_invoice, id_item } = req.body;
   try {
@@ -68,7 +49,7 @@ const updateImportInvoiceDetail = async (req, res) => {
 };
 
 const deleteImportInvoiceDetail = async (req, res) => {
-  const { id_i_invoice, id_item } = req.params;
+  const { id_i_invoice, id_item } = req.body;
   try {
     const check = await Import_invoice.findOne({
       where: {
@@ -94,18 +75,16 @@ const deleteImportInvoiceDetail = async (req, res) => {
 };
 
 const getDetailImportInvoiceDetail = async (req, res) => {
-  const { id_i_invoice, id_item } = req.params;
+  const { id_i_invoice, id_item } = req.body;
   try {
-    const item = await Import_invoice_detail.sequelize.query(
-      "SELECT * FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice AND id_item = :id_item",
-      {
-        replacements: { id_i_invoice, id_item },
-        type: QueryTypes.SELECT,
-        raw: true,
-      }
-    );
+    const item = await Import_invoice_detail.findOne({
+      where: {
+        id_i_invoice,
+        id_item,
+      },
+    });
     res.status(200).json({
-      data: item[0],
+      data: item,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -117,5 +96,4 @@ module.exports = {
   updateImportInvoiceDetail,
   deleteImportInvoiceDetail,
   getDetailImportInvoiceDetail,
-  getAllItemToImport,
 };

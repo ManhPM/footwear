@@ -1,0 +1,69 @@
+const { Import_invoice, Import_invoice_detail, Item } = require("../models");
+const { QueryTypes } = require("sequelize");
+
+const checkExistImportInvoice = async (req, res, next) => {
+  try {
+    const { id_i_invoice } = req.params;
+    const item = await Import_invoice.findOne({
+      where: {
+        id_i_invoice,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Đơn nhập không tồn tại!" });
+    }
+  } catch (error) {
+    res
+      .status(501)
+      .json({ message: "CheckExist Error!", error: error.message });
+  }
+};
+
+const checkExistImportInvoiceDetail = async (req, res, next) => {
+  try {
+    const { id_i_invoice, id_item } = req.body;
+    const item = await Import_invoice_detail.findOne({
+      where: {
+        id_i_invoice,
+        id_item,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Chi tiết đơn nhập không tồn tại!" });
+    }
+  } catch (error) {
+    res
+      .status(501)
+      .json({ message: "CheckExist Error!", error: error.message });
+  }
+};
+
+const checkExistItem = async (req, res, next) => {
+  try {
+    const { id_item } = req.params;
+    const item = await Item.findOne({
+      where: {
+        id_item,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Sản phẩm không tồn tại!" });
+    }
+  } catch (error) {
+    res
+      .status(501)
+      .json({ message: "CheckExist Error!", error: error.message });
+  }
+};
+
+module.exports = {
+  checkExistImportInvoice,
+  checkExistImportInvoiceDetail,
+  checkExistItem,
+};

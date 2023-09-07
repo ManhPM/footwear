@@ -1,5 +1,5 @@
 const express = require("express");
-const { Customer, Cart, Wishlist, Order } = require("./models");
+const { Wishlist, Order } = require("./models");
 const { sequelize } = require("./models");
 const { rootRouter } = require("./routers");
 const { QueryTypes } = require("sequelize");

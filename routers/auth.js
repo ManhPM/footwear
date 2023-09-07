@@ -1,5 +1,4 @@
 const express = require("express");
-const { User } = require("../models");
 const {
   register,
   accessForgotPassword,
@@ -9,19 +8,25 @@ const {
   logout,
   updateProfile,
   verify,
+  active,
 } = require("../controllers/authController");
 const { authenticate } = require("../middlewares/auth");
+const {
+  checkCreateAccount,
+  checkCreateEmail,
+} = require("../middlewares/checkCreate");
 
 const userRouter = express.Router();
 
 userRouter.post("/login", login);
-userRouter.post("/register", register);
+userRouter.post("/register", checkCreateAccount, checkCreateEmail, register);
+userRouter.get("/active", active);
 userRouter.post("/forgotpassword/success", accessForgotPassword);
 userRouter.post("/forgotpasword/verify", verify);
 userRouter.post("/forgotpassword", forgotPassword);
 userRouter.post("/changepassword", authenticate, changePassword);
 userRouter.get("/logout", authenticate, logout);
-userRouter.get("/logout", authenticate, updateProfile, logout);
+userRouter.post("/updateprofile", authenticate, updateProfile);
 
 module.exports = {
   userRouter,

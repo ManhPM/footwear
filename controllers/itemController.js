@@ -1,5 +1,9 @@
 const { Item } = require("../models");
+const { exec } = require("child_process");
+const path = require("path");
 const { QueryTypes } = require("sequelize");
+const sequelize = require("sequelize");
+const { Op } = sequelize;
 
 const createItem = async (req, res) => {
   const {
@@ -26,6 +30,7 @@ const createItem = async (req, res) => {
       description,
       publicDate,
       publicComName,
+      quantity: 0,
       status: 1,
     });
     res.status(201).json({ message: "Tạo mới thành công!" });
@@ -54,15 +59,14 @@ const updateItem = async (req, res) => {
       },
     });
     update.name = name;
+    update.authorName = authorName;
+    update.image = image;
     update.price = price;
-    update.price = authorName;
-    update.price = image;
-    update.price = price;
-    update.price = numberOfVolumes;
-    update.price = description;
-    update.price = publicDate;
-    update.price = publicComName;
-    update.price = language;
+    update.numberOfVolumes = numberOfVolumes;
+    update.description = description;
+    update.publicDate = publicDate;
+    update.publicComName = publicComName;
+    update.language = language;
     await update.save();
     res.status(201).json({
       message: "Cập nhật thành công!",
@@ -121,11 +125,11 @@ const getAllItem = async (req, res) => {
       if (typesort == 1) {
         if (keyword) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :keyword AND I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword GROUP BY I.id_item ORDER BY I.price ASC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type AND (I.name COLLATE UTF8_GENERAL_CI LIKE :keyword OR I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword) GROUP BY I.id_item ORDER BY I.price ASC",
             {
               replacements: {
                 keyword: `%${keyword}%`,
-                id_type: id_type,
+                id_type,
               },
               type: QueryTypes.SELECT,
               raw: true,
@@ -134,7 +138,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ data: itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type ORDER BY I.price ASC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type ORDER BY I.price ASC",
             {
               replacements: {
                 id_type: id_type,
@@ -148,7 +152,7 @@ const getAllItem = async (req, res) => {
       } else {
         if (keyword) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :keyword AND I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword GROUP BY I.id_item ORDER BY I.price DESC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type AND (I.name COLLATE UTF8_GENERAL_CI LIKE :keyword OR I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword) GROUP BY I.id_item ORDER BY I.price DESC",
             {
               replacements: {
                 keyword: `%${keyword}%`,
@@ -161,7 +165,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ data: itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type ORDER BY I.price DESC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND T.id_type = :id_type ORDER BY I.price DESC",
             {
               replacements: {
                 id_type: id_type,
@@ -177,7 +181,7 @@ const getAllItem = async (req, res) => {
       if (typesort == 1) {
         if (keyword) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :keyword AND I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword GROUP BY I.id_item ORDER BY I.price ASC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND (I.name COLLATE UTF8_GENERAL_CI LIKE :keyword OR I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword) GROUP BY I.id_item ORDER BY I.price ASC",
             {
               replacements: {
                 keyword: `%${keyword}%`,
@@ -189,7 +193,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ data: itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type ORDER BY I.price DESC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type ORDER BY I.price DESC",
             {
               type: QueryTypes.SELECT,
               raw: true,
@@ -200,7 +204,7 @@ const getAllItem = async (req, res) => {
       } else {
         if (keyword) {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND I.name COLLATE UTF8_GENERAL_CI LIKE :keyword AND I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword GROUP BY I.id_item ORDER BY I.price DESC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type AND (I.name COLLATE UTF8_GENERAL_CI LIKE :keyword OR I.authorName COLLATE UTF8_GENERAL_CI LIKE :keyword) GROUP BY I.id_item ORDER BY I.price DESC",
             {
               replacements: {
                 keyword: `%${keyword}%`,
@@ -212,7 +216,7 @@ const getAllItem = async (req, res) => {
           res.status(200).json({ data: itemList });
         } else {
           const itemList = await Item.sequelize.query(
-            "SELECT I.id_item, I.name, I.image, FORMAT(I.price, 0) as price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type ORDER BY I.price DESC",
+            "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE T.id_type = I.id_type ORDER BY I.price DESC",
             {
               type: QueryTypes.SELECT,
               raw: true,
@@ -227,11 +231,80 @@ const getAllItem = async (req, res) => {
   }
 };
 
+const sanPhamLienQuan = async (req, res) => {
+  const { id_item } = req.params;
+  try {
+    const item = await Item.findOne({
+      where: {
+        id_item,
+      },
+    });
+    const itemList = await Item.sequelize.query(
+      "SELECT I.id_item, I.name, I.image, I.numberOfVolumes, I.price, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items as I, types as T WHERE I.id_item != :id_item AND T.id_type = I.id_type AND (I.name COLLATE UTF8_GENERAL_CI LIKE :keyword OR I.authorName COLLATE UTF8_GENERAL_CI LIKE :authorName) GROUP BY I.id_item ORDER BY I.price ASC",
+      {
+        replacements: {
+          keyword: `%${item.name}%`,
+          authorName: item.authorName,
+          id_item,
+        },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).json({ data: itemList });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const bookRecommendation = async (req, res) => {
+  const id_user = req.user.id;
+  try {
+    var modifiedString;
+    var arrayFromString = [];
+    const getData = path.join(__dirname, "..") + "\\getData.py";
+    const getRecommendation = path.join(__dirname, "..") + `\\CF.py ${id_user}`;
+    const runGetData = new Promise((resolve, reject) => {
+      exec(`python ${getData}`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Lỗi khi chạy câu lệnh 1: ${error.message}`);
+          reject(error);
+        }
+        resolve();
+      });
+    });
+
+    const runGetRecommendation = new Promise((resolve, reject) => {
+      exec(`python ${getRecommendation}`, async (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Lỗi khi chạy câu lệnh 2: ${error.message}`);
+          reject(error);
+        }
+        modifiedString = stdout.replace(/\./g, ",");
+        arrayFromString = JSON.parse(modifiedString);
+        resolve();
+      });
+    });
+    // Chạy hai câu lệnh python đồng bộ
+    await Promise.all([runGetData, runGetRecommendation]);
+    const books = await Item.findAll({
+      where: {
+        id_item: {
+          [Op.in]: arrayFromString,
+        },
+      },
+    });
+    res.status(200).json({ data: books });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getDetailItem = async (req, res) => {
   const { id_item } = req.params;
   try {
     const item = await Item.sequelize.query(
-      "SELECT I.id_item, I.authorName, I.language, I.description, I.numberOfVolumes, I.publicComName, I.publicDate, I.quantity, I.status, I.id_type, I.name, I.image, FORMAT(I.price, 0) as price, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
+      "SELECT I.id_item, I.authorName, I.language, I.description, I.numberOfVolumes, I.publicComName, I.publicDate, I.quantity, I.status, I.id_type, I.name, I.image, I.price, T.name as name_type, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I, types as T WHERE T.id_type = I.id_type AND I.id_item = :id_item",
       {
         replacements: { id_item: id_item },
         type: QueryTypes.SELECT,
@@ -244,10 +317,32 @@ const getDetailItem = async (req, res) => {
   }
 };
 
+const getAllItemToImport = async (req, res) => {
+  const { id_i_invoice } = req.params;
+  try {
+    const itemList = await Import_invoice.sequelize.query(
+      "SELECT * FROM items WHERE id_item NOT IN(SELECT id_item FROM import_invoice_details WHERE id_i_invoice = :id_i_invoice)",
+      {
+        replacements: { id_i_invoice },
+        type: QueryTypes.SELECT,
+        raw: true,
+      }
+    );
+    res.status(200).json({
+      data: itemList,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllItem,
+  getAllItemToImport,
   getDetailItem,
   createItem,
   updateItem,
   deleteItem,
+  sanPhamLienQuan,
+  bookRecommendation,
 };

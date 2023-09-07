@@ -8,7 +8,7 @@ const { QueryTypes } = require("sequelize");
 const getAllImportInvoice = async (req, res) => {
   try {
     const itemList = await Import_invoice.sequelize.query(
-      "SELECT II.id_i_invoice, II.status, II.description, DATE_FORMAT(II.datetime, '%d/%m/%Y %H:%i') as datetime, SA.name as name_staff, P.name as name_provider FROM import_invoices AS II, staffs as SA, providers as P WHERE SA.id_staff = II.id_staff AND II.id_provider = P.id_provider",
+      "SELECT II.*, P.name as name_provider FROM import_invoices AS II, providers as P, users as U WHERE P.id_provider = II.id_provider AND II.id_user = U.id_user",
       {
         type: QueryTypes.SELECT,
         raw: true,
@@ -91,7 +91,7 @@ const createImportInvoice = async (req, res) => {
         id_provider,
         description,
         id_user: req.user.id,
-        datetime,
+        createAt: datetime,
         status: 0,
       });
       res.status(201).json({
@@ -176,7 +176,7 @@ const updateImportInvoice = async (req, res) => {
     datetime.setHours(datetime.getHours() + 7);
     check.id_provider = id_provider;
     check.description = description;
-    check.datetime = datetime;
+    check.createAt = datetime;
     await check.save();
     res.status(200).json({
       message: "Cập nhật thành công!",

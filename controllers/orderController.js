@@ -334,8 +334,6 @@ module.exports = {
   confirmOrder,
   cancelOrder,
   receiveOrder,
-  thongKeSanPham,
   thongKeDonHangAdmin,
   thongKeSanPhamAdmin,
-  dashboardManager,
 };

@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
 
 const authenticate = (req, res, next) => {
-  const token = req.cookies.access_token;
+  const token = req.cookies.accessToken;
   try {
     if (token) {
-      const data = jwt.verify(req.headers.access_token, "manhpham2k1");
+      const data = jwt.verify(token, "BOOKSTOREP2M");
       req.user = data;
       return next();
     } else {

@@ -2,7 +2,7 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
-    static associate({ Cart, Wishlist, Order_detail, Type, Author }) {
+    static associate({ Cart, Wishlist, Order_detail, Type }) {
       this.hasMany(Cart, { foreignKey: "id_item" });
       this.hasMany(Order_detail, { foreignKey: "id_item" });
       this.hasMany(Wishlist, { foreignKey: "id_item" });

@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(Review, { foreignKey: "id_user" });
       this.hasMany(Order, { foreignKey: "id_user" });
       this.hasMany(Import_invoice, { foreignKey: "id_user" });
-      this.hasMany(Report, { foreignKey: "id_user" });
     }
   }
   User.init(
@@ -38,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       isActive: DataTypes.BOOLEAN,
       role: DataTypes.STRING,
+      verifyID: DataTypes.INTEGER,
+      activeID: DataTypes.INTEGER,
     },
     {
       tableName: "users",

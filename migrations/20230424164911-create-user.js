@@ -20,6 +20,16 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      verifyID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      activeID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       image: {
         type: Sequelize.STRING,
       },
