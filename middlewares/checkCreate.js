@@ -67,27 +67,6 @@ const checkCreateReview = async (req, res, next) => {
   }
 };
 
-const checkCreateEmail = async (req, res, next) => {
-  const { email } = req.body;
-  try {
-    const user = await User.findOne({
-      where: {
-        email,
-        isActive: 1,
-      },
-    });
-    if (user) {
-      res.status(400).json({ message: "Email đã tồn tại!" });
-    } else {
-      next();
-    }
-  } catch (error) {
-    res
-      .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
-  }
-};
-
 const checkPhoneCheckout = async (req, res, next) => {
   try {
     const user = await User.findOne({
@@ -199,7 +178,6 @@ module.exports = {
   checkCreateAccount,
   checkCreateItem,
   checkCreateReview,
-  checkCreateEmail,
   checkPhoneCheckout,
   checkDiscountCode,
   checkUnConfirmedOrder,

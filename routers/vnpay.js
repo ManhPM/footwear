@@ -74,6 +74,10 @@ router.post("/create_payment_url", async function (req, res, next) {
 
         res.redirect(vnpUrl);
       }
+    } else {
+      res.status(400).json({
+        message: "Hoá đơn không tồn tại",
+      });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

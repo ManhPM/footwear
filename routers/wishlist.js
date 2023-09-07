@@ -4,6 +4,7 @@ const {
   updateItemInWishList,
 } = require("../controllers/wishlistController");
 const { authenticate, authorize } = require("../middlewares/auth");
+const { checkExistItem } = require("../middlewares/checkExist");
 const wishlistRouter = express.Router();
 
 wishlistRouter.get(
@@ -16,6 +17,7 @@ wishlistRouter.post(
   "/:id_item",
   authenticate,
   authorize(["Khách hàng"]),
+  checkExistItem,
   updateItemInWishList
 );
 

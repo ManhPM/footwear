@@ -1,4 +1,10 @@
-const { Import_invoice, Import_invoice_detail, Item } = require("../models");
+const {
+  Import_invoice,
+  Import_invoice_detail,
+  Item,
+  User,
+  Order,
+} = require("../models");
 const { QueryTypes } = require("sequelize");
 
 const checkExistImportInvoice = async (req, res, next) => {
@@ -62,8 +68,73 @@ const checkExistItem = async (req, res, next) => {
   }
 };
 
+const checkExistPhoneNum = async (req, res, next) => {
+  try {
+    const { phone } = req.body;
+    const item = await User.findOne({
+      where: {
+        phone,
+        isActive: 1,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({ message: "Số điện thoại đã tồn tại!" });
+    }
+  } catch (error) {
+    res
+      .status(501)
+      .json({ message: "CheckExist Error!", error: error.message });
+  }
+};
+
+const checkExistEmail = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const item = await User.findOne({
+      where: {
+        email,
+        isActive: 1,
+      },
+    });
+    if (!item) {
+      res.status(400).json({ message: "Email đã tồn tại!" });
+    } else {
+      next();
+    }
+  } catch (error) {
+    res
+      .status(501)
+      .json({ message: "Middleware Error!", error: error.message });
+  }
+};
+
+const checkExistOrder = async (req, res, next) => {
+  const { id_order } = req.params;
+  try {
+    const item = await Order.findOne({
+      where: {
+        id_order,
+      },
+    });
+    if (!item) {
+      res.status(400).json({ message: "Đơn hàng không tồn tại!" });
+    } else {
+      next();
+    }
+  } catch (error) {
+    res
+      .status(501)
+      .json({ message: "Middleware Error!", error: error.message });
+  }
+};
+
 module.exports = {
   checkExistImportInvoice,
   checkExistImportInvoiceDetail,
   checkExistItem,
+  checkExistPhoneNum,
+  checkExistEmail,
+  checkExistOrder,
 };
