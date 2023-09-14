@@ -176,9 +176,10 @@ const checkout = async (req, res) => {
               description,
               delivery_fee: random,
               item_fee: Number(info[0].itemFee),
-              total: Number(
-                (info[0].itemFee + random) * discount.discount_percent
-              ),
+              total:
+                Number(info[0].itemFee) +
+                (Number(info[0].itemFee) * discount.discount_percent) / 100 +
+                random,
               time_order: date,
               status: 0,
             });
@@ -211,7 +212,7 @@ const checkout = async (req, res) => {
             id_payment,
             delivery_fee: random,
             item_fee: Number(info[0].item_fee),
-            total: Number(info[0].item_fee) + random,
+            total: Number(Number(info[0].itemFee) + random),
             time_order: date,
             status: 0,
           });
@@ -238,7 +239,7 @@ const checkout = async (req, res) => {
       res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Đặt hàng thất bại!" });
+    res.status(500).json({ message: error.message });
   }
 };
 

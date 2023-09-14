@@ -1,9 +1,9 @@
 let express = require("express");
 const { Order } = require("../models");
-let router = express.Router();
+let vnpayRouter = express.Router();
 const moment = require("moment");
 
-router.post("/create_payment_url", async function (req, res, next) {
+vnpayRouter.post("/create_payment_url", async function (req, res, next) {
   let id_order = req.body.id_order;
   try {
     const order = await Order.findOne({
@@ -38,10 +38,10 @@ router.post("/create_payment_url", async function (req, res, next) {
         let secretKey = config.get("vnp_HashSecret");
         let vnpUrl = config.get("vnp_Url");
         let returnUrl = config.get("vnp_ReturnUrl");
-        let bankCode = req.body.bankCode;
+        let bankCode = "NCB";
 
         let locale = req.body.language;
-        if (locale === null || locale === "") {
+        if (locale === null || locale === "" || locale === undefined) {
           locale = "vn";
         }
         let currCode = "VND";
@@ -54,7 +54,7 @@ router.post("/create_payment_url", async function (req, res, next) {
         vnp_Params["vnp_TxnRef"] = id_order;
         vnp_Params["vnp_OrderInfo"] = "Thanh toán cho mã đơn hàng:" + id_order;
         vnp_Params["vnp_OrderType"] = "other";
-        vnp_Params["vnp_Amount"] = order.total * 100;
+        vnp_Params["vnp_Amount"] = Number(order.total) * 100;
         vnp_Params["vnp_ReturnUrl"] = returnUrl;
         vnp_Params["vnp_IpAddr"] = ipAddr;
         vnp_Params["vnp_CreateDate"] = createDate;
@@ -72,7 +72,7 @@ router.post("/create_payment_url", async function (req, res, next) {
         vnp_Params["vnp_SecureHash"] = signed;
         vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
 
-        res.redirect(vnpUrl);
+        res.status(200).json({ url: vnpUrl });
       }
     } else {
       res.status(400).json({
@@ -84,7 +84,7 @@ router.post("/create_payment_url", async function (req, res, next) {
   }
 });
 
-router.get("/vnpay_return", async function (req, res, next) {
+vnpayRouter.get("/vnpay_return", async function (req, res, next) {
   try {
     let vnp_Params = req.query;
 
@@ -117,7 +117,7 @@ router.get("/vnpay_return", async function (req, res, next) {
   }
 });
 
-router.post("/refund", function (req, res, next) {
+vnpayRouter.post("/refund", function (req, res, next) {
   process.env.TZ = "Asia/Ho_Chi_Minh";
   let date = new Date();
 
@@ -226,4 +226,6 @@ function sortObject(obj) {
   return sorted;
 }
 
-module.exports = router;
+module.exports = {
+  vnpayRouter,
+};

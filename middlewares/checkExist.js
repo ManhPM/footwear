@@ -92,14 +92,18 @@ const checkExistPhoneNum = async (req, res, next) => {
 const checkExistEmail = async (req, res, next) => {
   const { email } = req.body;
   try {
-    const item = await User.findOne({
-      where: {
-        email,
-        isActive: 1,
-      },
-    });
-    if (!item) {
-      res.status(400).json({ message: "Email đã tồn tại!" });
+    if (email) {
+      const item = await User.findOne({
+        where: {
+          email,
+          isActive: 1,
+        },
+      });
+      if (!item) {
+        res.status(400).json({ message: "Email đã tồn tại!" });
+      } else {
+        next();
+      }
     } else {
       next();
     }

@@ -46,8 +46,8 @@ const register = async (req, res) => {
           <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
           <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
           <title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-          <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,300,400,500,600,700" rel="stylesheet">
+          <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+          <link href="http://fonts.googleapis.com/css?family=Work+Sans:200,300,400,500,600,700" rel="stylesheet">
       
           <!-- CSS Reset : BEGIN -->
           <style>
@@ -325,7 +325,7 @@ const register = async (req, res) => {
                 </td>
                 </tr><!-- end tr -->
                 <tr>
-                <td valign="middle" class="hero bg_white" style="background-image: url(https://res.cloudinary.com/dpgjnngzt/image/upload/v1693155759/cc8qb9rmjoxgsl2wx7fe_r9nmrg.webp); background-size: cover; height: 400px;">
+                <td valign="middle" class="hero bg_white" style="background-image: url(http://res.cloudinary.com/dpgjnngzt/image/upload/v1693155759/cc8qb9rmjoxgsl2wx7fe_r9nmrg.webp); background-size: cover; height: 400px;">
                     <div class="overlay"></div>
                   <table>
                       <tr>
@@ -342,7 +342,7 @@ const register = async (req, res) => {
                 <tr>
                   <td class="bg_white email-section">
                       <div class="heading-section" style="text-align: center; padding: 0 30px;">
-                        <h2>URL active<br>http://localhost:4000/api/v1/user/active?id_user=${user.id_user}&activeID=${user.activeID}</h2>
+                        <h2>URL active<br>http://localhost:3000/active?id_user=${user.id_user}&activeID=${user.activeID}</h2>
                         <p style="font-size: 20px;">Thank you for using our service.</p>
                       </div>
                 </td>
@@ -512,8 +512,8 @@ const forgotPassword = async (req, res) => {
             <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
             <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
             <title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-            <link href="https://fonts.googleapis.com/css?family=Work+Sans:200,300,400,500,600,700" rel="stylesheet">
+            <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link href="http://fonts.googleapis.com/css?family=Work+Sans:200,300,400,500,600,700" rel="stylesheet">
         
             <!-- CSS Reset : BEGIN -->
             <style>
@@ -791,7 +791,7 @@ const forgotPassword = async (req, res) => {
                   </td>
                   </tr><!-- end tr -->
                   <tr>
-                  <td valign="middle" class="hero bg_white" style="background-image: url(https://res.cloudinary.com/dpgjnngzt/image/upload/v1693155759/cc8qb9rmjoxgsl2wx7fe_r9nmrg.webp); background-size: cover; height: 400px;">
+                  <td valign="middle" class="hero bg_white" style="background-image: url(http://res.cloudinary.com/dpgjnngzt/image/upload/v1693155759/cc8qb9rmjoxgsl2wx7fe_r9nmrg.webp); background-size: cover; height: 400px;">
                       <div class="overlay"></div>
                     <table>
                         <tr>

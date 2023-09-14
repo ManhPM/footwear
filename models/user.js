@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       image: {
         type: DataTypes.STRING,
         defaultValue:
-          "https://res.cloudinary.com/dpgjnngzt/image/upload/v1692954334/anhdaidien_onsafn.jpg",
+          "http://res.cloudinary.com/dpgjnngzt/image/upload/v1692954334/anhdaidien_onsafn.jpg",
       },
       phone: DataTypes.STRING,
       address: DataTypes.STRING,

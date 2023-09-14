@@ -11,7 +11,9 @@ const authenticate = (req, res, next) => {
       return res.status(400).json({ message: "Vui lòng đăng nhập" });
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: `Authenticate Error: ${error.message}` });
   }
 };
 

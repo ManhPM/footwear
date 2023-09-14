@@ -8,7 +8,7 @@ module.exports = {
         authorName: "Nicholas Sparks",
         name: "The Notebook",
         image:
-          "https://upload.wikimedia.org/wikipedia/vi/8/86/Posternotebook.jpg",
+          "http://upload.wikimedia.org/wikipedia/vi/8/86/Posternotebook.jpg",
         numberOfVolumes: 1,
         price: 150000,
         description:
@@ -17,13 +17,14 @@ module.exports = {
         publicComName: "Warner Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Jane Austen",
         name: "Pride and Prejudice",
         image:
-          "https://m.media-amazon.com/images/M/MV5BMTA1NDQ3NTcyOTNeQTJeQWpwZ15BbWU3MDA0MzA4MzE@._V1_.jpg",
+          "http://m.media-amazon.com/images/M/MV5BMTA1NDQ3NTcyOTNeQTJeQWpwZ15BbWU3MDA0MzA4MzE@._V1_.jpg",
         numberOfVolumes: 1,
         price: 25000,
         description:
@@ -32,13 +33,14 @@ module.exports = {
         publicComName: "T. Egerton, Whitehall",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Jojo Moyes",
         name: "Me Before You",
         image:
-          "https://m.media-amazon.com/images/M/MV5BMTQ2NjE4NDE2NV5BMl5BanBnXkFtZTgwOTcwNDE5NzE@._V1_.jpg",
+          "http://m.media-amazon.com/images/M/MV5BMTQ2NjE4NDE2NV5BMl5BanBnXkFtZTgwOTcwNDE5NzE@._V1_.jpg",
         numberOfVolumes: 1,
         price: 135000,
         description:
@@ -47,13 +49,14 @@ module.exports = {
         publicComName: "Michael Joseph",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Rainbow Rowell",
         name: "Eleanor & Park",
         image:
-          "https://m.media-amazon.com/images/I/71CY50T1sML._AC_UF1000,1000_QL80_.jpg",
+          "http://m.media-amazon.com/images/I/71CY50T1sML._AC_UF1000,1000_QL80_.jpg",
         numberOfVolumes: 1,
         price: 99000,
         description:
@@ -62,13 +65,14 @@ module.exports = {
         publicComName: "St. Martin's Press",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Colleen Hoover",
         name: "It Ends with Us",
         image:
-          "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1688011813i/27362503.jpg",
+          "http://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1688011813i/27362503.jpg",
         numberOfVolumes: 1,
         price: 155000,
         description:
@@ -77,12 +81,13 @@ module.exports = {
         publicComName: "Atria Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Jojo Moyes",
         name: "After You",
-        image: "https://images.penguinrandomhouse.com/cover/9780143108863",
+        image: "http://images.penguinrandomhouse.com/cover/9780143108863",
         numberOfVolumes: 1,
         price: 140000,
         description:
@@ -91,12 +96,13 @@ module.exports = {
         publicComName: "Pamela Dorman Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Rainbow Rowell",
         name: "Fangirl",
-        image: "https://mpd-biblio-covers.imgix.net/9781250073808.jpg",
+        image: "http://mpd-biblio-covers.imgix.net/9781250073808.jpg",
         numberOfVolumes: 1,
         price: 105000,
         description:
@@ -105,13 +111,14 @@ module.exports = {
         publicComName: "St. Martin's Griffin",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Graeme Simsion",
         name: "The Rosie Project",
         image:
-          "https://upload.wikimedia.org/wikipedia/en/5/53/The_Rosie_Project.jpg",
+          "http://upload.wikimedia.org/wikipedia/en/5/53/The_Rosie_Project.jpg",
         numberOfVolumes: 1,
         price: 125000,
         description:
@@ -120,12 +127,13 @@ module.exports = {
         publicComName: "Text Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Sally Rooney",
         name: "Normal People",
-        image: "https://cdn-amz.woka.io/images/I/812dWt7LgdL.jpg",
+        image: "http://cdn-amz.woka.io/images/I/812dWt7LgdL.jpg",
         numberOfVolumes: 1,
         price: 165000,
         description:
@@ -134,13 +142,14 @@ module.exports = {
         publicComName: "Hogarth Press",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 1,
         authorName: "Jenny Han",
         name: "To All the Boys I've Loved Before",
         image:
-          "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1372086100i/15749186.jpg",
+          "http://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1372086100i/15749186.jpg",
         numberOfVolumes: 1,
         price: 95000,
         description:
@@ -149,13 +158,14 @@ module.exports = {
         publicComName: "Simon & Schuster",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 2,
         authorName: "Frank Herbert",
         name: "Dune",
         image:
-          "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1555447414i/44767458.jpg",
+          "http://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1555447414i/44767458.jpg",
         numberOfVolumes: 1,
         price: 200000,
         description:
@@ -164,12 +174,13 @@ module.exports = {
         publicComName: "Chilton Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 2,
         authorName: "Isaac Asimov",
         name: "Foundation",
-        image: "https://m.media-amazon.com/images/I/41TZKBUS7PL.jpg",
+        image: "http://m.media-amazon.com/images/I/41TZKBUS7PL.jpg",
         numberOfVolumes: 1,
         price: 180000,
         description:
@@ -178,13 +189,14 @@ module.exports = {
         publicComName: "Gnome Press",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 2,
         authorName: "Philip K. Dick",
         name: "Do Androids Dream of Electric Sheep?",
         image:
-          "https://m.media-amazon.com/images/I/71uN5sUHXiL._AC_UF894,1000_QL80_.jpg",
+          "http://m.media-amazon.com/images/I/71uN5sUHXiL._AC_UF894,1000_QL80_.jpg",
         numberOfVolumes: 1,
         price: 150000,
         description:
@@ -193,13 +205,14 @@ module.exports = {
         publicComName: "Doubleday",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 2,
         authorName: "Orson Scott Card",
         name: "Ender's Game",
         image:
-          "https://static.wikia.nocookie.net/ansible/images/8/8e/Ender%27sGameCoverMain.jpg/revision/latest?cb=20210904211643",
+          "http://static.wikia.nocookie.net/ansible/images/8/8e/Ender%27sGameCoverMain.jpg/revision/latest?cb=20210904211643",
         numberOfVolumes: 1,
         price: 170000,
         description:
@@ -208,13 +221,14 @@ module.exports = {
         publicComName: "Tor Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 2,
         authorName: "Margaret Atwood",
         name: "The Handmaid's Tale",
         image:
-          "https://m.media-amazon.com/images/I/71mfL5OGNNL._AC_UF894,1000_QL80_.jpg",
+          "http://m.media-amazon.com/images/I/71mfL5OGNNL._AC_UF894,1000_QL80_.jpg",
         numberOfVolumes: 1,
         price: 160000,
         description:
@@ -223,12 +237,13 @@ module.exports = {
         publicComName: "McClelland and Stewart",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter",
-        image: "https://m.media-amazon.com/images/I/51Ppi-8kISL.jpg",
+        image: "http://m.media-amazon.com/images/I/51Ppi-8kISL.jpg",
         numberOfVolumes: 1,
         price: 250000,
         description:
@@ -237,13 +252,14 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter",
         image:
-          "https://static.wikia.nocookie.net/harrypotter/images/6/6d/Chamber_of_Secrets_New_UK_Cover.jpg/revision/latest?cb=20170109045927",
+          "http://static.wikia.nocookie.net/harrypotter/images/6/6d/Chamber_of_Secrets_New_UK_Cover.jpg/revision/latest?cb=20170109045927",
         numberOfVolumes: 2,
         price: 250000,
         description:
@@ -252,13 +268,14 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter",
         image:
-          "https://bizweb.dktcdn.net/100/326/228/products/harry-potter-and-the-prisoner-of-azkaban-by-j-k-rowling-jpeg.jpg?v=1540630813240",
+          "http://bizweb.dktcdn.net/100/326/228/products/harry-potter-and-the-prisoner-of-azkaban-by-j-k-rowling-jpeg.jpg?v=1540630813240",
         numberOfVolumes: 3,
         price: 250000,
         description:
@@ -267,13 +284,14 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter",
         image:
-          "https://static.wikia.nocookie.net/harrypotter/images/a/a3/Goblet_of_Fire_New_Cover.jpg/revision/latest?cb=20170109054633",
+          "http://static.wikia.nocookie.net/harrypotter/images/a/a3/Goblet_of_Fire_New_Cover.jpg/revision/latest?cb=20170109054633",
         numberOfVolumes: 4,
         price: 250000,
         description:
@@ -282,13 +300,14 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter",
         image:
-          "https://upload.wikimedia.org/wikipedia/en/7/70/Harry_Potter_and_the_Order_of_the_Phoenix.jpg",
+          "http://upload.wikimedia.org/wikipedia/en/7/70/Harry_Potter_and_the_Order_of_the_Phoenix.jpg",
         numberOfVolumes: 5,
         price: 250000,
         description:
@@ -297,12 +316,13 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter Hoàng Tử Lai",
-        image: "https://cdn-amz.woka.io/images/I/A1clNOpnpNL.jpg",
+        image: "http://cdn-amz.woka.io/images/I/A1clNOpnpNL.jpg",
         numberOfVolumes: 6,
         price: 250000,
         description:
@@ -311,13 +331,14 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter và Bảo Bối Tử Thần",
         image:
-          "https://static.wikia.nocookie.net/harrypotter/images/d/da/Deathly_Hallows_New_Cover.jpg/revision/latest?cb=20170109054859",
+          "http://static.wikia.nocookie.net/harrypotter/images/d/da/Deathly_Hallows_New_Cover.jpg/revision/latest?cb=20170109054859",
         numberOfVolumes: 7,
         price: 250000,
         description:
@@ -326,6 +347,7 @@ module.exports = {
         publicComName: "Bloomsbury Publishing",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
@@ -340,6 +362,7 @@ module.exports = {
         publicComName: "Orbit Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
@@ -354,6 +377,7 @@ module.exports = {
         publicComName: "Hamish Hamilton",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
@@ -368,6 +392,7 @@ module.exports = {
         publicComName: "Planeta Publishing",
         language: "Tiếng Tây Ban Nha",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 3,
@@ -382,6 +407,7 @@ module.exports = {
         publicComName: "Arrow Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 4,
@@ -396,13 +422,14 @@ module.exports = {
         publicComName: "Vintage Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 4,
         authorName: "Malcolm Gladwell",
         name: "Quản Lý Thời Gian Thông Minh",
         image:
-          "https://www.vinabook.com/images/detailed/360/P91838Mquan_ly_thoi_gian_thong_minh.jpg",
+          "http://www.vinabook.com/images/detailed/360/P91838Mquan_ly_thoi_gian_thong_minh.jpg",
         numberOfVolumes: 1,
         price: 190000,
         description:
@@ -411,13 +438,14 @@ module.exports = {
         publicComName: "Back Bay Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 4,
         authorName: "Edward W. Said",
         name: "Orientalism",
         image:
-          "https://m.media-amazon.com/images/I/81rkFz0VJ-L._AC_UF1000,1000_QL80_.jpg",
+          "http://m.media-amazon.com/images/I/81rkFz0VJ-L._AC_UF1000,1000_QL80_.jpg",
         numberOfVolumes: 1,
         price: 180000,
         description:
@@ -426,13 +454,14 @@ module.exports = {
         publicComName: "Vintage Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "entertainment",
       },
       {
         id_type: 4,
         authorName: "Naomi Klein",
         name: "The Shock Doctrine: Bản Chất Khủng Hoảng",
         image:
-          "https://salt.tikicdn.com/cache/w1200/media/catalog/product/s/_/s_c_-_ch_ngh_a_t_b_n_th_m_ho__3.jpg",
+          "http://salt.tikicdn.com/cache/w1200/media/catalog/product/s/_/s_c_-_ch_ngh_a_t_b_n_th_m_ho__3.jpg",
         numberOfVolumes: 1,
         price: 200000,
         description:
@@ -441,13 +470,14 @@ module.exports = {
         publicComName: "Picador",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 4,
         authorName: "Robert Putnam",
         name: "Bowling Alone: America's Declining Social Capital",
         image:
-          "https://m.media-amazon.com/images/I/71mpOLYTQML._AC_UF1000,1000_QL80_.jpg",
+          "http://m.media-amazon.com/images/I/71mpOLYTQML._AC_UF1000,1000_QL80_.jpg",
         numberOfVolumes: 1,
         price: 150000,
         description:
@@ -456,13 +486,14 @@ module.exports = {
         publicComName: "Simon & Schuster",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Roald Dahl",
         name: "Charlie và nhà máy sô cô la",
         image:
-          "https://upload.wikimedia.org/wikipedia/vi/f/fc/Charlie_v%C3%A0_Nh%C3%A0_M%C3%A1y_S%C3%B4c%C3%B4la_Kim_%C4%90%E1%BB%93ng_60.jpg",
+          "http://upload.wikimedia.org/wikipedia/vi/f/fc/Charlie_v%C3%A0_Nh%C3%A0_M%C3%A1y_S%C3%B4c%C3%B4la_Kim_%C4%90%E1%BB%93ng_60.jpg",
         numberOfVolumes: 1,
         price: 25000,
         description:
@@ -471,13 +502,14 @@ module.exports = {
         publicComName: "Puffin Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Jeff Kinney",
         name: "Nhật ký tiểu thuyết gia Wimpy Kid",
         image:
-          "https://upload.wikimedia.org/wikipedia/vi/0/09/Diary_of_a_wimpy_kid.jpg",
+          "http://upload.wikimedia.org/wikipedia/vi/0/09/Diary_of_a_wimpy_kid.jpg",
         numberOfVolumes: 1,
         price: 135000,
         description:
@@ -486,13 +518,14 @@ module.exports = {
         publicComName: "Amulet Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Enid Blyton",
         name: "Thám tử Năm Đỏ",
         image:
-          "https://salt.tikicdn.com/cache/w1200/ts/product/eb/59/60/5af29425f464c386ca8687304daaa9ff.jpg",
+          "http://salt.tikicdn.com/cache/w1200/ts/product/eb/59/60/5af29425f464c386ca8687304daaa9ff.jpg",
         numberOfVolumes: 1,
         price: 95000,
         description:
@@ -501,13 +534,14 @@ module.exports = {
         publicComName: "Egmont Books",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Marc Brown",
         name: "Arthur's Christmas",
         image:
-          "https://images.moviesanywhere.com/c804b194912f55a6a4905111dc9569c6/a12fa0d3-d0d0-41a6-b321-1d297e56be7f.jpg",
+          "http://images.moviesanywhere.com/c804b194912f55a6a4905111dc9569c6/a12fa0d3-d0d0-41a6-b321-1d297e56be7f.jpg",
         numberOfVolumes: 1,
         price: 75000,
         description:
@@ -516,13 +550,14 @@ module.exports = {
         publicComName: "Little, Brown Books for Young Readers",
         language: "Tiếng Anh",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Nguyễn Nhật Ánh",
         name: "Cho tôi xin một vé đi tuổi thơ",
         image:
-          "https://upload.wikimedia.org/wikipedia/vi/thumb/c/c9/Cho_t%C3%B4i_xin_m%E1%BB%99t_v%C3%A9_%C4%91i_tu%E1%BB%95i_th%C6%A1.jpg/220px-Cho_t%C3%B4i_xin_m%E1%BB%99t_v%C3%A9_%C4%91i_tu%E1%BB%95i_th%C6%A1.jpg",
+          "http://upload.wikimedia.org/wikipedia/vi/thumb/c/c9/Cho_t%C3%B4i_xin_m%E1%BB%99t_v%C3%A9_%C4%91i_tu%E1%BB%95i_th%C6%A1.jpg/220px-Cho_t%C3%B4i_xin_m%E1%BB%99t_v%C3%A9_%C4%91i_tu%E1%BB%95i_th%C6%A1.jpg",
         numberOfVolumes: 1,
         price: 95000,
         description:
@@ -531,13 +566,14 @@ module.exports = {
         publicComName: "Nhã Nam",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Hà Thanh Xuân",
         name: "Đường dẫn tới trái tim",
         image:
-          "https://salt.tikicdn.com/cache/w1200/media/catalog/product/d/u/duong-den-trai-tim-b.jpg",
+          "http://salt.tikicdn.com/cache/w1200/media/catalog/product/d/u/duong-den-trai-tim-b.jpg",
         numberOfVolumes: 1,
         price: 69000,
         description:
@@ -546,13 +582,14 @@ module.exports = {
         publicComName: "Văn Học",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 5,
         authorName: "Ngô Thị Thu Hiền",
         name: "Em là của anh",
         image:
-          "https://www.dtv-ebook.com/images/files_2/2020/em-la-tieu-tien-nu-cua-anh-ma-ma.jpg",
+          "http://www.dtv-ebook.com/images/files_2/2020/em-la-tieu-tien-nu-cua-anh-ma-ma.jpg",
         numberOfVolumes: 1,
         price: 75000,
         description:
@@ -561,13 +598,14 @@ module.exports = {
         publicComName: "NXB Trẻ",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/1_cee005f9445e4f0cb6ce022836687b29_master.jpg",
+          "http://product.hstatic.net/200000343865/product/1_cee005f9445e4f0cb6ce022836687b29_master.jpg",
         numberOfVolumes: 1,
         price: 24000,
         description:
@@ -576,13 +614,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://cdn0.fahasa.com/media/catalog/product/8/9/8935244866070.jpg",
+          "http://cdn0.fahasa.com/media/catalog/product/8/9/8935244866070.jpg",
         numberOfVolumes: 2,
         price: 24000,
         description:
@@ -591,13 +630,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/3_dfbf25d2374747e09b6ea9eb66fdc383_master.jpg",
+          "http://product.hstatic.net/200000343865/product/3_dfbf25d2374747e09b6ea9eb66fdc383_master.jpg",
         numberOfVolumes: 3,
         price: 24000,
         description:
@@ -606,13 +646,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/4_a6ad7162bf3e490490ea16451271f224_master.jpg",
+          "http://product.hstatic.net/200000343865/product/4_a6ad7162bf3e490490ea16451271f224_master.jpg",
         numberOfVolumes: 4,
         price: 24000,
         description:
@@ -621,13 +662,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/5_876a56255f51488cb31a2536b3e939e4_master.jpg",
+          "http://product.hstatic.net/200000343865/product/5_876a56255f51488cb31a2536b3e939e4_master.jpg",
         numberOfVolumes: 5,
         price: 24000,
         description:
@@ -636,13 +678,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/6_d65f40f09e8f4b55ac75e5e9f21cc668_master.jpg",
+          "http://product.hstatic.net/200000343865/product/6_d65f40f09e8f4b55ac75e5e9f21cc668_master.jpg",
         numberOfVolumes: 6,
         price: 24000,
         description:
@@ -651,13 +694,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/7_d21928fafac94e51bfc782d350f95667_master.jpg",
+          "http://product.hstatic.net/200000343865/product/7_d21928fafac94e51bfc782d350f95667_master.jpg",
         numberOfVolumes: 7,
         price: 24000,
         description:
@@ -666,13 +710,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/8_3a2c21c976484c7eba122414a95ddc41_master.jpg",
+          "http://product.hstatic.net/200000343865/product/8_3a2c21c976484c7eba122414a95ddc41_master.jpg",
         numberOfVolumes: 8,
         price: 24000,
         description:
@@ -681,13 +726,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/9_ee14cec4b66743f0830ccb77de0b511b_master.jpg",
+          "http://product.hstatic.net/200000343865/product/9_ee14cec4b66743f0830ccb77de0b511b_master.jpg",
         numberOfVolumes: 9,
         price: 24000,
         description:
@@ -696,13 +742,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "https://product.hstatic.net/200000343865/product/10_2ed5949756af4d64af3dd67b7647760c_master.jpg",
+          "http://product.hstatic.net/200000343865/product/10_2ed5949756af4d64af3dd67b7647760c_master.jpg",
         numberOfVolumes: 10,
         price: 24000,
         description:
@@ -711,13 +758,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://product.hstatic.net/200000343865/product/1_cd3e91d598a942589a0c7cc6fde58b0b_master.jpg",
+          "http://product.hstatic.net/200000343865/product/1_cd3e91d598a942589a0c7cc6fde58b0b_master.jpg",
         numberOfVolumes: 1,
         price: 26000,
         description:
@@ -726,13 +774,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://product.hstatic.net/200000343865/product/2_7c49f80cdc1c48b9a483d9d66fd684c4_master.jpg",
+          "http://product.hstatic.net/200000343865/product/2_7c49f80cdc1c48b9a483d9d66fd684c4_master.jpg",
         numberOfVolumes: 2,
         price: 26000,
         description:
@@ -741,13 +790,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://product.hstatic.net/200000343865/product/3_912467d61ee04b30a50deadf25e82bf4_master.jpg",
+          "http://product.hstatic.net/200000343865/product/3_912467d61ee04b30a50deadf25e82bf4_master.jpg",
         numberOfVolumes: 3,
         price: 26000,
         description:
@@ -756,13 +806,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "children",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://product.hstatic.net/200000343865/product/4_2ec81a14202a4aeaba89708a0f3a74cd_master.jpg",
+          "http://product.hstatic.net/200000343865/product/4_2ec81a14202a4aeaba89708a0f3a74cd_master.jpg",
         numberOfVolumes: 4,
         price: 26000,
         description:
@@ -771,13 +822,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/5-89.jpg?v=1594705946187",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/5-89.jpg?v=1594705946187",
         numberOfVolumes: 5,
         price: 26000,
         description:
@@ -786,13 +838,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/6-23.jpg?v=1594705947123",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/6-23.jpg?v=1594705947123",
         numberOfVolumes: 6,
         price: 26000,
         description:
@@ -801,13 +854,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/7-39.jpg?v=1594705948167",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/7-39.jpg?v=1594705948167",
         numberOfVolumes: 7,
         price: 26000,
         description:
@@ -816,13 +870,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/8-8.jpg?v=1594705949967",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/8-8.jpg?v=1594705949967",
         numberOfVolumes: 8,
         price: 26000,
         description:
@@ -831,13 +886,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/9-32.jpg?v=1594705950897",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/9-32.jpg?v=1594705950897",
         numberOfVolumes: 9,
         price: 26000,
         description:
@@ -846,13 +902,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Eiichiro Oda",
         name: "One Piece",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/10-47.jpg?v=1594705951763",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/10-47.jpg?v=1594705951763",
         numberOfVolumes: 10,
         price: 26000,
         description:
@@ -861,13 +918,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/1-172.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/1-172.jpg?v=1594714163783",
         numberOfVolumes: 1,
         price: 25000,
         description:
@@ -876,13 +934,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/20200714-141617.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/20200714-141617.jpg?v=1594714163783",
         numberOfVolumes: 2,
         price: 25000,
         description:
@@ -891,13 +950,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/3-177.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/3-177.jpg?v=1594714163783",
         numberOfVolumes: 3,
         price: 25000,
         description:
@@ -906,13 +966,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/4-68.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/4-68.jpg?v=1594714163783",
         numberOfVolumes: 4,
         price: 25000,
         description:
@@ -921,13 +982,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/5-67.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/5-67.jpg?v=1594714163783",
         numberOfVolumes: 5,
         price: 25000,
         description:
@@ -936,13 +998,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/6-56.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/6-56.jpg?v=1594714163783",
         numberOfVolumes: 6,
         price: 25000,
         description:
@@ -951,13 +1014,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/7-38.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/7-38.jpg?v=1594714163783",
         numberOfVolumes: 7,
         price: 25000,
         description:
@@ -966,13 +1030,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/8-51.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/8-51.jpg?v=1594714163783",
         numberOfVolumes: 8,
         price: 25000,
         description:
@@ -981,13 +1046,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/9-41.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/9-41.jpg?v=1594714163783",
         numberOfVolumes: 9,
         price: 25000,
         description:
@@ -996,13 +1062,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Akira Toriyama",
         name: "Bảy Viên Ngọc Rồng",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/10-17.jpg?v=1594714163783",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/10-17.jpg?v=1594714163783",
         numberOfVolumes: 10,
         price: 25000,
         description:
@@ -1011,13 +1078,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/11-21.jpg?v=1594633914983",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/11-21.jpg?v=1594633914983",
         numberOfVolumes: 11,
         price: 25000,
         description:
@@ -1026,13 +1094,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/12-55.jpg?v=1594633916257",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/12-55.jpg?v=1594633916257",
         numberOfVolumes: 12,
         price: 25000,
         description:
@@ -1041,13 +1110,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/13-42.jpg?v=1594633918183",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/13-42.jpg?v=1594633918183",
         numberOfVolumes: 13,
         price: 25000,
         description:
@@ -1056,13 +1126,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/anh-bia-4.jpg?v=1594633918827",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/anh-bia-4.jpg?v=1594633918827",
         numberOfVolumes: 14,
         price: 25000,
         description:
@@ -1071,13 +1142,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/15-45.jpg?v=1594633919790",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/15-45.jpg?v=1594633919790",
         numberOfVolumes: 15,
         price: 25000,
         description:
@@ -1086,13 +1158,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/16-8.jpg?v=1594633920590",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/16-8.jpg?v=1594633920590",
         numberOfVolumes: 16,
         price: 25000,
         description:
@@ -1101,13 +1174,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/17-21.jpg?v=1594633921007",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/17-21.jpg?v=1594633921007",
         numberOfVolumes: 17,
         price: 25000,
         description:
@@ -1116,13 +1190,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/18-42.jpg?v=1594633921960",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/18-42.jpg?v=1594633921960",
         numberOfVolumes: 18,
         price: 25000,
         description:
@@ -1131,13 +1206,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/19-31.jpg?v=1594633922893",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/19-31.jpg?v=1594633922893",
         numberOfVolumes: 19,
         price: 25000,
         description:
@@ -1146,13 +1222,14 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
       {
         id_type: 6,
         authorName: "Gosho Aoyama",
         name: "Thảm Tử Lừng Danh Conan",
         image:
-          "https://bizweb.dktcdn.net/thumb/large/100/386/441/products/20-33.jpg?v=1594633923763",
+          "http://bizweb.dktcdn.net/thumb/large/100/386/441/products/20-33.jpg?v=1594633923763",
         numberOfVolumes: 20,
         price: 25000,
         description:
@@ -1161,6 +1238,7 @@ module.exports = {
         publicComName: "Kim Đồng",
         language: "Tiếng Việt",
         quantity: 50,
+        style: "academic",
       },
     ]);
   },

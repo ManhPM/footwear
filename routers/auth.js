@@ -31,9 +31,9 @@ userRouter.get("/active", active);
 userRouter.post("/forgotpassword/success", accessForgotPassword);
 userRouter.post("/forgotpasword/verify", verify);
 userRouter.post("/forgotpassword", forgotPassword);
-userRouter.post("/changepassword", authenticate, changePassword);
+userRouter.put("/changepassword", authenticate, changePassword);
 userRouter.get("/logout", authenticate, logout);
-userRouter.post(
+userRouter.put(
   "/updateprofile",
   authenticate,
   checkExistPhoneNum,

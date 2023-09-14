@@ -42,6 +42,7 @@ module.exports = {
       description: Sequelize.STRING,
       publicDate: Sequelize.DATE,
       publicComName: Sequelize.STRING,
+      style: Sequelize.STRING,
       status: {
         type: Sequelize.INTEGER,
         defaultValue: 1,

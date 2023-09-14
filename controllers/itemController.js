@@ -3,6 +3,7 @@ const { exec } = require("child_process");
 const path = require("path");
 const { QueryTypes } = require("sequelize");
 const sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 const { Op } = sequelize;
 
 const createItem = async (req, res) => {
@@ -17,6 +18,7 @@ const createItem = async (req, res) => {
     description,
     publicDate,
     publicComName,
+    style,
   } = req.body;
   try {
     await Item.create({
@@ -30,6 +32,7 @@ const createItem = async (req, res) => {
       description,
       publicDate,
       publicComName,
+      style,
       quantity: 0,
       status: 1,
     });
@@ -51,6 +54,7 @@ const updateItem = async (req, res) => {
     description,
     publicDate,
     publicComName,
+    style,
   } = req.body;
   try {
     const update = await Item.findOne({
@@ -67,6 +71,7 @@ const updateItem = async (req, res) => {
     update.publicDate = publicDate;
     update.publicComName = publicComName;
     update.language = language;
+    update.style = style;
     await update.save();
     res.status(201).json({
       message: "Cập nhật thành công!",
@@ -257,13 +262,14 @@ const sanPhamLienQuan = async (req, res) => {
   }
 };
 
-const bookRecommendation = async (req, res) => {
+const bookRecommendationCF = async (req, res) => {
   const id_user = req.user.id;
   try {
     var modifiedString;
     var arrayFromString = [];
-    const getData = path.join(__dirname, "..") + "\\getData.py";
-    const getRecommendation = path.join(__dirname, "..") + `\\CF.py ${id_user}`;
+    const getData = path.join(__dirname, "..") + "\\python\\getData.py";
+    const getRecommendation =
+      path.join(__dirname, "..") + `\\python\\CF.py ${id_user}`;
     const runGetData = new Promise((resolve, reject) => {
       exec(`python ${getData}`, (error, stdout, stderr) => {
         if (error) {
@@ -293,6 +299,39 @@ const bookRecommendation = async (req, res) => {
           [Op.in]: arrayFromString,
         },
       },
+    });
+    res.status(200).json({ data: books });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const bookRecommendationSVM = async (req, res) => {
+  const ans = req.body.ans;
+  try {
+    var style = "";
+    const getData =
+      path.join(__dirname, "..") +
+      "\\python\\testModel.py" +
+      ` ${ans[0]} ${ans[1]} ${ans[2]} ${ans[3]} ${ans[4]} ${ans[5]} ${ans[6]} ${ans[7]} ${ans[8]}`;
+    const runGetRecommendation = new Promise((resolve, reject) => {
+      exec(`python ${getData}`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Lỗi khi chạy câu lệnh 1: ${error.message}`);
+          reject(error);
+        }
+        style = stdout.substring(0, stdout.length - 2);
+        resolve();
+      });
+    });
+    // Chạy hai câu lệnh python đồng bộ
+    await Promise.all([runGetRecommendation]);
+    console.log(style);
+    const books = await Item.findAll({
+      where: {
+        style: style,
+      },
+      order: Sequelize.literal("rand()"),
     });
     res.status(200).json({ data: books });
   } catch (error) {
@@ -344,5 +383,6 @@ module.exports = {
   updateItem,
   deleteItem,
   sanPhamLienQuan,
-  bookRecommendation,
+  bookRecommendationCF,
+  bookRecommendationSVM,
 };

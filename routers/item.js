@@ -7,7 +7,8 @@ const {
   getDetailItem,
   updateItem,
   sanPhamLienQuan,
-  bookRecommendation,
+  bookRecommendationCF,
+  bookRecommendationSVM,
 } = require("../controllers/itemController");
 const { authenticate, authorize } = require("../middlewares/auth");
 const { checkCreateItem } = require("../middlewares/checkCreate");
@@ -19,7 +20,8 @@ const {
 const itemRouter = express.Router();
 
 itemRouter.get("/", getAllItem);
-itemRouter.get("/recommendation", authenticate, bookRecommendation);
+itemRouter.get("/cfrecommendation", authenticate, bookRecommendationCF);
+itemRouter.get("/svmrecommendation", authenticate, bookRecommendationSVM);
 itemRouter.get("/sanphamlienquan/:id_item", checkExistItem, sanPhamLienQuan);
 itemRouter.get(
   "/import/:id_i_invoice",
