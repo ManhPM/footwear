@@ -24,7 +24,7 @@ module.exports = {
         authorName: "Jane Austen",
         name: "Pride and Prejudice",
         image:
-          "http://m.media-amazon.com/images/M/MV5BMTA1NDQ3NTcyOTNeQTJeQWpwZ15BbWU3MDA0MzA4MzE@._V1_.jpg",
+          "https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781499806250/pride-and-prejudice-9781499806250_hr.jpg",
         numberOfVolumes: 1,
         price: 25000,
         description:
@@ -40,7 +40,7 @@ module.exports = {
         authorName: "Jojo Moyes",
         name: "Me Before You",
         image:
-          "http://m.media-amazon.com/images/M/MV5BMTQ2NjE4NDE2NV5BMl5BanBnXkFtZTgwOTcwNDE5NzE@._V1_.jpg",
+          "https://salt.tikicdn.com/cache/w1200/ts/product/02/68/94/8ac980202b4d1fd0db204098e8bc68ae.jpg",
         numberOfVolumes: 1,
         price: 135000,
         description:
@@ -56,7 +56,7 @@ module.exports = {
         authorName: "Rainbow Rowell",
         name: "Eleanor & Park",
         image:
-          "http://m.media-amazon.com/images/I/71CY50T1sML._AC_UF1000,1000_QL80_.jpg",
+          "https://cdn.kobo.com/book-images/e2991b28-2602-4a4f-b653-0f1e243f0bac/1200/1200/False/eleanor-park.jpg",
         numberOfVolumes: 1,
         price: 99000,
         description:
@@ -72,7 +72,7 @@ module.exports = {
         authorName: "Colleen Hoover",
         name: "It Ends with Us",
         image:
-          "http://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1688011813i/27362503.jpg",
+          "https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781398520783/it-ends-with-us-special-edition-9781398520783_hr.jpg",
         numberOfVolumes: 1,
         price: 155000,
         description:
@@ -149,7 +149,7 @@ module.exports = {
         authorName: "Jenny Han",
         name: "To All the Boys I've Loved Before",
         image:
-          "http://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1372086100i/15749186.jpg",
+          "https://prodimage.images-bn.com/pimages/9781534438378_p0_v4_s1200x630.jpg",
         numberOfVolumes: 1,
         price: 95000,
         description:
@@ -165,7 +165,7 @@ module.exports = {
         authorName: "Frank Herbert",
         name: "Dune",
         image:
-          "http://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1555447414i/44767458.jpg",
+          "https://www.elleman.vn/wp-content/uploads/2021/11/16/206244/tieu-thuyet-Dune-elle-man-1.jpeg",
         numberOfVolumes: 1,
         price: 200000,
         description:
@@ -180,7 +180,8 @@ module.exports = {
         id_type: 2,
         authorName: "Isaac Asimov",
         name: "Foundation",
-        image: "http://m.media-amazon.com/images/I/41TZKBUS7PL.jpg",
+        image:
+          "https://down-vn.img.susercontent.com/file/1825783fca92fbe9d42c6c89dc662187",
         numberOfVolumes: 1,
         price: 180000,
         description:
@@ -195,8 +196,7 @@ module.exports = {
         id_type: 2,
         authorName: "Philip K. Dick",
         name: "Do Androids Dream of Electric Sheep?",
-        image:
-          "http://m.media-amazon.com/images/I/71uN5sUHXiL._AC_UF894,1000_QL80_.jpg",
+        image: "https://cdn-amz.woka.io/images/I/91A+jbtrOUL.jpg",
         numberOfVolumes: 1,
         price: 150000,
         description:
@@ -228,7 +228,7 @@ module.exports = {
         authorName: "Margaret Atwood",
         name: "The Handmaid's Tale",
         image:
-          "http://m.media-amazon.com/images/I/71mfL5OGNNL._AC_UF894,1000_QL80_.jpg",
+          "https://bizweb.dktcdn.net/thumb/grande/100/378/470/products/the-handmaid-s-tale-paperback-12-sept-2005-uk.jpg?v=1669349958437",
         numberOfVolumes: 1,
         price: 160000,
         description:
@@ -243,7 +243,8 @@ module.exports = {
         id_type: 3,
         authorName: "J.K. Rowling",
         name: "Harry Potter",
-        image: "http://m.media-amazon.com/images/I/51Ppi-8kISL.jpg",
+        image:
+          "https://isach.info/images/story/cover/harry_potter_va_hon_da_phu_thuy__j_k_rowling.jpg",
         numberOfVolumes: 1,
         price: 250000,
         description:
@@ -259,7 +260,7 @@ module.exports = {
         authorName: "J.K. Rowling",
         name: "Harry Potter",
         image:
-          "http://static.wikia.nocookie.net/harrypotter/images/6/6d/Chamber_of_Secrets_New_UK_Cover.jpg/revision/latest?cb=20170109045927",
+          "https://salt.tikicdn.com/media/catalog/product/h/a/harry_2a.jpg",
         numberOfVolumes: 2,
         price: 250000,
         description:
@@ -291,7 +292,7 @@ module.exports = {
         authorName: "J.K. Rowling",
         name: "Harry Potter",
         image:
-          "http://static.wikia.nocookie.net/harrypotter/images/a/a3/Goblet_of_Fire_New_Cover.jpg/revision/latest?cb=20170109054633",
+          "https://www.nxbtre.com.vn/Images/Book/nxbtre_full_15282020_102828.jpg",
         numberOfVolumes: 4,
         price: 250000,
         description:
@@ -321,7 +322,7 @@ module.exports = {
       {
         id_type: 3,
         authorName: "J.K. Rowling",
-        name: "Harry Potter Hoàng Tử Lai",
+        name: "Harry Potter",
         image: "http://cdn-amz.woka.io/images/I/A1clNOpnpNL.jpg",
         numberOfVolumes: 6,
         price: 250000,
@@ -336,9 +337,9 @@ module.exports = {
       {
         id_type: 3,
         authorName: "J.K. Rowling",
-        name: "Harry Potter và Bảo Bối Tử Thần",
+        name: "Harry Potter",
         image:
-          "http://static.wikia.nocookie.net/harrypotter/images/d/da/Deathly_Hallows_New_Cover.jpg/revision/latest?cb=20170109054859",
+          "https://salt.tikicdn.com/cache/w1200/ts/product/27/bf/5f/5fb473ebdb208a76d2774c5efd03d492.jpg",
         numberOfVolumes: 7,
         price: 250000,
         description:
@@ -353,7 +354,8 @@ module.exports = {
         id_type: 3,
         authorName: "Brent Weeks",
         name: "Chiến Binh Bóng Tối",
-        image: "link_hinh_anh",
+        image:
+          "https://sach.astral.vn/wp-content/uploads/2022/12/overlord_2_-_bia1_1.jpg",
         numberOfVolumes: 3,
         price: 250000,
         description:
@@ -368,7 +370,8 @@ module.exports = {
         id_type: 3,
         authorName: "Susan Hill",
         name: "Bóng Ma Trong Gương",
-        image: "link_hinh_anh",
+        image:
+          "https://salt.tikicdn.com/cache/w1200/media/catalog/product/b/o/bong_ma_trong_guong1.jpg",
         numberOfVolumes: 1,
         price: 199000,
         description:
@@ -383,7 +386,8 @@ module.exports = {
         id_type: 3,
         authorName: "Carlos Ruiz Zafón",
         name: "Thành Phố Mất Tích",
-        image: "link_hinh_anh",
+        image:
+          "https://bizweb.dktcdn.net/100/286/341/products/2-faar-thanh-pho-mat-tich.jpg?v=1552545960727",
         numberOfVolumes: 4,
         price: 188000,
         description:
@@ -398,7 +402,8 @@ module.exports = {
         id_type: 3,
         authorName: "Diana Gabaldon",
         name: "Vòng Tròn Lửa",
-        image: "link_hinh_anh",
+        image:
+          "https://cdn0.fahasa.com/media/catalog/product/8/9/8935278606642_1.jpg",
         numberOfVolumes: 8,
         price: 178000,
         description:
@@ -413,7 +418,8 @@ module.exports = {
         id_type: 4,
         authorName: "Yuval Noah Harari",
         name: "Sapiens: Lược sử Loài Người",
-        image: "link_hinh_anh",
+        image:
+          "https://bizweb.dktcdn.net/100/197/269/products/sapiens-luoc-su-ve-loai-nguoi-outline-5-7-2017-02.jpg?v=1520935327270",
         numberOfVolumes: 1,
         price: 200000,
         description:
@@ -445,7 +451,7 @@ module.exports = {
         authorName: "Edward W. Said",
         name: "Orientalism",
         image:
-          "http://m.media-amazon.com/images/I/81rkFz0VJ-L._AC_UF1000,1000_QL80_.jpg",
+          "https://product.hstatic.net/200000090679/product/9783848003174_52087a9d539d4b29add4423a525af43b_large.jpg",
         numberOfVolumes: 1,
         price: 180000,
         description:
@@ -477,7 +483,7 @@ module.exports = {
         authorName: "Robert Putnam",
         name: "Bowling Alone: America's Declining Social Capital",
         image:
-          "http://m.media-amazon.com/images/I/71mpOLYTQML._AC_UF1000,1000_QL80_.jpg",
+          "https://upload.wikimedia.org/wikipedia/en/f/f5/Bowling_Alone.jpg",
         numberOfVolumes: 1,
         price: 150000,
         description:
@@ -621,7 +627,7 @@ module.exports = {
         authorName: "Masashi Kishimoto",
         name: "Naruto",
         image:
-          "http://cdn0.fahasa.com/media/catalog/product/8/9/8935244866070.jpg",
+          "https://upload.wikimedia.org/wikipedia/vi/c/c7/Naruto_Volume_1_manga_cover.jpg",
         numberOfVolumes: 2,
         price: 24000,
         description:

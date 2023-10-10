@@ -27,7 +27,7 @@ const getAllOrder = async (req, res) => {
       const { status } = req.query;
       if (status) {
         const orderList = await Order.sequelize.query(
-          "SELECT O.*, P.name as name_payment FROM orders as O, payment_methods as P WHERE P.id_payment = O.id_payment AND O.status = :status ORDER BY O.id_order DESC",
+          "SELECT O.*, U.fullName, P.name as name_payment FROM orders as O, users as U, payment_methods as P WHERE P.id_payment = O.id_payment AND U.id_user = O.id_user AND O.status = :status ORDER BY O.id_order DESC",
           {
             replacements: { status: status },
             type: QueryTypes.SELECT,
@@ -37,7 +37,7 @@ const getAllOrder = async (req, res) => {
         res.status(200).json({ data: orderList });
       } else {
         const orderList = await Order.sequelize.query(
-          "SELECT O.*, P.name as name_payment FROM orders as O, payment_methods as P WHERE P.id_payment = O.id_payment ORDER BY O.id_order DESC",
+          "SELECT O.*, U.fullName, P.name as name_payment FROM orders as O, users as U, payment_methods as P WHERE P.id_payment = O.id_payment AND U.id_user = O.id_user ORDER BY O.id_order DESC",
           {
             type: QueryTypes.SELECT,
             raw: true,
@@ -46,20 +46,6 @@ const getAllOrder = async (req, res) => {
         res.status(200).json({ data: orderList });
       }
     }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getAllOrderForShipper = async (req, res) => {
-  try {
-    const orderList = await Order.sequelize.query(
-      "SELECT O.*, P.name as name_payment FROM orders as O, payment_methods as P WHERE P.id_payment = O.id_payment AND O.status = 1 ORDER BY O.id_order ASC",
-      {
-        type: QueryTypes.SELECT,
-      }
-    );
-    res.status(200).json({ data: orderList });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -114,14 +100,14 @@ const getAllItemInOrder = async (req, res) => {
   const { id_order } = req.params;
   try {
     const itemList = await Order.sequelize.query(
-      "SELECT OD.*, I.image, I.name, I.price, (I.price*OD.quantity) as amount FROM orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.id_order = :id_order",
+      "SELECT OD.*, I.numberOfVolumes, I.image, I.name, I.price, (I.price*OD.quantity) as amount FROM orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.id_order = :id_order",
       {
         replacements: { id_order: id_order },
         type: QueryTypes.SELECT,
       }
     );
     const order = await Order.sequelize.query(
-      "SELECT O.*, P.name as name_payment FROM orders as O, payment_methods as P WHERE P.id_payment = O.id_payment AND O.id_order = :id_order",
+      "SELECT O.*, U.fullName, P.name as name_payment FROM orders as O, users as U, payment_methods as P WHERE P.id_payment = O.id_payment AND U.id_user = O.id_user AND O.id_order = :id_order",
       {
         replacements: { id_order: id_order },
         type: QueryTypes.SELECT,
@@ -225,102 +211,53 @@ const cancelOrder = async (req, res) => {
   }
 };
 
-const thongKeSanPhamAdmin = async (req, res) => {
-  const { tuNgay, denNgay, id_store } = req.query;
+const thongKeSanPham = async (req, res) => {
+  const { tuNgay, denNgay } = req.query;
+  console.log(tuNgay !== undefined);
   try {
-    if (tuNgay && denNgay) {
+    if (tuNgay !== undefined && denNgay !== undefined) {
       // Thống kê từ ngày tuNgay đến ngày denNgay
       const thongKe = await Order_detail.sequelize.query(
-        "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0 AND orders.time_order BETWEEN :tuNgay AND :denNgay) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0 AND orders.time_order BETWEEN :tuNgay AND :denNgay) as total, I.*, T.name AS name_type FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store AND O.time_order BETWEEN :tuNgay AND :denNgay GROUP BY I.id_item ORDER BY sold DESC",
+        "SELECT I.image, I.id_item, I.numberOfVolumes, I.name, I.price, (SELECT IFNULL(SUM(order_details.quantity),0) FROM order_details WHERE id_item = I.id_item) as sold, (SELECT IFNULL(SUM(order_details.quantity*I.price),0) FROM order_details WHERE id_item = I.id_item) as total FROM items as I, order_details as OD, orders as O WHERE O.status = 4 AND O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.time_order BETWEEN :tuNgay AND :denNgay GROUP BY I.id_item ORDER BY total DESC",
         {
           replacements: {
             tuNgay: `${tuNgay}`,
             denNgay: `${denNgay}`,
-            id_store: id_store,
           },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(200).json({ itemList: thongKe });
-    } else {
-      // Thống kê từ trước đến nay
-      const thongKe = await Order_detail.sequelize.query(
-        "SELECT (SELECT SUM(order_details.quantity) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as sold, (SELECT (SUM(order_details.quantity)*items.price) FROM items, order_details, orders where order_details.id_item = I.id_item AND order_details.id_order = orders.id_order AND orders.status = 4 AND orders.id_store = :id_store AND order_details.id_item = items.id_item AND items.status != 0) as total, I.*, T.name AS name_type FROM items as I, order_details as OD, types as T, orders as O WHERE OD.id_item = I.id_item AND O.id_order = OD.id_order AND T.id_type = I.id_type AND T.id_type != 4 AND I.status != 0 AND O.status = 4 AND O.id_store = :id_store GROUP BY I.id_item ORDER BY sold DESC",
+      const total = await Order_detail.sequelize.query(
+        "SELECT SUM(OD.quantity*I.price) as total FROM items as I, order_details as OD, orders as O WHERE O.status = 4 AND O.id_order = OD.id_order AND OD.id_item = I.id_item AND O.time_order BETWEEN :tuNgay AND :denNgay",
         {
-          replacements: { id_store: id_store },
+          replacements: {
+            tuNgay: `${tuNgay}`,
+            denNgay: `${denNgay}`,
+          },
           type: QueryTypes.SELECT,
           raw: true,
         }
       );
-      res.status(200).json({ itemList: thongKe });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const thongKeDonHangAdmin = async (req, res) => {
-  const { tuNgay, denNgay, status, id_store } = req.query;
-  try {
-    if (tuNgay && denNgay) {
-      if (status) {
-        // Thống kê từ ngày tuNgay đến ngày denNgay với status
-        const orderList = await Order_detail.sequelize.query(
-          "SELECT O.id_order, SP.name as name_shipping_partner, O.total, O.item_fee, O.delivery_fee, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, O.description, O.status, P.name as name_payment, C.name as name_customer FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.time_order BETWEEN :tuNgay AND :denNgay AND O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner AND O.status = :status",
-          {
-            replacements: {
-              tuNgay: `${tuNgay}`,
-              denNgay: `${denNgay}`,
-              status: status,
-              id_store: id_store,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(200).json({
-          orderList,
-        });
-      } else {
-        // Thống kê từ ngày tuNgay đến ngày denNgay
-        const orderList = await Order_detail.sequelize.query(
-          "SELECT O.id_order, SP.name as name_shipping_partner, O.total, O.item_fee, O.delivery_fee, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, O.description, O.status, P.name as name_payment, C.name as name_customer FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.time_order BETWEEN :tuNgay AND :denNgay AND O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner",
-          {
-            replacements: {
-              tuNgay: `${tuNgay}`,
-              denNgay: `${denNgay}`,
-              id_store: id_store,
-            },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(200).json({ data: orderList });
-      }
+      res.status(200).json({ data: thongKe, total: total[0].total });
     } else {
+      console.log("clm");
       // Thống kê từ trước đến nay
-      if (status) {
-        const orderList = await Order_detail.sequelize.query(
-          "SELECT O.id_order, SP.name as name_shipping_partner, O.total, O.item_fee, O.delivery_fee, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, O.description, O.status, P.name as name_payment, C.name as name_customer FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner AND O.status = :status",
-          {
-            replacements: { status: status, id_store: id_store },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(200).json({ data: orderList });
-      } else {
-        const orderList = await Order_detail.sequelize.query(
-          "SELECT O.id_order, SP.name as name_shipping_partner, O.total, O.item_fee, O.delivery_fee, DATE_FORMAT(O.time_order, '%d/%m/%Y %H:%i') as time_order, DATE_FORMAT(O.time_confirm, '%d/%m/%Y %H:%i') as time_confirm, DATE_FORMAT(O.time_shipper_receive, '%d/%m/%Y %H:%i') as time_shipper_receive, DATE_FORMAT(O.time_shipper_delivered, '%d/%m/%Y %H:%i') as time_shipper_delivered, O.description, O.status, P.name as name_payment, C.name as name_customer FROM orders as O, customers as C, payment_methods as P, shipping_partners as SP WHERE O.id_store = :id_store AND O.id_payment = P.id_payment AND O.id_customer = C.id_customer AND O.id_shipping_partner = SP.id_shipping_partner",
-          {
-            replacements: { id_store: id_store },
-            type: QueryTypes.SELECT,
-            raw: true,
-          }
-        );
-        res.status(200).json({ data: orderList });
-      }
+      const thongKe = await Order_detail.sequelize.query(
+        "SELECT I.image, I.id_item, I.numberOfVolumes, I.name, I.price, (SELECT IFNULL(SUM(order_details.quantity),0) FROM order_details WHERE id_item = I.id_item) as sold, (SELECT IFNULL(SUM(order_details.quantity*I.price),0) FROM order_details WHERE id_item = I.id_item) as total FROM items as I, order_details as OD, orders as O WHERE O.status = 4 AND O.id_order = OD.id_order AND OD.id_item = I.id_item GROUP BY I.id_item ORDER BY total DESC",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      const total = await Order_detail.sequelize.query(
+        "SELECT SUM(OD.quantity*I.price) as total FROM items as I, order_details as OD, orders as O WHERE O.status = 4 AND O.id_order = OD.id_order AND OD.id_item = I.id_item",
+        {
+          type: QueryTypes.SELECT,
+          raw: true,
+        }
+      );
+      res.status(200).json({ data: thongKe, total: total[0].total });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -330,10 +267,8 @@ const thongKeDonHangAdmin = async (req, res) => {
 module.exports = {
   getAllOrder,
   getAllItemInOrder,
-  getAllOrderForShipper,
   confirmOrder,
   cancelOrder,
   receiveOrder,
-  thongKeDonHangAdmin,
-  thongKeSanPhamAdmin,
+  thongKeSanPham,
 };

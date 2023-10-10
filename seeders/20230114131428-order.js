@@ -65,7 +65,6 @@ module.exports = {
         item_fee: 305000,
         total: 305000,
         status: 4,
-        time_order: date,
       },
     ]);
   },

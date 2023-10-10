@@ -3,6 +3,7 @@ const { Sequelize } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const register = async (req, res) => {
   const { username, password, fullName, email, phone, address } = req.body;
@@ -11,7 +12,7 @@ const register = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     //mã hoá salt + password
     const hashPassword = bcrypt.hashSync(password, salt);
-    const randomID = Math.floor(100000 + Math.random() * 999999);
+    const randomID = Math.floor(100000 + Math.random() * 900000);
     const user = await User.create({
       username,
       id_role: 1,
@@ -486,7 +487,7 @@ const forgotPassword = async (req, res) => {
       },
     });
     if (user) {
-      const randomID = Math.floor(100000 + Math.random() * 999999);
+      const randomID = Math.floor(100000 + Math.random() * 900000);
       user.forgot = randomID;
       await user.save();
       let transporter = nodemailer.createTransport({
@@ -987,12 +988,22 @@ const accessForgotPassword = async (req, res, next) => {
 const login = async (req, res) => {
   try {
     const username = req.body.username;
-    const user = await User.findOne({
-      where: {
-        username,
-        isActive: 1,
-      },
-    });
+    let user;
+    if (req.body.flag == "admin") {
+      user = await User.findOne({
+        where: {
+          username,
+          role: ["Admin", "Nhân viên"],
+        },
+      });
+    } else {
+      user = await User.findOne({
+        where: {
+          username,
+          isActive: 1,
+        },
+      });
+    }
     if (user) {
       const checkCorrectPassword = await bcrypt.compare(
         req.body.password,
@@ -1005,7 +1016,9 @@ const login = async (req, res) => {
           where: {
             username,
           },
-          attributes: { exclude: ["password", "verifyID", "activeID"] },
+          attributes: {
+            exclude: ["password", "verifyID", "activeID", "isActive"],
+          },
         });
         const token = jwt.sign(
           { id: user.id_user, role: user.role },

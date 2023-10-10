@@ -4,10 +4,8 @@ const {
   confirmOrder,
   getAllItemInOrder,
   getAllOrder,
-  getAllOrderForShipper,
   receiveOrder,
-  thongKeDonHangAdmin,
-  thongKeSanPhamAdmin,
+  thongKeSanPham,
 } = require("../controllers/orderController");
 const { authenticate, authorize } = require("../middlewares/auth");
 
@@ -17,15 +15,9 @@ const orderRouter = express.Router();
 
 orderRouter.get("/", authenticate, getAllOrder);
 orderRouter.get(
-  "/ship",
-  authenticate,
-  authorize(["Giao hàng"]),
-  getAllOrderForShipper
-);
-orderRouter.get(
   "/receive/:id_order",
   authenticate,
-  authorize(["Giao hàng"]),
+  authorize(["Nhân viên"]),
   checkExistOrder,
   receiveOrder
 );
@@ -44,18 +36,7 @@ orderRouter.get(
   checkExistOrder,
   cancelOrder
 );
-// orderRouter.get(
-//   "/thongkesanpham/admin",
-//   authenticate,
-//   authorize(["Admin"]),
-//   thongKeSanPhamAdmin
-// );
-// orderRouter.get(
-//   "/thongkedonhang/admin",
-//   authenticate,
-//   authorize(["Admin"]),
-//   thongKeDonHangAdmin
-// );
+orderRouter.get("/thongke", authenticate, authorize(["Admin"]), thongKeSanPham);
 
 module.exports = {
   orderRouter,
