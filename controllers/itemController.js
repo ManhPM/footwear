@@ -332,7 +332,7 @@ const bookRecommendationSVM = async (req, res) => {
     const getData =
       path.join(__dirname, "..") +
       "\\python\\testModel.py" +
-      ` ${ans[0]} ${ans[1]} ${ans[2]} ${ans[3]} ${ans[4]} ${ans[5]} ${ans[6]} ${ans[7]} ${ans[8]}`;
+      ` ${ans[0]} ${ans[1]} ${ans[2]} ${ans[3]} ${ans[4]} ${ans[5]} ${ans[6]} ${ans[7]}`;
     const runGetRecommendation = new Promise((resolve, reject) => {
       exec(`python ${getData}`, (error, stdout, stderr) => {
         if (error) {
@@ -349,7 +349,7 @@ const bookRecommendationSVM = async (req, res) => {
     const books = await Item.findAll({
       where: {
         style: style,
-      },
+      },  
       order: Sequelize.literal("rand()"),
     });
     res.status(200).json({ data: books });

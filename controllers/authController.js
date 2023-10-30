@@ -411,7 +411,7 @@ const register = async (req, res) => {
 
 const logout = async (req, res, next) => {
   res
-    .clearCookie("access_token")
+    .clearCookie("accessToken")
     .status(200)
     .json({ message: "Đăng xuất thành công" });
 };
