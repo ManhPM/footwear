@@ -241,7 +241,6 @@ const thongKeSanPham = async (req, res) => {
       );
       res.status(200).json({ data: thongKe, total: total[0].total });
     } else {
-      console.log("clm");
       // Thống kê từ trước đến nay
       const thongKe = await Order_detail.sequelize.query(
         "SELECT I.image, I.id_item, I.numberOfVolumes, I.name, I.price, (SELECT IFNULL(SUM(order_details.quantity),0) FROM order_details WHERE id_item = I.id_item) as sold, (SELECT IFNULL(SUM(order_details.quantity*I.price),0) FROM order_details WHERE id_item = I.id_item) as total FROM items as I, order_details as OD, orders as O WHERE O.status = 4 AND O.id_order = OD.id_order AND OD.id_item = I.id_item GROUP BY I.id_item ORDER BY total DESC",

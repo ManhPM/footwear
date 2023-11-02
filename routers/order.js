@@ -17,7 +17,7 @@ orderRouter.get("/", authenticate, getAllOrder);
 orderRouter.get(
   "/receive/:id_order",
   authenticate,
-  authorize(["Nhân viên"]),
+  authorize(["Nhân viên", "Admin"]),
   checkExistOrder,
   receiveOrder
 );
@@ -25,14 +25,14 @@ orderRouter.get("/detail/:id_order", authenticate, getAllItemInOrder);
 orderRouter.get(
   "/confirm/:id_order",
   authenticate,
-  authorize(["Nhân viên"]),
+  authorize(["Nhân viên", "Admin"]),
   checkExistOrder,
   confirmOrder
 );
 orderRouter.get(
   "/cancel/:id_order",
   authenticate,
-  authorize(["Nhân viên", "Khách hàng"]),
+  authorize(["Nhân viên", "Admin", "Khách hàng"]),
   checkExistOrder,
   cancelOrder
 );

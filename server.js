@@ -2,6 +2,7 @@ const express = require("express");
 const { sequelize } = require("./models");
 const { rootRouter } = require("./routers");
 const cookieParser = require("cookie-parser");
+const XLSX = require("xlsx");
 
 const port = 4000;
 const app = express();
@@ -22,6 +23,56 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use("/api/v1", rootRouter);
+
+app.get("/api/v1/svm/recommendation", function (req, res) {
+  // Đọc file
+  const workbook = XLSX.readFile("svm.xlsx");
+  const sheet_name_list = workbook.SheetNames;
+  const worksheet = workbook.Sheets[sheet_name_list[0]];
+
+  // Lấy giá trị từ dòng 1 cột 1 và dòng 1 cột 2
+  const valueA1 = worksheet["A1"].v;
+
+  // Cập nhật giá trị của dòng 1 cột 1
+  worksheet["A1"].v = valueA1 + 1;
+
+  // Ghi lại file
+  XLSX.writeFile(workbook, "svm.xlsx");
+  res.status(200).json({ message: "OK" });
+});
+app.get("/api/v1/svm/recommendation/success", function (req, res) {
+  // Đọc file
+  const workbook = XLSX.readFile("svm.xlsx");
+  const sheet_name_list = workbook.SheetNames;
+  const worksheet = workbook.Sheets[sheet_name_list[0]];
+
+  // Lấy giá trị từ dòng 1 cột 1 và dòng 1 cột 2
+  const valueB1 = worksheet["B1"].v;
+
+  // Cập nhật giá trị của dòng 1 cột 1
+  worksheet["B1"].v = valueB1 + 1;
+
+  // Ghi lại file
+  XLSX.writeFile(workbook, "svm.xlsx");
+  res.status(200).json({ message: "OK" });
+});
+
+app.get("/api/v1/svm", function (req, res) {
+  // Đọc file
+  const workbook = XLSX.readFile("svm.xlsx");
+  const sheet_name_list = workbook.SheetNames;
+  const worksheet = workbook.Sheets[sheet_name_list[0]];
+
+  // Lấy giá trị từ dòng 1 cột 1 và dòng 1 cột 2
+  const valueA1 = worksheet["A1"].v;
+  const valueB1 = worksheet["B1"].v;
+
+  res.status(200).json({
+    totalRecommend: valueA1,
+    totalSuccess: valueB1,
+    percentSuccess: (valueB1 / valueA1) * 100,
+  });
+});
 
 //lắng nghe sự kiện kết nối
 app.listen(port, async () => {
