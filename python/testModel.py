@@ -21,6 +21,6 @@ df_test = pd.DataFrame({"c1": [int(c1)], "c2": [int(c2)], "c3": [int(c3)], "c4":
 # print(df_test.head())
 filename = 'lsvm.pkl'   
 load_model = pickle.load(
-    open("D:\\oldproject\\New folder\\BE-BOOKSTORE\\python\\"+filename, 'rb'))
+    open("D:\\oldproject\\new\\BE-BOOKSTORE\\python\\"+filename, 'rb'))
 predicts = load_model.predict(df_test)
 print(predicts[0])

@@ -7,7 +7,7 @@ const deli_unit_price = 3000;
 const getAllItemInCart = async (req, res) => {
   try {
     const itemList = await Item.sequelize.query(
-      "SELECT I.id_item, I.name, I.price, C.quantity, (C.quantity*I.price) as amount FROM carts as C, items as I where C.id_item = I.id_item AND C.id_user = :id_user",
+      "SELECT I.image, I.id_item, I.name, I.price, C.quantity, (C.quantity*I.price) as amount FROM carts as C, items as I where C.id_item = I.id_item AND C.id_user = :id_user",
       {
         replacements: { id_user: req.user.id },
         type: QueryTypes.SELECT,
@@ -211,7 +211,7 @@ const checkout = async (req, res) => {
             description,
             id_payment,
             delivery_fee: random,
-            item_fee: Number(info[0].item_fee),
+            item_fee: Number(info[0].itemFee),
             total: Number(Number(info[0].itemFee) + random),
             time_order: date,
             status: 0,

@@ -9,6 +9,7 @@ const {
   updateProfile,
   verify,
   active,
+  profile,
 } = require("../controllers/authController");
 const { authenticate } = require("../middlewares/auth");
 const { checkCreateAccount } = require("../middlewares/checkCreate");
@@ -28,6 +29,7 @@ userRouter.post(
   register
 );
 userRouter.get("/active", active);
+userRouter.get("/profile", authenticate, profile);
 userRouter.post("/forgotpassword/success", accessForgotPassword);
 userRouter.post("/forgotpasword/verify", verify);
 userRouter.post("/forgotpassword", forgotPassword);

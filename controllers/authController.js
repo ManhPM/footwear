@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const register = async (req, res) => {
-  const { username, password, fullName, email, phone, address } = req.body;
+  const { username, password, name, email, phone, address } = req.body;
   try {
     //tạo ra một chuỗi ngẫu nhiên
     const salt = bcrypt.genSaltSync(10);
@@ -18,7 +18,7 @@ const register = async (req, res) => {
       id_role: 1,
       password: hashPassword,
       activeID: randomID,
-      fullName,
+      fullName: name,
       email,
       phone,
       address,
@@ -1051,6 +1051,23 @@ const login = async (req, res) => {
   }
 };
 
+const profile = async (req, res) => {
+  try {
+    console.log(req.user);
+    const userInfo = await User.findOne({
+      where: {
+        id_user: req.user.id,
+      },
+      attributes: {
+        exclude: ["password", "verifyID", "activeID", "isActive"],
+      },
+    });
+    res.status(200).json({ data: userInfo });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   login,
   changePassword,
@@ -1061,4 +1078,5 @@ module.exports = {
   logout,
   register,
   active,
+  profile,
 };

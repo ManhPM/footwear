@@ -349,10 +349,10 @@ const bookRecommendationSVM = async (req, res) => {
     const books = await Item.findAll({
       where: {
         style: style,
-      },  
+      },
       order: Sequelize.literal("rand()"),
     });
-    res.status(200).json({ data: books });
+    res.status(200).json({ data: books, style: style });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

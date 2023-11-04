@@ -77,7 +77,8 @@ const checkExistPhoneNum = async (req, res, next) => {
         isActive: 1,
       },
     });
-    if (!item) {
+    console.log(item, phone);
+    if (!item || phone == item.phone) {
       next();
     } else {
       res.status(400).json({ message: "Số điện thoại đã tồn tại!" });
@@ -99,7 +100,7 @@ const checkExistEmail = async (req, res, next) => {
           isActive: 1,
         },
       });
-      if (!item) {
+      if (item) {
         res.status(400).json({ message: "Email đã tồn tại!" });
       } else {
         next();

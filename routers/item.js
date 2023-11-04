@@ -21,7 +21,7 @@ const itemRouter = express.Router();
 
 itemRouter.get("/", getAllItem);
 itemRouter.get("/cfrecommendation", authenticate, bookRecommendationCF);
-itemRouter.get("/svmrecommendation", authenticate, bookRecommendationSVM);
+itemRouter.post("/svmrecommendation", bookRecommendationSVM);
 itemRouter.get("/sanphamlienquan/:id_item", checkExistItem, sanPhamLienQuan);
 itemRouter.get(
   "/import/:id_i_invoice",
