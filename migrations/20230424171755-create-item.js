@@ -8,16 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      id_type: {
-        type: Sequelize.INTEGER,
-        references: { model: "Types", key: "id_type" },
-        allowNull: false,
-      },
-      authorName: {
+      type: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      language: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -26,23 +21,19 @@ module.exports = {
         allowNull: false,
         default: 0,
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       image: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      numberOfVolumes: Sequelize.INTEGER,
+      size: Sequelize.INTEGER,
       price: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
       description: Sequelize.STRING,
-      publicDate: Sequelize.DATE,
-      publicComName: Sequelize.STRING,
-      style: Sequelize.STRING,
+      brand: Sequelize.STRING,
+      origin: Sequelize.STRING,
+      material: Sequelize.STRING,
       status: {
         type: Sequelize.INTEGER,
         defaultValue: 1,

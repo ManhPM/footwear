@@ -1,14 +1,15 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const authenticate = (req, res, next) => {
   const token = req.cookies.accessToken;
   try {
     if (token) {
-      const data = jwt.verify(token, "BOOKSTOREP2M");
+      const data = jwt.verify(token, 'BOOKSTOREP2M');
       req.user = data;
+      console.log(data);
       return next();
     } else {
-      return res.status(400).json({ message: "Vui lòng đăng nhập" });
+      return res.status(400).json({ message: 'Bạn chưa đăng nhập' });
     }
   } catch (error) {
     return res
@@ -23,7 +24,7 @@ const authorize = (arrType) => async (req, res, next) => {
   } else {
     res
       .status(403)
-      .json({ message: "Bạn không có quyền sử dụng chức năng này!" });
+      .json({ message: 'Bạn không có quyền sử dụng chức năng này!' });
   }
 };
 

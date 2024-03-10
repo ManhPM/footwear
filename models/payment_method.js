@@ -2,8 +2,8 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Payment_method extends Model {
-    static associate({ Order }) {
-      this.hasOne(Order, { foreignKey: "id_payment" });
+    static associate({ Invoice }) {
+      this.hasOne(Invoice, { foreignKey: "id_payment" });
     }
   }
   Payment_method.init(

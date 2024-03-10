@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const {
   createItem,
   deleteItem,
@@ -6,49 +6,51 @@ const {
   getAllItemToImport,
   getDetailItem,
   updateItem,
-  sanPhamLienQuan,
-  bookRecommendationCF,
-  bookRecommendationSVM,
-} = require("../controllers/itemController");
-const { authenticate, authorize } = require("../middlewares/auth");
-const { checkCreateItem } = require("../middlewares/checkCreate");
+  getAllType,
+  getAllSize,
+  getAllBrand,
+  getAllOrigin,
+  getAllMaterial,
+  searchItem,
+} = require('../controllers/itemController');
+const { authenticate, authorize } = require('../middlewares/auth');
 const {
   checkExistItem,
-  checkExistImportInvoice,
-} = require("../middlewares/checkExist");
+  checkExistImport,
+} = require('../middlewares/checkExist');
+const { checkCreateItem } = require('../middlewares/validate');
 
 const itemRouter = express.Router();
 
-itemRouter.get("/", getAllItem);
-itemRouter.get("/cfrecommendation", authenticate, bookRecommendationCF);
-itemRouter.post("/svmrecommendation", bookRecommendationSVM);
-itemRouter.get("/sanphamlienquan/:id_item", checkExistItem, sanPhamLienQuan);
-itemRouter.get(
-  "/import/:id_i_invoice",
-  checkExistImportInvoice,
-  getAllItemToImport
-);
-itemRouter.get("/detail/:id_item", checkExistItem, getDetailItem);
+itemRouter.get('/', getAllItem);
+itemRouter.get('/search', searchItem);
+itemRouter.get('/filter/type', getAllType);
+itemRouter.get('/filter/size', getAllSize);
+itemRouter.get('/filter/brand', getAllBrand);
+itemRouter.get('/filter/origin', getAllOrigin);
+itemRouter.get('/filter/material', getAllMaterial);
+itemRouter.get('/import/:id_import', checkExistImport, getAllItemToImport);
+itemRouter.get('/detail/:id_item', checkExistItem, getDetailItem);
 itemRouter.post(
-  "/create",
+  '/create',
   authenticate,
-  authorize(["Admin"]),
+  authorize(['Admin']),
   checkCreateItem,
-  createItem
+  createItem,
 );
 itemRouter.put(
-  "/update/:id_item",
+  '/update/:id_item',
   authenticate,
-  authorize(["Admin"]),
+  authorize(['Admin']),
   checkExistItem,
-  updateItem
+  updateItem,
 );
 itemRouter.delete(
-  "/delete/:id_item",
+  '/delete/:id_item',
   authenticate,
-  authorize(["Admin"]),
+  authorize(['Admin']),
   checkExistItem,
-  deleteItem
+  deleteItem,
 );
 
 module.exports = {

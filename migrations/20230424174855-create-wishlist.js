@@ -2,9 +2,9 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Wishlists", {
-      id_user: {
+      id_customer: {
         allowNull: false,
-        references: { model: "Users", key: "id_user" },
+        references: { model: "Customers", key: "id_customer" },
         primaryKey: true,
         type: Sequelize.INTEGER,
       },

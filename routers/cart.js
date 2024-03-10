@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const {
   checkout,
   createItemInCart,
@@ -6,53 +6,47 @@ const {
   deleteOneItemInCart,
   getAllItemInCart,
   increaseNumItemInCart,
-} = require("../controllers/cartController");
-const { authenticate, authorize } = require("../middlewares/auth");
-const {
-  checkPhoneCheckout,
-  checkDiscountCode,
-  checkUnConfirmedOrder,
-} = require("../middlewares/checkCreate");
-const { checkExistItem } = require("../middlewares/checkExist");
+} = require('../controllers/cartController');
+const { authenticate, authorize } = require('../middlewares/auth');
+const { checkExistItem } = require('../middlewares/checkExist');
+const { checkCheckOut } = require('../middlewares/validate');
 const cartRouter = express.Router();
 
-cartRouter.get("/", authenticate, authorize(["Khách hàng"]), getAllItemInCart);
+cartRouter.get('/', authenticate, authorize(['Khách hàng']), getAllItemInCart);
 cartRouter.post(
-  "/add/:id_item",
+  '/add/:id_item',
   authenticate,
-  authorize(["Khách hàng"]),
+  authorize(['Khách hàng']),
   checkExistItem,
-  createItemInCart
+  createItemInCart,
 );
 cartRouter.post(
-  "/checkout",
+  '/checkout',
   authenticate,
-  authorize(["Khách hàng"]),
-  checkUnConfirmedOrder,
-  checkPhoneCheckout,
-  checkDiscountCode,
-  checkout
+  authorize(['Khách hàng']),
+  checkCheckOut,
+  checkout,
 );
 cartRouter.delete(
-  "/remove/:id_item",
+  '/remove/:id_item',
   authenticate,
-  authorize(["Khách hàng"]),
+  authorize(['Khách hàng']),
   checkExistItem,
-  deleteOneItemInCart
+  deleteOneItemInCart,
 );
 cartRouter.post(
-  "/decrease/:id_item",
+  '/decrease/:id_item',
   authenticate,
-  authorize(["Khách hàng"]),
+  authorize(['Khách hàng']),
   checkExistItem,
-  decreaseNumItemInCart
+  decreaseNumItemInCart,
 );
 cartRouter.post(
-  "/increase/:id_item",
+  '/increase/:id_item',
   authenticate,
-  authorize(["Khách hàng"]),
+  authorize(['Khách hàng']),
   checkExistItem,
-  increaseNumItemInCart
+  increaseNumItemInCart,
 );
 
 module.exports = {

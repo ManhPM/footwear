@@ -1,48 +1,52 @@
-const express = require("express");
+const express = require('express');
 const {
   register,
-  accessForgotPassword,
   changePassword,
   forgotPassword,
   login,
   logout,
   updateProfile,
-  verify,
-  active,
   profile,
-} = require("../controllers/authController");
-const { authenticate } = require("../middlewares/auth");
-const { checkCreateAccount } = require("../middlewares/checkCreate");
+  loginAdmin,
+  verifyRegister,
+  verifyChangeEmail,
+  verifyForgotPassword,
+  registerStaff,
+} = require('../controllers/authController');
+const { authenticate, authorize } = require('../middlewares/auth');
 const {
-  checkExistPhoneNum,
-  checkExistEmail,
-} = require("../middlewares/checkExist");
+  checkLogin,
+  checkRegister,
+  checkVerifyID,
+  checkChangePassword,
+  checkUpdateProfile,
+} = require('../middlewares/validate');
 
-const userRouter = express.Router();
+const authRouter = express.Router();
 
-userRouter.post("/login", login);
-userRouter.post(
-  "/register",
-  checkCreateAccount,
-  checkExistPhoneNum,
-  checkExistEmail,
-  register
-);
-userRouter.get("/active", active);
-userRouter.get("/profile", authenticate, profile);
-userRouter.post("/forgotpassword/success", accessForgotPassword);
-userRouter.post("/forgotpasword/verify", verify);
-userRouter.post("/forgotpassword", forgotPassword);
-userRouter.put("/changepassword", authenticate, changePassword);
-userRouter.get("/logout", authenticate, logout);
-userRouter.put(
-  "/updateprofile",
+authRouter.post('/login', checkLogin, login);
+authRouter.post('/admin/login', checkLogin, loginAdmin);
+authRouter.post('/register', checkRegister, register);
+authRouter.post('/register/staff', checkRegister, registerStaff);
+authRouter.get('/profile', authenticate, profile);
+authRouter.post('/forgotpassword', forgotPassword);
+authRouter.post('/verify/register', checkVerifyID, verifyRegister);
+authRouter.post('/verify/changeemail', checkVerifyID, verifyChangeEmail);
+authRouter.post('/verify/forgotpassword', checkVerifyID, verifyForgotPassword);
+authRouter.post(
+  '/changepassword',
+  checkChangePassword,
   authenticate,
-  checkExistPhoneNum,
-  checkExistEmail,
-  updateProfile
+  changePassword,
+);
+authRouter.get('/logout', authenticate, logout);
+authRouter.post(
+  '/updateprofile',
+  checkUpdateProfile,
+  authenticate,
+  updateProfile,
 );
 
 module.exports = {
-  userRouter,
+  authRouter,
 };

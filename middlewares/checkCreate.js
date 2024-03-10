@@ -1,24 +1,23 @@
-const { User, Discount, Item, Order, Import_invoice } = require("../models");
-const { QueryTypes } = require("sequelize");
+const { Account, Discount, Item, Order, Import_invoice } = require('../models');
+const { QueryTypes } = require('sequelize');
 
 const checkCreateAccount = async (req, res, next) => {
   try {
-    const { username } = req.body;
-    console.log(username);
-    const item = await User.findOne({
+    const { email } = req.body;
+    const item = await Account.findOne({
       where: {
-        username,
+        email,
       },
     });
     if (!item) {
       next();
     } else {
-      res.status(400).json({ message: "Tên đăng nhập đã tồn tại!" });
+      res.status(400).json({ message: 'Email đã tồn tại' });
     }
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
@@ -35,13 +34,13 @@ const checkCreateItem = async (req, res, next) => {
       next();
     } else {
       res.status(400).json({
-        message: "Sách đã tồn tại (tên, số tập)!",
+        message: 'Sách đã tồn tại (tên, số tập)!',
       });
     }
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
@@ -57,13 +56,13 @@ const checkCreateReview = async (req, res, next) => {
       next();
     } else {
       res.status(400).json({
-        message: "Đơn hàng chưa hoàn thành. Không thể đánh giá!",
+        message: 'Đơn hàng chưa hoàn thành. Không thể đánh giá!',
       });
     }
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
@@ -78,13 +77,13 @@ const checkPhoneCheckout = async (req, res, next) => {
       next();
     } else {
       res.status(400).json({
-        message: "Vui lòng cập nhật số điện thoại trước khi đặt hàng!",
+        message: 'Vui lòng cập nhật số điện thoại trước khi đặt hàng!',
       });
     }
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
@@ -106,13 +105,13 @@ const checkDiscountCode = async (req, res, next) => {
           } else {
             res
               .status(400)
-              .json({ message: "Mã giảm giá đã hết hạn sử dụng!" });
+              .json({ message: 'Mã giảm giá đã hết hạn sử dụng!' });
           }
         } else {
-          res.status(400).json({ message: "Mã giảm giá đã hết lượt sử dụng!" });
+          res.status(400).json({ message: 'Mã giảm giá đã hết lượt sử dụng!' });
         }
       } else {
-        res.status(400).json({ message: "Mã giảm giá không tồn tại!" });
+        res.status(400).json({ message: 'Mã giảm giá không tồn tại!' });
       }
     } else {
       next();
@@ -120,7 +119,7 @@ const checkDiscountCode = async (req, res, next) => {
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
@@ -134,7 +133,7 @@ const checkUnConfirmedOrder = async (req, res, next) => {
     });
     if (item) {
       res.status(400).json({
-        message: "Bạn đang có đơn hàng chưa xác nhận, không thể đặt thêm!",
+        message: 'Bạn đang có đơn hàng chưa xác nhận, không thể đặt thêm!',
       });
     } else {
       next();
@@ -142,13 +141,13 @@ const checkUnConfirmedOrder = async (req, res, next) => {
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
 const checkCompleteImportInvoice = async (req, res, next) => {
   try {
-    const { id_i_invoice } = req.params;
+    const { id_import } = req.params;
     const item = await Import_invoice.findOne({
       where: {
         id_i_invoice,
@@ -159,18 +158,18 @@ const checkCompleteImportInvoice = async (req, res, next) => {
         next();
       } else {
         res.status(400).json({
-          message: "Đơn nhập đã hoàn thành, không thể hoàn thành nữa!",
+          message: 'Đơn nhập đã hoàn thành, không thể hoàn thành nữa!',
         });
       }
     } else {
       res.status(400).json({
-        message: "Đơn nhập không tồn tại!",
+        message: 'Đơn nhập không tồn tại!',
       });
     }
   } catch (error) {
     res
       .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 

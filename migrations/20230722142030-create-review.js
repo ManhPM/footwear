@@ -7,10 +7,10 @@ module.exports = {
         primaryKey: true,
         references: { model: "Items", key: "id_item" },
       },
-      id_user: {
+      id_customer: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        references: { model: "Users", key: "id_user" },
+        references: { model: "Customers", key: "id_customer" },
       },
       rating: {
         allowNull: false,
@@ -22,7 +22,7 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
-      createAt: {
+      datetime: {
         primaryKey: true,
         type: Sequelize.DATE,
         allowNull: false,

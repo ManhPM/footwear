@@ -1,50 +1,92 @@
 const {
-  Import_invoice,
-  Import_invoice_detail,
+  Import,
+  Import_detail,
   Item,
-  User,
-  Order,
-} = require("../models");
-const { QueryTypes } = require("sequelize");
+  Export,
+  Export_detail,
+  Invoice,
+} = require('../models');
+const { QueryTypes } = require('sequelize');
 
-const checkExistImportInvoice = async (req, res, next) => {
+const checkExistImport = async (req, res, next) => {
   try {
-    const { id_i_invoice } = req.params;
-    const item = await Import_invoice.findOne({
+    const { id_import } = req.params;
+    const item = await Import.findOne({
       where: {
-        id_i_invoice,
+        id_import,
       },
     });
     if (item) {
       next();
     } else {
-      res.status(400).json({ message: "Đơn nhập không tồn tại!" });
+      res.status(400).json({ message: 'Đơn nhập không tồn tại!' });
     }
   } catch (error) {
     res
-      .status(501)
-      .json({ message: "CheckExist Error!", error: error.message });
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
   }
 };
 
-const checkExistImportInvoiceDetail = async (req, res, next) => {
+const checkExistExport = async (req, res, next) => {
   try {
-    const { id_i_invoice, id_item } = req.body;
-    const item = await Import_invoice_detail.findOne({
+    const { id_export } = req.params;
+    const item = await Export.findOne({
       where: {
-        id_i_invoice,
+        id_export,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Đơn xuất không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
+const checkExistImportDetail = async (req, res, next) => {
+  try {
+    const { id_import, id_item } = req.body;
+    const item = await Import_detail.findOne({
+      where: {
+        id_import,
         id_item,
       },
     });
     if (item) {
       next();
     } else {
-      res.status(400).json({ message: "Chi tiết đơn nhập không tồn tại!" });
+      res.status(400).json({ message: 'Chi tiết đơn nhập không tồn tại!' });
     }
   } catch (error) {
     res
-      .status(501)
-      .json({ message: "CheckExist Error!", error: error.message });
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
+const checkExistExportDetail = async (req, res, next) => {
+  try {
+    const { id_export, id_item } = req.body;
+    const item = await Export_detail.findOne({
+      where: {
+        id_export,
+        id_item,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Chi tiết đơn xuất không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
   }
 };
 
@@ -59,12 +101,12 @@ const checkExistItem = async (req, res, next) => {
     if (item) {
       next();
     } else {
-      res.status(400).json({ message: "Sản phẩm không tồn tại!" });
+      res.status(400).json({ message: 'Sản phẩm không tồn tại!' });
     }
   } catch (error) {
     res
-      .status(501)
-      .json({ message: "CheckExist Error!", error: error.message });
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
   }
 };
 
@@ -81,12 +123,12 @@ const checkExistPhoneNum = async (req, res, next) => {
     if (!item || phone == item.phone) {
       next();
     } else {
-      res.status(400).json({ message: "Số điện thoại đã tồn tại!" });
+      res.status(400).json({ message: 'Số điện thoại đã tồn tại!' });
     }
   } catch (error) {
     res
-      .status(501)
-      .json({ message: "CheckExist Error!", error: error.message });
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
   }
 };
 
@@ -101,7 +143,7 @@ const checkExistEmail = async (req, res, next) => {
         },
       });
       if (item) {
-        res.status(400).json({ message: "Email đã tồn tại!" });
+        res.status(400).json({ message: 'Email đã tồn tại!' });
       } else {
         next();
       }
@@ -110,36 +152,59 @@ const checkExistEmail = async (req, res, next) => {
     }
   } catch (error) {
     res
-      .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
-const checkExistOrder = async (req, res, next) => {
-  const { id_order } = req.params;
+const checkExistInvoice = async (req, res, next) => {
+  const { id_invoice } = req.params;
   try {
-    const item = await Order.findOne({
+    const item = await Invoice.findOne({
       where: {
-        id_order,
+        id_invoice,
       },
     });
     if (!item) {
-      res.status(400).json({ message: "Đơn hàng không tồn tại!" });
+      res.status(400).json({ message: 'Đơn hàng không tồn tại!' });
     } else {
       next();
     }
   } catch (error) {
     res
-      .status(501)
-      .json({ message: "Middleware Error!", error: error.message });
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkExistStaff = async (req, res, next) => {
+  const { id_staff } = req.params;
+  try {
+    const item = await Staff.findOne({
+      where: {
+        id_staff,
+      },
+    });
+    if (!item) {
+      res.status(400).json({ message: 'Nhân viên không tồn tại!' });
+    } else {
+      next();
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
   }
 };
 
 module.exports = {
-  checkExistImportInvoice,
-  checkExistImportInvoiceDetail,
+  checkExistImport,
+  checkExistImportDetail,
+  checkExistExport,
+  checkExistExportDetail,
   checkExistItem,
   checkExistPhoneNum,
   checkExistEmail,
-  checkExistOrder,
+  checkExistInvoice,
+  checkExistStaff,
 };

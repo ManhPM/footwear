@@ -1,5 +1,5 @@
-const { Cart, Item, Order, Order_detail, Discount } = require("../models");
-const { QueryTypes } = require("sequelize");
+const { Cart, Item, Invoice, Invoice_detail, Discount } = require('../models');
+const { QueryTypes } = require('sequelize');
 const storeLat = 10.848881;
 const storeLng = 106.787017;
 const deli_unit_price = 3000;
@@ -7,12 +7,12 @@ const deli_unit_price = 3000;
 const getAllItemInCart = async (req, res) => {
   try {
     const itemList = await Item.sequelize.query(
-      "SELECT I.image, I.id_item, I.name, I.price, C.quantity, (C.quantity*I.price) as amount FROM carts as C, items as I where C.id_item = I.id_item AND C.id_user = :id_user",
+      'SELECT SELECT I.id_item I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, C.quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
       {
-        replacements: { id_user: req.user.id },
+        replacements: { id_customer: req.user.id_user_user },
         type: QueryTypes.SELECT,
         raw: true,
-      }
+      },
     );
     res.status(200).json({ data: itemList });
   } catch (error) {
@@ -26,38 +26,34 @@ const createItemInCart = async (req, res) => {
     const isExist = await Cart.findOne({
       where: {
         id_item,
-        id_user: req.user.id,
+        id_customer: req.user.id_user,
       },
     });
     if (isExist) {
       if (quantity) {
-        if (quantity <= 0) {
-          res.status(400).json({ message: "Số lượng phải lớn hơn 0!" });
-        } else {
-          isExist.quantity = isExist.quantity + quantity;
-          await isExist.save();
-          res.status(201).json({ message: "Đã thêm vào giỏ hàng!" });
-        }
+        isExist.quantity = isExist.quantity + quantity;
+        await isExist.save();
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
       } else {
         isExist.quantity = isExist.quantity + 1;
         await isExist.save();
-        res.status(201).json({ message: "Đã thêm vào giỏ hàng!" });
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
       }
     } else {
       if (quantity) {
         await Cart.create({
           id_item,
-          id_user: req.user.id,
+          id_customer: req.user.id_user,
           quantity: quantity,
         });
-        res.status(201).json({ message: "Đã thêm vào giỏ hàng!" });
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
       } else {
         await Cart.create({
           id_item,
-          id_user: req.user.id,
+          id_customer: req.user.id_user,
           quantity: 1,
         });
-        res.status(201).json({ message: "Đã thêm vào giỏ hàng!" });
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
       }
     }
   } catch (error) {
@@ -71,12 +67,12 @@ const increaseNumItemInCart = async (req, res) => {
     const itemInCart = await Cart.findOne({
       where: {
         id_item,
-        id_user: req.user.id,
+        id_customer: req.user.id_user,
       },
     });
     itemInCart.quantity = itemInCart.quantity + 1;
     await itemInCart.save();
-    res.status(201).json({ message: "Số lượng đã tăng thêm 1!" });
+    res.status(201).json({ message: 'Số lượng đã tăng thêm 1!' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -88,21 +84,21 @@ const decreaseNumItemInCart = async (req, res) => {
     const itemInCart = await Cart.findOne({
       where: {
         id_item,
-        id_user: req.user.id,
+        id_customer: req.user.id_user,
       },
     });
     if (itemInCart.quantity == 1) {
       await Cart.destroy({
         where: {
           id_item,
-          id_user: req.user.id,
+          id_customer: req.user.id_user,
         },
       });
-      res.status(201).json({ message: "Đã xoá khỏi giỏ hàng!" });
+      res.status(201).json({ message: 'Đã xoá khỏi giỏ hàng!' });
     } else {
       itemInCart.quantity = itemInCart.quantity - 1;
       await itemInCart.save();
-      res.status(201).json({ message: "Số lượng đã giảm đi 1!" });
+      res.status(201).json({ message: 'Số lượng đã giảm đi 1!' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -115,128 +111,107 @@ const deleteOneItemInCart = async (req, res) => {
     await Cart.destroy({
       where: {
         id_item,
-        id_user: req.user.id,
+        id_customer: req.user.id_user,
       },
     });
-    res.status(201).json({ message: "Đã xoá khỏi giỏ hàng!" });
+    res.status(201).json({ message: 'Đã xoá khỏi giỏ hàng!' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 const checkout = async (req, res) => {
-  const { id_payment, description, userLat, userLng, code } = req.body;
+  const { payment_method, description, userLat, userLng } = req.body;
   try {
-    const itemInCartList = await Cart.findAll({
-      where: {
-        id_user: req.user.id,
+    const itemInCartList = await Item.sequelize.query(
+      'SELECT I.id_item I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, I.quantity, C.quantity as cart_quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
+      {
+        replacements: { id_customer: req.user.id_user_user },
+        type: QueryTypes.SELECT,
+        raw: true,
       },
-    });
-    if (itemInCartList.length) {
-      const date = new Date();
-      date.setHours(date.getHours() + 7);
-      let random = getDistanceFromLatLonInKm(
-        userLat,
-        userLng,
-        storeLat,
-        storeLng
-      );
-      if (random > 10) {
-        res
-          .status(400)
-          .json({ message: "Hệ thống không hỗ trợ giao trên 10km" });
-      } else {
-        if (random < 2) {
-          random = deli_unit_price * 5;
-        } else if (random >= 2 && random < 5) {
-          random = deli_unit_price * 5 + 5000;
-        } else {
-          random = deli_unit_price * 5 + 10000;
-        }
-        random = Math.ceil(random / 1000) * 1000;
-        const info = await Cart.sequelize.query(
-          "SELECT SUM((C.quantity*I.price)) as itemFee, SUM(C.quantity) as itemQuantity FROM carts as C, items as I where C.id_item = I.id_item AND C.id_user = :id_user",
-          {
-            replacements: { id_user: req.user.id },
-            type: QueryTypes.SELECT,
-          }
+    );
+    let i = 0;
+    let check = 0;
+    let checkNotEnough = 0;
+    while (i < itemInCartList.length) {
+      if (itemInCartList[i].status != 1 || itemInCartList.quantity == 0) {
+        await Cart.destroy({
+          where: {
+            id_item: itemInCartList[i].id_item,
+            id_customer: itemInCartList[i].id_customer,
+          },
+        });
+        check = 1;
+      }
+      if (itemInCartList[i].quantity < itemInCartList.cart_quantity) {
+        await Cart.destroy({
+          where: {
+            id_item: itemInCartList[i].id_item,
+            id_customer: itemInCartList[i].id_customer,
+          },
+        });
+        checkNotEnough = 1;
+      }
+    }
+    if (check || checkNotEnough) {
+      res.status(400).json({
+        message:
+          'Trong giỏ hàng của bạn có sản phẩm không đủ hàng hoặc đã ngừng kinh doanh, vui lòng đặt hàng lại!',
+      });
+    } else {
+      if (itemInCartList.length) {
+        const date = new Date();
+        date.setHours(date.getHours() + 7);
+        let random = getDistanceFromLatLonInKm(
+          userLat,
+          userLng,
+          storeLat,
+          storeLng,
         );
-        if (code) {
-          const discount = await Discount.findOne({
+        if (random < 50) {
+          random = 35000;
+        } else {
+          random = 40000;
+        }
+        const info = await Cart.sequelize.query(
+          'SELECT SUM((C.quantity*I.price)) as itemFee, SUM(C.quantity) as itemQuantity FROM carts as C, items as I where C.id_item = I.id_item AND C.id_customer = :id_customer',
+          {
+            replacements: { id_customer: req.user.id_user },
+            type: QueryTypes.SELECT,
+          },
+        );
+        const newInvoice = await Invoice.create({
+          id_customer: req.user.id_user,
+          description,
+          payment_method,
+          delivery_fee: random,
+          item_fee: Number(info[0].itemFee),
+          total: Number(Number(info[0].itemFee) + random),
+          datetime: date,
+          invoice_status: 0,
+          payment_status: 0,
+        });
+        let i = 0;
+        while (itemInCartList[i]) {
+          await Invoice_detail.create({
+            id_invoice: newInvoice.id_invoice,
+            id_item: itemInCartList[i].id_item,
+            quantity: itemInCartList[i].quantity,
+            reviewed: 0,
+          });
+          await Cart.destroy({
             where: {
-              code,
+              id_item: itemInCartList[i].id_item,
+              id_customer: itemInCartList[i].id_customer,
             },
           });
-          if (info[0].itemQuantity >= discount.min_quantity) {
-            discount.quantity = discount.quantity - 1;
-            await discount.save();
-            const newOrder = await Order.create({
-              id_user: req.user.id,
-              id_payment,
-              description,
-              delivery_fee: random,
-              item_fee: Number(info[0].itemFee),
-              total:
-                Number(info[0].itemFee) +
-                (Number(info[0].itemFee) * discount.discount_percent) / 100 +
-                random,
-              time_order: date,
-              status: 0,
-            });
-            let i = 0;
-            while (itemInCartList[i]) {
-              await Order_detail.create({
-                id_order: newOrder.id_order,
-                id_item: itemInCartList[i].id_item,
-                quantity: itemInCartList[i].quantity,
-                reviewed: 0,
-              });
-              await Cart.destroy({
-                where: {
-                  id_item: itemInCartList[i].id_item,
-                  id_user: itemInCartList[i].id_user,
-                },
-              });
-              i++;
-            }
-            res.status(201).json({ message: "Đặt hàng thành công!" });
-          } else {
-            res.status(400).json({
-              message: "Số lượng sản phẩm chưa đạt yêu cầu của mã giảm giá!",
-            });
-          }
-        } else {
-          const newOrder = await Order.create({
-            id_user: req.user.id,
-            description,
-            id_payment,
-            delivery_fee: random,
-            item_fee: Number(info[0].itemFee),
-            total: Number(Number(info[0].itemFee) + random),
-            time_order: date,
-            status: 0,
-          });
-          let i = 0;
-          while (itemInCartList[i]) {
-            await Order_detail.create({
-              id_order: newOrder.id_order,
-              id_item: itemInCartList[i].id_item,
-              quantity: itemInCartList[i].quantity,
-              reviewed: 0,
-            });
-            await Cart.destroy({
-              where: {
-                id_item: itemInCartList[i].id_item,
-                id_user: itemInCartList[i].id_user,
-              },
-            });
-            i++;
-          }
-          res.status(201).json({ message: "Đặt hàng thành công!" });
+          i++;
         }
+        res.status(201).json({ message: 'Đặt hàng thành công!' });
+      } else {
+        res.status(400).json({ message: 'Giỏ hàng của bạn đang trống!' });
       }
-    } else {
-      res.status(400).json({ message: "Giỏ hàng của bạn đang trống!" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
