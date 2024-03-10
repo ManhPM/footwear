@@ -4,6 +4,7 @@ const {
   confirmInvoice,
   cancelInvoice,
   getAllItemInInvoice,
+  completeInvoice,
 } = require('../controllers/invoiceController');
 const { authenticate, authorize } = require('../middlewares/auth');
 
@@ -12,16 +13,23 @@ const { checkExistInvoice } = require('../middlewares/checkExist');
 const invoiceRouter = express.Router();
 
 invoiceRouter.get('/', authenticate, getAllInvoice);
-invoiceRouter.get('/detail/:id_order', authenticate, getAllItemInInvoice);
+invoiceRouter.get('/detail/:id_invoice', authenticate, getAllItemInInvoice);
 invoiceRouter.get(
-  '/confirm/:id_order',
+  '/confirm/:id_invoice',
   authenticate,
   authorize(['Nhân viên', 'Admin']),
   checkExistInvoice,
   confirmInvoice,
 );
 invoiceRouter.get(
-  '/cancel/:id_order',
+  '/complete/:id_invoice',
+  authenticate,
+  authorize(['Nhân viên', 'Admin']),
+  checkExistInvoice,
+  completeInvoice,
+);
+invoiceRouter.get(
+  '/cancel/:id_invoice',
   authenticate,
   authorize(['Nhân viên', 'Admin', 'Khách hàng']),
   checkExistInvoice,

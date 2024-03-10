@@ -9,11 +9,11 @@ const {
   deleteExport,
 } = require('../controllers/exportController');
 const { authenticate, authorize } = require('../middlewares/auth');
-const { checkCompleteImportInvoice } = require('../middlewares/checkCreate');
 const {
   checkExistImportInvoice,
   checkExistExport,
 } = require('../middlewares/checkExist');
+const { checkCompleteExport } = require('../middlewares/validate');
 
 const exportRouter = express.Router();
 
@@ -22,7 +22,7 @@ exportRouter.post(
   '/complete/:id_export',
   authenticate,
   authorize(['Admin']),
-  checkCompleteImportInvoice,
+  checkCompleteExport,
   completeExport,
 );
 exportRouter.get(

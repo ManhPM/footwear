@@ -1,5 +1,4 @@
-const { Account, Discount, Item, Order, Import_invoice } = require('../models');
-const { QueryTypes } = require('sequelize');
+const { Account, Import, Export, Invoice } = require('../models');
 
 function isPassword(str) {
   if (str.length >= 6) {
@@ -298,6 +297,74 @@ const checkCreateItem = async (req, res, next) => {
   }
 };
 
+const checkCompleteImport = async (req, res, next) => {
+  try {
+    const { id_import } = req.params;
+    const item = await Import.findOne({
+      where: {
+        id_import,
+        status: 0,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({
+        message: 'Đơn nhập không thể hoàn thành',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCompleteExport = async (req, res, next) => {
+  try {
+    const { id_export } = req.params;
+    const item = await Export.findOne({
+      where: {
+        id_export,
+        status: 0,
+      },
+    });
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({
+        message: 'Đơn xuất không thể hoàn thành',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateReview = async (req, res, next) => {
+  try {
+    const { id_invoice } = req.body;
+    const invoice = await Invoice.findOne({
+      where: {
+        id_invoice,
+      },
+    });
+    if (invoice.status == 2) {
+      next();
+    } else {
+      res.status(400).json({
+        message: 'Đơn hàng chưa hoàn thành. Không thể đánh giá!',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
 module.exports = {
   checkLogin,
   checkRegister,
@@ -307,4 +374,7 @@ module.exports = {
   checkChangePassword,
   checkUpdateProfile,
   checkCreateItem,
+  checkCompleteExport,
+  checkCompleteImport,
+  checkCreateReview,
 };

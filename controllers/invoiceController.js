@@ -4,7 +4,7 @@ const { QueryTypes } = require('sequelize');
 const getAllInvoice = async (req, res) => {
   try {
     if (req.user.role == 'Khách hàng') {
-      const orderList = await Invoice.sequelize.query(
+      const invoiceList = await Invoice.sequelize.query(
         'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer = :id_customer ORDER BY I.datetime DESC',
         {
           replacements: { id_customer: req.user.id_user },
@@ -12,12 +12,12 @@ const getAllInvoice = async (req, res) => {
           raw: true,
         },
       );
-      res.status(200).json({ data: orderList });
+      res.status(200).json({ data: invoiceList });
     } else {
       const { status, fromdate, todate } = req.query;
       if (status) {
         if (fromdate && todate) {
-          const orderList = await Invoice.sequelize.query(
+          const invoiceList = await Invoice.sequelize.query(
             'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer = :id_customer AND I.status = :status AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
             {
               replacements: { status, fromdate, todate },
@@ -25,9 +25,9 @@ const getAllInvoice = async (req, res) => {
               raw: true,
             },
           );
-          res.status(200).json({ data: orderList });
+          res.status(200).json({ data: invoiceList });
         } else {
-          const orderList = await Invoice.sequelize.query(
+          const invoiceList = await Invoice.sequelize.query(
             'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer = :id_customer AND I.status = :status ORDER BY I.datetime DESC',
             {
               replacements: { status: status },
@@ -35,11 +35,11 @@ const getAllInvoice = async (req, res) => {
               raw: true,
             },
           );
-          res.status(200).json({ data: orderList });
+          res.status(200).json({ data: invoiceList });
         }
       } else {
         if (fromdate && todate) {
-          const orderList = await Invoice.sequelize.query(
+          const invoiceList = await Invoice.sequelize.query(
             'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer = :id_customer AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
             {
               replacements: { fromdate, todate },
@@ -47,16 +47,16 @@ const getAllInvoice = async (req, res) => {
               raw: true,
             },
           );
-          res.status(200).json({ data: orderList });
+          res.status(200).json({ data: invoiceList });
         } else {
-          const orderList = await Invoice.sequelize.query(
+          const invoiceList = await Invoice.sequelize.query(
             'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer = :id_customer ORDER BY I.datetime DESC',
             {
               type: QueryTypes.SELECT,
               raw: true,
             },
           );
-          res.status(200).json({ data: orderList });
+          res.status(200).json({ data: invoiceList });
         }
       }
     }
@@ -75,7 +75,7 @@ const getAllItemInInvoice = async (req, res) => {
         type: QueryTypes.SELECT,
       },
     );
-    const order = await Invoice.sequelize.query(
+    const invoice = await Invoice.sequelize.query(
       'SELECT C.name as name_customer, C.phone as phone_customer, S.name as name_staff, I.* FROM invoices as I, staffs as S, customers as C WHERE C.id_customer = I.id_customer AND I.id_staff = S.id_staff AND I.id_invoice = :id_invoice',
       {
         replacements: { id_invoice: id_invoice },
@@ -83,7 +83,7 @@ const getAllItemInInvoice = async (req, res) => {
       },
     );
     res.status(200).json({
-      info: order[0],
+      info: invoice[0],
       data: itemList,
     });
   } catch (error) {
@@ -94,12 +94,12 @@ const getAllItemInInvoice = async (req, res) => {
 const confirmInvoice = async (req, res) => {
   const { id_invoice } = req.params;
   try {
-    const order = await Invoice.findOne({
+    const invoice = await Invoice.findOne({
       where: {
         id_invoice,
       },
     });
-    if (order.status == 0) {
+    if (invoice.status == 0) {
       const itemListInInvoice = await Invoice_detail.findAll({
         where: {
           id_invoice,
@@ -136,8 +136,8 @@ const confirmInvoice = async (req, res) => {
           );
           j++;
         }
-        Invoice.status = 1;
-        await Invoice.save();
+        invoice.status = 1;
+        await invoice.save();
         res.status(201).json({
           message: 'Xác nhận đơn hàng!',
         });
@@ -156,17 +156,42 @@ const confirmInvoice = async (req, res) => {
   }
 };
 
-const cancelInvoice = async (req, res) => {
+const completeInvoice = async (req, res) => {
   const { id_invoice } = req.params;
   try {
-    const order = await Invoice.findOne({
+    const invoice = await Invoice.findOne({
       where: {
         id_invoice,
       },
     });
-    if (Invoice.status == 0) {
-      Invoice.status = 3;
-      await Invoice.save();
+    if (invoice.status == 2 && invoice.payment_status == 1) {
+      invoice.status = 3;
+      await invoice.save();
+      res.status(200).json({
+        message: 'Đơn hàng hoàn thành!',
+      });
+    } else {
+      res.status(400).json({
+        message:
+          'Thao tác thất bại. Đơn hàng chưa được xác nhận hoặc thanh toán!',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const cancelInvoice = async (req, res) => {
+  const { id_invoice } = req.params;
+  try {
+    const invoice = await Invoice.findOne({
+      where: {
+        id_invoice,
+      },
+    });
+    if (invoice.status == 0) {
+      invoice.status = 3;
+      await invoice.save();
       res.status(200).json({
         message: 'Đơn hàng đã được huỷ bỏ!',
       });
@@ -182,7 +207,6 @@ const cancelInvoice = async (req, res) => {
 
 const thongKeSanPham = async (req, res) => {
   const { tuNgay, denNgay } = req.query;
-  console.log(tuNgay !== undefined);
   try {
     if (tuNgay !== undefined && denNgay !== undefined) {
       // Thống kê từ ngày tuNgay đến ngày denNgay
@@ -237,5 +261,6 @@ module.exports = {
   getAllItemInInvoice,
   confirmInvoice,
   cancelInvoice,
+  completeInvoice,
   thongKeSanPham,
 };

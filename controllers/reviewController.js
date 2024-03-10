@@ -17,8 +17,7 @@ const getAllReviewByItem = async (req, res) => {
 
 const createReview = async (req, res) => {
   const { id_item } = req.params;
-  const { id_invoice } = req.query;
-  const { rating, comment } = req.body;
+  const { rating, comment, id_invoice } = req.body;
   try {
     const datetime = new Date();
     datetime.setHours(datetime.getHours() + 7);
