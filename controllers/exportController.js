@@ -1,10 +1,10 @@
-const { Export } = require('../models');
+const { Export, Item } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 const getAllExport = async (req, res) => {
   try {
     if (req.user.role == 'Admin') {
-      const itemList = await Exportsequelize.query(
+      const itemList = await Export.sequelize.query(
         'SELECT EP.*, S.name FROM staffs as S, exports as EP WHERE EP.id_staff = S.id_staff',
         {
           type: QueryTypes.SELECT,
@@ -15,7 +15,7 @@ const getAllExport = async (req, res) => {
         data: itemList,
       });
     } else {
-      const itemList = await Exportsequelize.query(
+      const itemList = await Export.sequelize.query(
         'SELECT EP.*, S.name FROM staffs as S, exports as EP WHERE EP.id_staff = S.id_staff AND EP.id_staff = :id_staff',
         {
           replacements: { id_staff: req.user.id_user },
@@ -35,7 +35,7 @@ const getAllExport = async (req, res) => {
 const getAllItemInExport = async (req, res) => {
   const { id_export } = req.params;
   try {
-    const itemList = await Exportsequelize.query(
+    const itemList = await Export.sequelize.query(
       'SELECT I.name, ID.* FROM items AS I, export_details as ID WHERE ID.id_item = I.id_item AND ID.id_export = :id_export',
       {
         replacements: { id_export },
@@ -54,7 +54,7 @@ const getAllItemInExport = async (req, res) => {
 const deleteExport = async (req, res) => {
   const { id_export } = req.params;
   try {
-    const item = await ExportfindOne({
+    const item = await Export.findOne({
       where: {
         id_export,
       },
@@ -64,6 +64,8 @@ const deleteExport = async (req, res) => {
         message: 'Không thể xóa hóa đơn đã hoàn thành hoặc đã hủy',
       });
     } else {
+      item.status = 2;
+      await item.save();
       res.status(200).json({
         message: 'Xóa thành công',
       });
@@ -76,7 +78,7 @@ const deleteExport = async (req, res) => {
 const createExport = async (req, res) => {
   const { description } = req.body;
   try {
-    const check = await ExportfindOne({
+    const check = await Export.findOne({
       where: {
         id_staff: req.user.id_user,
         status: 0,
@@ -85,7 +87,7 @@ const createExport = async (req, res) => {
     if (!check) {
       const datetime = new Date();
       datetime.setHours(datetime.getHours() + 7);
-      await Exportcreate({
+      await Export.create({
         description,
         id_staff: req.user.id_user,
         datetime: datetime,
@@ -107,7 +109,7 @@ const createExport = async (req, res) => {
 const completeExport = async (req, res) => {
   const { id_export } = req.params;
   try {
-    const itemInExportList = await Exportsequelize.query(
+    const itemInExportList = await Export.sequelize.query(
       'SELECT * FROM export_details WHERE id_export = :id_export',
       {
         replacements: { id_export },
@@ -117,33 +119,69 @@ const completeExport = async (req, res) => {
     );
     if (itemInExportList[0]) {
       let i = 0;
+      let checkEnough = 1;
       while (itemInExportList[i]) {
-        await Exportsequelize.query(
-          'UPDATE items SET quantity = quantity + :quantity WHERE id_item = :id_item',
-          {
-            replacements: {
-              quantity: itemInExportList[i].quantity,
+        const item = await Item.findOne({
+          where: {
+            id_item: itemInExportList[i].id_item,
+          },
+        });
+        if (itemInExportList[i].quantity > item.quantity) {
+          checkEnough = 0;
+        }
+        i++;
+      }
+      if (checkEnough) {
+        i = 0;
+        while (itemInExportList[i]) {
+          await Export.sequelize.query(
+            'UPDATE items SET quantity = quantity - :quantity WHERE id_item = :id_item',
+            {
+              replacements: {
+                quantity: itemInExportList[i].quantity,
+                id_item: itemInExportList[i].id_item,
+              },
+              type: QueryTypes.UPDATE,
+              raw: true,
+            },
+          );
+          const item = await Item.findOne({
+            where: {
               id_item: itemInExportList[i].id_item,
             },
+          });
+          if (item.quantity == 0) {
+            await Import.sequelize.query(
+              'UPDATE items SET status = 2 WHERE id_item = :id_item',
+              {
+                replacements: {
+                  id_item: itemInExportList[i].id_item,
+                },
+                type: QueryTypes.UPDATE,
+                raw: true,
+              },
+            );
+          }
+          i++;
+        }
+        await Export.sequelize.query(
+          'UPDATE exports SET status = 1 WHERE id_export = :id_export',
+          {
+            replacements: { id_export },
             type: QueryTypes.UPDATE,
             raw: true,
           },
         );
-        i++;
+        res.status(200).json({
+          message: 'Đơn hàng hoàn thành!',
+        });
+      } else {
+        res.status(200).json({
+          message: 'Số lượng hàng không đủ không thể hoàn thành!',
+        });
       }
-      await Exportsequelize.query(
-        'UPDATE exports SET status = 1 WHERE id_export = :id_export',
-        {
-          replacements: { id_export },
-          type: QueryTypes.UPDATE,
-          raw: true,
-        },
-      );
-      res.status(200).json({
-        message: 'Đơn hàng hoàn thành!',
-      });
     } else {
-      await Exportsequelize.query(
+      await Export.sequelize.query(
         'UPDATE exports SET status = 1 WHERE id_export = :id_export',
         {
           replacements: { id_export },
@@ -164,7 +202,7 @@ const updateExport = async (req, res) => {
   const { id_export } = req.params;
   const { description } = req.body;
   try {
-    const check = await ExportfindOne({
+    const check = await Export.findOne({
       where: {
         id_export,
       },
@@ -182,7 +220,7 @@ const updateExport = async (req, res) => {
 const getDetailExport = async (req, res) => {
   const { id_export } = req.params;
   try {
-    const item = await ExportfindOne({
+    const item = await Export.findOne({
       raw: true,
       where: {
         id_export,

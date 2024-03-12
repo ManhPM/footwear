@@ -26,7 +26,7 @@ const createItem = async (req, res) => {
       origin,
       material,
       quantity: 0,
-      status: 1,
+      status: 2,
     });
     res.status(201).json({ message: 'Tạo mới thành công!' });
   } catch (error) {

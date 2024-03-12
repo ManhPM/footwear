@@ -1,4 +1,4 @@
-const { Review, Invoice_detail } = require('../models');
+const { Review, Invoice_detail, Invoice } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 const getAllReviewByItem = async (req, res) => {
@@ -21,24 +21,42 @@ const createReview = async (req, res) => {
   try {
     const datetime = new Date();
     datetime.setHours(datetime.getHours() + 7);
-    await Review.create({
-      id_item,
-      id_customer: req.user.id_user,
-      comment,
-      datetime: datetime,
-      rating,
-    });
-    await Invoice_detail.update(
-      { reviewed: 1 },
-      {
-        where: {
-          reviewed: 0,
-          id_invoice,
-          id_item,
-        },
+    const checkTime = datetime;
+    checkTime.setDate(checkTime.getDate() + 7);
+    const item = await Invoice_detail.findOne({
+      where: {
+        id_invoice,
+        id_item,
+        reviewed: 0,
       },
-    );
-    res.status(200).json({ message: 'Đánh giá thành công!' });
+    });
+    const invoice = await Invoice.findOne({
+      where: {
+        id_invoice,
+      },
+    });
+    if (item && invoice.datetime > checkTime) {
+      await Review.create({
+        id_item,
+        id_customer: req.user.id_user,
+        comment,
+        datetime: datetime,
+        rating,
+      });
+      await Invoice_detail.update(
+        { reviewed: 1 },
+        {
+          where: {
+            reviewed: 0,
+            id_invoice,
+            id_item,
+          },
+        },
+      );
+      res.status(200).json({ message: 'Đánh giá thành công' });
+    } else {
+      res.status(400).json({ message: 'Đánh giá thất bại' });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

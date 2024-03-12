@@ -1,4 +1,4 @@
-const { Import } = require('../models');
+const { Import, Item } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 const getAllImport = async (req, res) => {
@@ -64,6 +64,8 @@ const deleteImport = async (req, res) => {
         message: 'Không thể xóa hóa đơn đã hoàn thành hoặc đã hủy',
       });
     } else {
+      item.status = 2;
+      await item.save();
       res.status(200).json({
         message: 'Xóa thành công',
       });
@@ -117,12 +119,23 @@ const completeImport = async (req, res) => {
     );
     if (itemInImportList[0]) {
       let i = 0;
+      let checkEnough = 1;
       while (itemInImportList[i]) {
         await Import.sequelize.query(
           'UPDATE items SET quantity = quantity + :quantity WHERE id_item = :id_item',
           {
             replacements: {
               quantity: itemInImportList[i].quantity,
+              id_item: itemInImportList[i].id_item,
+            },
+            type: QueryTypes.UPDATE,
+            raw: true,
+          },
+        );
+        await Import.sequelize.query(
+          'UPDATE items SET status = 1 WHERE id_item = :id_item',
+          {
+            replacements: {
               id_item: itemInImportList[i].id_item,
             },
             type: QueryTypes.UPDATE,

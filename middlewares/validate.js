@@ -136,7 +136,7 @@ const checkCheckOut = async (req, res, next) => {
       const item = await Invoice.findOne({
         where: {
           id_customer: req.user.id_user,
-          status: 0,
+          invoice_status: 0,
         },
       });
       if (!item) {
@@ -351,7 +351,8 @@ const checkCreateReview = async (req, res, next) => {
         id_invoice,
       },
     });
-    if (invoice.status == 2) {
+    console.log(invoice);
+    if (invoice.invoice_status == 2) {
       next();
     } else {
       res.status(400).json({

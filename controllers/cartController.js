@@ -7,9 +7,9 @@ const deli_unit_price = 3000;
 const getAllItemInCart = async (req, res) => {
   try {
     const itemList = await Item.sequelize.query(
-      'SELECT SELECT I.id_item I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, C.quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
+      'SELECT I.id_item, I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, C.quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
       {
-        replacements: { id_customer: req.user.id_user_user },
+        replacements: { id_customer: req.user.id_user },
         type: QueryTypes.SELECT,
         raw: true,
       },
@@ -121,12 +121,12 @@ const deleteOneItemInCart = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { payment_method, description, userLat, userLng } = req.body;
+  const { payment_method, description, userLat, userLng, address } = req.body;
   try {
     const itemInCartList = await Item.sequelize.query(
-      'SELECT I.id_item I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, I.quantity, C.quantity as cart_quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
+      'SELECT I.id_item, I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, I.quantity, C.quantity as cart_quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
       {
-        replacements: { id_customer: req.user.id_user_user },
+        replacements: { id_customer: req.user.id_user },
         type: QueryTypes.SELECT,
         raw: true,
       },
@@ -153,6 +153,7 @@ const checkout = async (req, res) => {
         });
         checkNotEnough = 1;
       }
+      i++;
     }
     if (check || checkNotEnough) {
       res.status(400).json({
@@ -184,26 +185,28 @@ const checkout = async (req, res) => {
         const newInvoice = await Invoice.create({
           id_customer: req.user.id_user,
           description,
+          address,
           payment_method,
-          delivery_fee: random,
+          ship_fee: random,
           item_fee: Number(info[0].itemFee),
           total: Number(Number(info[0].itemFee) + random),
           datetime: date,
           invoice_status: 0,
           payment_status: 0,
         });
-        let i = 0;
-        while (itemInCartList[i]) {
+        i = 0;
+        while (i < itemInCartList.length) {
           await Invoice_detail.create({
             id_invoice: newInvoice.id_invoice,
             id_item: itemInCartList[i].id_item,
-            quantity: itemInCartList[i].quantity,
+            quantity: itemInCartList[i].cart_quantity,
+            unit_price: itemInCartList[i].price,
             reviewed: 0,
           });
           await Cart.destroy({
             where: {
               id_item: itemInCartList[i].id_item,
-              id_customer: itemInCartList[i].id_customer,
+              id_customer: req.user.id_user,
             },
           });
           i++;

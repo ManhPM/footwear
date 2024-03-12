@@ -10,10 +10,7 @@ const {
 } = require('../controllers/importController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const { checkExistImport } = require('../middlewares/checkExist');
-const {
-  checkCompleteExport,
-  checkCompleteImport,
-} = require('../middlewares/validate');
+const { checkCompleteImport } = require('../middlewares/validate');
 
 const importRouter = express.Router();
 
@@ -53,7 +50,7 @@ importRouter.delete(
   '/delete/:id_import',
   authenticate,
   authorize(['Admin']),
-  checkCompleteExport,
+  checkExistImport,
   deleteImport,
 );
 

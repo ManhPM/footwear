@@ -1,12 +1,12 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 const date = new Date();
 date.setHours(date.getHours() + 7);
 module.exports = (sequelize, DataTypes) => {
   class Review extends Model {
     static associate({ Customer, Item }) {
-      Review.belongsTo(Customer, { foreignKey: "id_customer" });
-      Review.belongsTo(Item, { foreignKey: "id_item" });
+      Review.belongsTo(Customer, { foreignKey: 'id_customer' });
+      Review.belongsTo(Item, { foreignKey: 'id_item' });
     }
   }
   Review.init(
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       rating: { type: DataTypes.INTEGER, allowNull: false },
       comment: DataTypes.STRING,
-      createAt: {
+      datetime: {
         primaryKey: true,
         type: DataTypes.DATE,
         allowNull: false,
@@ -33,9 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Review",
+      modelName: 'Review',
       timestamps: false,
-    }
+    },
   );
   return Review;
 };

@@ -5,6 +5,7 @@ const {
   cancelInvoice,
   getAllItemInInvoice,
   completeInvoice,
+  statistics,
 } = require('../controllers/invoiceController');
 const { authenticate, authorize } = require('../middlewares/auth');
 
@@ -35,7 +36,12 @@ invoiceRouter.get(
   checkExistInvoice,
   cancelInvoice,
 );
-// invoiceRouter.get('/thongke', authenticate, authorize(['Admin']), thongKeSanPham);
+invoiceRouter.get(
+  '/statistics',
+  authenticate,
+  authorize(['Admin']),
+  statistics,
+);
 
 module.exports = {
   invoiceRouter,

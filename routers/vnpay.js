@@ -16,10 +16,6 @@ vnpayRouter.post('/create_payment_url', async function (req, res, next) {
         res.status(400).json({
           message: 'Hoá đơn của bạn đã được thanh toán.',
         });
-      } else if (invoice.id_payment != 1) {
-        res.status(400).json({
-          message: 'Hoá đơn này phải thanh toán khi nhận hàng.',
-        });
       } else {
         process.env.TZ = 'Asia/Ho_Chi_Minh';
 
