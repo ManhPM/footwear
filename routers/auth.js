@@ -20,6 +20,7 @@ const {
   checkVerifyID,
   checkChangePassword,
   checkUpdateProfile,
+  checkCreateStaff,
 } = require('../middlewares/validate');
 
 const authRouter = express.Router();
@@ -27,7 +28,12 @@ const authRouter = express.Router();
 authRouter.post('/login', checkLogin, login);
 authRouter.post('/admin/login', checkLogin, loginAdmin);
 authRouter.post('/register', checkRegister, register);
-authRouter.post('/register/staff', checkRegister, registerStaff);
+authRouter.post(
+  '/register/staff',
+  checkCreateStaff,
+  checkRegister,
+  registerStaff,
+);
 authRouter.get('/profile', authenticate, profile);
 authRouter.post('/forgotpassword', forgotPassword);
 authRouter.post('/verify/register', checkVerifyID, verifyRegister);

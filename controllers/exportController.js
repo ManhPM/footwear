@@ -58,6 +58,7 @@ const deleteExport = async (req, res) => {
       where: {
         id_export,
       },
+      raw: false,
     });
     if (item.status != 0) {
       res.status(400).json({
@@ -206,6 +207,7 @@ const updateExport = async (req, res) => {
       where: {
         id_export,
       },
+      raw: false,
     });
     check.description = description;
     await check.save();

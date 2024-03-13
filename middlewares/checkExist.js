@@ -5,6 +5,8 @@ const {
   Export,
   Export_detail,
   Invoice,
+  Provider,
+  Staff,
 } = require('../models');
 const { QueryTypes } = require('sequelize');
 
@@ -197,6 +199,26 @@ const checkExistStaff = async (req, res, next) => {
   }
 };
 
+const checkExistProvider = async (req, res, next) => {
+  const { id_provider } = req.params;
+  try {
+    const item = await Provider.findOne({
+      where: {
+        id_provider,
+      },
+    });
+    if (!item) {
+      res.status(400).json({ message: 'Nhà cung cấp không tồn tại!' });
+    } else {
+      next();
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
 module.exports = {
   checkExistImport,
   checkExistImportDetail,
@@ -207,4 +229,5 @@ module.exports = {
   checkExistEmail,
   checkExistInvoice,
   checkExistStaff,
+  checkExistProvider,
 };

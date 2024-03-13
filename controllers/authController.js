@@ -366,8 +366,8 @@ const registerStaff = async (req, res) => {
     const account = await Account.create({
       password: hashPassword,
       email,
-      role: 'Khách hàng',
-      status: 0,
+      role: 'Nhân viên',
+      status: 1,
     });
     await Staff.create({
       id_account: account.id_account,
@@ -377,7 +377,7 @@ const registerStaff = async (req, res) => {
       status: 1,
     });
     res.status(200).json({
-      message: `Tạo tài khoản thành công, hãy kiểm tra hòm thư để kích hoạt tài khoản!`,
+      message: `Tạo tài khoản thành công!`,
     });
   } catch (error) {
     res.status(500).json({
@@ -454,6 +454,7 @@ const updateProfile = async (req, res) => {
       where: {
         id_account: req.user.id,
       },
+      raw: false,
     });
     customer.name = name;
     customer.phone = phone;
@@ -606,6 +607,7 @@ const verifyRegister = async (req, res, next) => {
         email,
         status: 0,
       },
+      raw: false,
     });
     const date = new Date();
     date.setHours(date.getHours() + 7);
@@ -617,6 +619,7 @@ const verifyRegister = async (req, res, next) => {
           [Op.lt]: date,
         },
       },
+      raw: false,
     });
     if (account) {
       if (account_verify) {
@@ -658,6 +661,7 @@ const verifyForgotPassword = async (req, res, next) => {
         email,
         status: 1,
       },
+      raw: false,
     });
     const date = new Date();
     date.setHours(date.getHours() + 7);
@@ -669,6 +673,7 @@ const verifyForgotPassword = async (req, res, next) => {
           [Op.lt]: date,
         },
       },
+      raw: false,
     });
     if (account) {
       if (account_verify) {
@@ -708,6 +713,7 @@ const verifyChangeEmail = async (req, res, next) => {
         email,
         status: 1,
       },
+      raw: false,
     });
     const date = new Date();
     date.setHours(date.getHours() + 7);
@@ -719,6 +725,7 @@ const verifyChangeEmail = async (req, res, next) => {
           [Op.lt]: date,
         },
       },
+      raw: false,
     });
     if (account) {
       if (account_verify) {

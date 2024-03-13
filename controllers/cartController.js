@@ -28,6 +28,7 @@ const createItemInCart = async (req, res) => {
         id_item,
         id_customer: req.user.id_user,
       },
+      raw: false,
     });
     if (isExist) {
       if (quantity) {
@@ -69,6 +70,7 @@ const increaseNumItemInCart = async (req, res) => {
         id_item,
         id_customer: req.user.id_user,
       },
+      raw: false,
     });
     itemInCart.quantity = itemInCart.quantity + 1;
     await itemInCart.save();
@@ -86,6 +88,7 @@ const decreaseNumItemInCart = async (req, res) => {
         id_item,
         id_customer: req.user.id_user,
       },
+      raw: false,
     });
     if (itemInCart.quantity == 1) {
       await Cart.destroy({

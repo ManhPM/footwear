@@ -104,6 +104,7 @@ vnpayRouter.get('/vnpay_return', async function (req, res, next) {
       where: {
         id_invoice,
       },
+      raw: false,
     });
     invoice.total = 0;
     await invoice.save();

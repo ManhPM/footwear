@@ -1,4 +1,11 @@
-const { Account, Import, Export, Invoice } = require('../models');
+const {
+  Account,
+  Import,
+  Export,
+  Invoice,
+  Provider,
+  Staff,
+} = require('../models');
 
 function isPassword(str) {
   if (str.length >= 6) {
@@ -351,12 +358,161 @@ const checkCreateReview = async (req, res, next) => {
         id_invoice,
       },
     });
-    console.log(invoice);
     if (invoice.invoice_status == 2) {
       next();
     } else {
       res.status(400).json({
         message: 'Đơn hàng chưa hoàn thành. Không thể đánh giá!',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateProvider = async (req, res, next) => {
+  try {
+    const { phone, name, address } = req.body;
+    if (isExist(phone) && isExist(name) && isExist(address)) {
+      if (isValidPhoneNumber(phone)) {
+        const item = await Provider.findOne({
+          where: {
+            phone,
+            status: 1,
+          },
+        });
+        if (!item) {
+          next();
+        } else {
+          res.status(400).json({
+            message: 'Số điện thoại đã tồn tại',
+          });
+        }
+      } else {
+        res.status(400).json({
+          message: 'Số điện thoại không hợp lệ',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkUpdateProvider = async (req, res, next) => {
+  try {
+    const { phone, name, address } = req.body;
+    const { id_provider } = req.params;
+    if (isExist(phone) && isExist(name) && isExist(address)) {
+      if (isValidPhoneNumber(phone)) {
+        const item = await Provider.findOne({
+          where: {
+            phone,
+            status: 1,
+          },
+        });
+        if (!item) {
+          next();
+        } else {
+          if (item.id_provider == id_provider) {
+            next();
+          } else {
+            res.status(400).json({
+              message: 'Số điện thoại đã tồn tại',
+            });
+          }
+        }
+      } else {
+        res.status(400).json({
+          message: 'Số điện thoại không hợp lệ',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateStaff = async (req, res, next) => {
+  try {
+    const { phone, name, address } = req.body;
+    if (isExist(phone) && isExist(name) && isExist(address)) {
+      if (isValidPhoneNumber(phone)) {
+        const item = await Staff.findOne({
+          where: {
+            phone,
+            status: 1,
+          },
+        });
+        if (!item) {
+          next();
+        } else {
+          res.status(400).json({
+            message: 'Số điện thoại đã tồn tại',
+          });
+        }
+      } else {
+        res.status(400).json({
+          message: 'Số điện thoại không hợp lệ',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkUpdateStaff = async (req, res, next) => {
+  try {
+    const { phone, name, address } = req.body;
+    const { id_staff } = req.params;
+    if (isExist(phone) && isExist(name) && isExist(address)) {
+      if (isValidPhoneNumber(phone)) {
+        const item = await Staff.findOne({
+          where: {
+            phone,
+            status: 1,
+          },
+        });
+        if (!item) {
+          next();
+        } else {
+          if (item.id_staff == id_staff) {
+            next();
+          } else {
+            res.status(400).json({
+              message: 'Số điện thoại đã tồn tại',
+            });
+          }
+        }
+      } else {
+        res.status(400).json({
+          message: 'Số điện thoại không hợp lệ',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
       });
     }
   } catch (error) {
@@ -378,4 +534,8 @@ module.exports = {
   checkCompleteExport,
   checkCompleteImport,
   checkCreateReview,
+  checkCreateProvider,
+  checkUpdateProvider,
+  checkCreateStaff,
+  checkUpdateStaff,
 };

@@ -98,6 +98,7 @@ const confirmInvoice = async (req, res) => {
       where: {
         id_invoice,
       },
+      raw: false,
     });
     if (invoice.invoice_status == 0) {
       const itemListInInvoice = await Invoice_detail.findAll({
@@ -163,6 +164,7 @@ const completeInvoice = async (req, res) => {
       where: {
         id_invoice,
       },
+      raw: false,
     });
     if (invoice.invoice_status == 2 && invoice.payment_status == 1) {
       invoice.invoice_status = 3;
@@ -188,6 +190,7 @@ const cancelInvoice = async (req, res) => {
       where: {
         id_invoice,
       },
+      raw: false,
     });
     if (invoice.invoice_status == 0) {
       invoice.invoice_status = 3;

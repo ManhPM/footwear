@@ -58,6 +58,7 @@ const deleteImport = async (req, res) => {
       where: {
         id_import,
       },
+      raw: false,
     });
     if (item.status != 0) {
       res.status(400).json({
@@ -182,6 +183,7 @@ const updateImport = async (req, res) => {
       where: {
         id_import,
       },
+      raw: false,
     });
     check.description = description;
     await check.save();

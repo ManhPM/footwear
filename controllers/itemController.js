@@ -52,6 +52,7 @@ const updateItem = async (req, res) => {
       where: {
         id_item,
       },
+      raw: false,
     });
     update.type = type;
     update.name = name;
@@ -78,6 +79,7 @@ const deleteItem = async (req, res) => {
       where: {
         id_item,
       },
+      raw: false,
     });
     if (itemUpdate.status == 0) {
       itemUpdate.status = 1;

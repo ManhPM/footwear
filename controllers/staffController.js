@@ -11,13 +11,14 @@ const getAllStaff = async (req, res) => {
 };
 
 const updateStaff = async (req, res) => {
-  const { id_customer } = req.params;
-  const { name, phone, address } = req.params;
+  const { id_staff } = req.params;
+  const { name, phone, address } = req.body;
   try {
     const item = await Staff.findOne({
       where: {
-        id_customer,
+        id_staff,
       },
+      raw: false,
     });
     item.name = name;
     item.phone = phone;
@@ -30,12 +31,13 @@ const updateStaff = async (req, res) => {
 };
 
 const deleteStaff = async (req, res) => {
-  const { id_customer } = req.params;
+  const { id_staff } = req.params;
   try {
     const item = await Staff.findOne({
       where: {
-        id_customer,
+        id_staff,
       },
+      raw: false,
     });
     item.status = 0;
     await item.save();

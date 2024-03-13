@@ -6,6 +6,7 @@ const {
 } = require('../controllers/staffController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const { checkExistStaff } = require('../middlewares/checkExist');
+const { checkUpdateStaff } = require('../middlewares/validate');
 
 const staffRouter = express.Router();
 
@@ -15,6 +16,7 @@ staffRouter.put(
   authenticate,
   authorize(['Admin']),
   checkExistStaff,
+  checkUpdateStaff,
   updateStaff,
 );
 staffRouter.delete(
