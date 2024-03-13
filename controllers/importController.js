@@ -5,7 +5,7 @@ const getAllImport = async (req, res) => {
   try {
     if (req.user.role == 'Admin') {
       const itemList = await Import.sequelize.query(
-        'SELECT IP.*, S.name FROM staffs as S, imports as IP WHERE IP.id_staff = S.id_staff',
+        'SELECT IP.*, S.name as name_staff, P.name as name_provider FROM staffs as S, imports as IP, providers as P WHERE IP.id_staff = S.id_staff AND IP.id_provider = P.id_provider',
         {
           type: QueryTypes.SELECT,
           raw: true,
@@ -16,7 +16,7 @@ const getAllImport = async (req, res) => {
       });
     } else {
       const itemList = await Import.sequelize.query(
-        'SELECT IP.*, S.name FROM staffs as S, imports as IP WHERE IP.id_staff = S.id_staff AND IP.id_staff = :id_staff',
+        'SELECT IP.*, S.name as name_staff, P.name as name_provider FROM staffs as S, imports as IP, providers as P WHERE IP.id_staff = S.id_staff AND IP.id_provider = P.id_provider AND IP.id_staff = :id_staff',
         {
           replacements: { id_staff: req.user.id_user },
           type: QueryTypes.SELECT,
@@ -76,7 +76,7 @@ const deleteImport = async (req, res) => {
 };
 
 const createImport = async (req, res) => {
-  const { description } = req.body;
+  const { description, id_provider } = req.body;
   try {
     const check = await Import.findOne({
       where: {
@@ -89,6 +89,7 @@ const createImport = async (req, res) => {
       datetime.setHours(datetime.getHours() + 7);
       await Import.create({
         description,
+        id_provider,
         id_staff: req.user.id_user,
         datetime: datetime,
         status: 0,

@@ -6,6 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert('Imports', [
       {
         id_staff: 2,
+        id_provider: 1,
         datetime: date,
         status: 1,
         description: 'Nhập hàng',
