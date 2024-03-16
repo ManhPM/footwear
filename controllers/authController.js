@@ -1,4 +1,4 @@
-const { Account, Account_verify, Customer, Staff } = require('../models');
+const { Account, Account_verify, Customer, Staff, Role } = require('../models');
 const { Sequelize } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -768,7 +768,12 @@ const login = async (req, res) => {
         status: 1,
       },
     });
-    if (account && account.role == 'Khách hàng') {
+    const role = await Role.findOne({
+      where: {
+        id_role: account.id_role,
+      },
+    });
+    if (account && account.id_role == 1) {
       const checkCorrectPassword = await bcrypt.compare(
         req.body.password,
         account.password,
@@ -778,16 +783,15 @@ const login = async (req, res) => {
           .status(401)
           .json({ message: 'Thông tin đăng nhập không chính xác' });
       } else {
-        const userInfo = await Customer.findOne({
+        let userInfo = await Customer.findOne({
           where: {
             id_account: account.id_account,
           },
         });
-        console.log('USER', userInfo);
         const token = jwt.sign(
           {
             id: account.id_account,
-            role: account.role,
+            role: role.name,
             id_user: userInfo.id_customer,
           },
           'BOOKSTOREP2M',
@@ -795,6 +799,7 @@ const login = async (req, res) => {
             expiresIn: '15d',
           },
         );
+        userInfo = { ...userInfo, role: role.name };
         res
           .cookie('accessToken', token, {
             httpOnly: true,
@@ -828,7 +833,12 @@ const loginAdmin = async (req, res) => {
         status: 1,
       },
     });
-    if (account && account.role != 'Khách hàng') {
+    const role = await Role.findOne({
+      where: {
+        id_role: account.id_role,
+      },
+    });
+    if (account && account.id_role != 1) {
       const checkCorrectPassword = await bcrypt.compare(
         req.body.password,
         account.password,
@@ -846,7 +856,7 @@ const loginAdmin = async (req, res) => {
         const token = jwt.sign(
           {
             id: account.id_account,
-            role: account.role,
+            role: role.name,
             id_user: userInfo.id_staff,
           },
           'BOOKSTOREP2M',
@@ -854,6 +864,7 @@ const loginAdmin = async (req, res) => {
             expiresIn: '15d',
           },
         );
+        userInfo = { ...userInfo, role: role.name };
         res
           .cookie('accessToken', token, {
             httpOnly: true,
@@ -891,12 +902,17 @@ const profile = async (req, res) => {
           id_account: req.user.id,
         },
       });
+      const role = await Role.findOne({
+        where: {
+          id_role: account.id_role,
+        },
+      });
       res.status(200).json({
         data: {
           name: customer.name,
           phone: customer.phone,
           email: account.email,
-          role: account.role,
+          role: role.name,
           image: customer.image,
         },
       });
@@ -911,12 +927,17 @@ const profile = async (req, res) => {
           id_account: req.user.id,
         },
       });
+      const role = await Role.findOne({
+        where: {
+          id_role: account.id_role,
+        },
+      });
       res.status(200).json({
         data: {
           name: staff.name,
           phone: staff.phone,
           email: account.email,
-          role: account.role,
+          role: role.name,
         },
       });
     }

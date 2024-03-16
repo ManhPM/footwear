@@ -35,27 +35,50 @@ const createReview = async (req, res) => {
         id_invoice,
       },
     });
-    if (item && invoice.datetime > checkTime) {
-      await Review.create({
-        id_item,
-        id_customer: req.user.id_user,
-        comment,
-        datetime: datetime,
-        rating,
-      });
-      await Invoice_detail.update(
-        { reviewed: 1 },
-        {
-          where: {
-            reviewed: 0,
-            id_invoice,
-            id_item,
+    if (item) {
+      if (invoice.datetime > checkTime) {
+        await Review.create({
+          id_item,
+          id_customer: req.user.id_user,
+          comment,
+          datetime: datetime,
+          rating,
+        });
+        await Invoice_detail.update(
+          { reviewed: 1 },
+          {
+            where: {
+              reviewed: 0,
+              id_invoice,
+              id_item,
+            },
           },
-        },
-      );
-      res.status(200).json({ message: 'Đánh giá thành công' });
+        );
+        res.status(200).json({ message: 'Đánh giá thành công' });
+      } else {
+        const invoiceDetail = await Invoice_detail.findAll({
+          where: {
+            id_invoice,
+          },
+        });
+        let i = 0;
+        while (i < invoiceDetail.length) {
+          await Invoice_detail.update(
+            { reviewed: 1 },
+            {
+              where: {
+                reviewed: 0,
+                id_invoice: invoiceDetail[i].id_invoice,
+              },
+            },
+          );
+          i++;
+        }
+      }
     } else {
-      res.status(400).json({ message: 'Đánh giá thất bại' });
+      res
+        .status(400)
+        .json({ message: 'Đánh giá thất bại. Hóa đơn đã vượt quá 14 ngày' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

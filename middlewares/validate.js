@@ -58,7 +58,7 @@ const checkLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (isExist(email) && isExist(password)) {
-      if (isPassword) {
+      if (isPassword(password)) {
         const item = await Account.findOne({
           where: {
             email,

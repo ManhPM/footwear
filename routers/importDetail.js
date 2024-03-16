@@ -12,27 +12,27 @@ const importDetailRouter = express.Router();
 importDetailRouter.get(
   '/detail',
   authenticate,
-  authorize(['Admin']),
+  authorize(['Admin', 'Nhân viên']),
   checkExistImportDetail,
   getDetailImportDetail,
 );
 importDetailRouter.post(
   '/create',
   authenticate,
-  authorize(['Admin']),
+  authorize(['Admin', 'Nhân viên']),
   createImportDetail,
 );
 importDetailRouter.put(
   '/update',
   authenticate,
-  authorize(['Admin']),
+  authorize(['Admin', 'Nhân viên']),
   checkExistImportDetail,
   updateImportDetail,
 );
 importDetailRouter.delete(
   '/delete',
   authenticate,
-  authorize(['Admin']),
+  authorize(['Admin', 'Nhân viên']),
   checkExistImportDetail,
   deleteImportDetail,
 );
