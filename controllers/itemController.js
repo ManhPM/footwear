@@ -112,19 +112,19 @@ const getAllItem = async (req, res) => {
   let query =
     'SELECT I.*, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I WHERE I.status != 0';
   if (brand) {
-    query += ` AND I.brand =${brand}`;
+    query += ` AND I.brand ='${brand}'`;
   }
   if (type) {
-    query += ` AND I.type =${type}`;
+    query += ` AND I.type ='${type}'`;
   }
   if (origin) {
-    query += ` AND I.origin =${origin}`;
+    query += ` AND I.origin ='${origin}'`;
   }
   if (material) {
-    query += ` AND I.material =${material}`;
+    query += ` AND I.material ='${material}'`;
   }
   if (size) {
-    query += ` AND I.size =${size}`;
+    query += ` AND I.size ='${size}'`;
   }
   let itemList = [];
   try {
