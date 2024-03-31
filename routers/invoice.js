@@ -6,6 +6,7 @@ const {
   getAllItemInInvoice,
   completeInvoice,
   statistics,
+  getCurrentInvoice,
 } = require('../controllers/invoiceController');
 const { authenticate, authorize } = require('../middlewares/auth');
 
@@ -15,6 +16,12 @@ const invoiceRouter = express.Router();
 
 invoiceRouter.get('/', authenticate, getAllInvoice);
 invoiceRouter.get('/detail/:id_invoice', authenticate, getAllItemInInvoice);
+invoiceRouter.get(
+  '/current',
+  authenticate,
+  authorize(['Khách hàng']),
+  getCurrentInvoice,
+);
 invoiceRouter.get(
   '/confirm/:id_invoice',
   authenticate,
@@ -36,6 +43,7 @@ invoiceRouter.get(
   checkExistInvoice,
   cancelInvoice,
 );
+
 invoiceRouter.get(
   '/statistics',
   authenticate,

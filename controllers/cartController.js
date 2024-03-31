@@ -2,7 +2,6 @@ const { Cart, Item, Invoice, Invoice_detail, Discount } = require('../models');
 const { QueryTypes } = require('sequelize');
 const storeLat = 10.848881;
 const storeLng = 106.787017;
-const deli_unit_price = 3000;
 
 const getAllItemInCart = async (req, res) => {
   try {
@@ -19,6 +18,7 @@ const getAllItemInCart = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const createItemInCart = async (req, res) => {
   const { id_item } = req.params;
   const { quantity } = req.body;
@@ -55,6 +55,215 @@ const createItemInCart = async (req, res) => {
           quantity: 1,
         });
         res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getAllItemInCartAtStore = async (req, res) => {
+  try {
+    const itemList = await Item.sequelize.query(
+      'SELECT I.id_item, I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, C.quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
+      {
+        replacements: { id_customer: 1 },
+        type: QueryTypes.SELECT,
+        raw: true,
+      },
+    );
+    res.status(200).json({ data: itemList });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const createItemInCartAtStore = async (req, res) => {
+  const { id_item } = req.params;
+  const { quantity } = req.body;
+  try {
+    const isExist = await Cart.findOne({
+      where: {
+        id_item,
+        id_customer: 1,
+      },
+      raw: false,
+    });
+    if (isExist) {
+      if (quantity) {
+        isExist.quantity = isExist.quantity + quantity;
+        await isExist.save();
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
+      } else {
+        isExist.quantity = isExist.quantity + 1;
+        await isExist.save();
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
+      }
+    } else {
+      if (quantity) {
+        await Cart.create({
+          id_item,
+          id_customer: 1,
+          quantity: quantity,
+        });
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
+      } else {
+        await Cart.create({
+          id_item,
+          id_customer: 1,
+          quantity: 1,
+        });
+        res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const increaseNumItemInCartAtStore = async (req, res) => {
+  const { id_item } = req.params;
+  try {
+    const itemInCart = await Cart.findOne({
+      where: {
+        id_item,
+        id_customer: 1,
+      },
+      raw: false,
+    });
+    itemInCart.quantity = itemInCart.quantity + 1;
+    await itemInCart.save();
+    res.status(201).json({ message: 'Số lượng đã tăng thêm 1!' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const decreaseNumItemInCartAtStore = async (req, res) => {
+  const { id_item } = req.params;
+  try {
+    const itemInCart = await Cart.findOne({
+      where: {
+        id_item,
+        id_customer: 1,
+      },
+      raw: false,
+    });
+    if (itemInCart.quantity == 1) {
+      await Cart.destroy({
+        where: {
+          id_item,
+          id_customer: 1,
+        },
+      });
+      res.status(201).json({ message: 'Đã xoá khỏi giỏ hàng!' });
+    } else {
+      itemInCart.quantity = itemInCart.quantity - 1;
+      await itemInCart.save();
+      res.status(201).json({ message: 'Số lượng đã giảm đi 1!' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const deleteOneItemInCartAtStore = async (req, res) => {
+  const { id_item } = req.params;
+  try {
+    await Cart.destroy({
+      where: {
+        id_item,
+        id_customer: 1,
+      },
+    });
+    res.status(201).json({ message: 'Đã xoá khỏi giỏ hàng!' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const checkoutAtStore = async (req, res) => {
+  try {
+    const itemInCartList = await Item.sequelize.query(
+      'SELECT I.id_item, I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, I.quantity, C.quantity as cart_quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
+      {
+        replacements: { id_customer: 1 },
+        type: QueryTypes.SELECT,
+        raw: true,
+      },
+    );
+    let i = 0;
+    let check = 0;
+    let checkNotEnough = 0;
+    while (i < itemInCartList.length) {
+      if (itemInCartList[i].status != 1 || itemInCartList.quantity == 0) {
+        await Cart.destroy({
+          where: {
+            id_item: itemInCartList[i].id_item,
+            id_customer: itemInCartList[i].id_customer,
+          },
+        });
+        check = 1;
+      }
+      if (itemInCartList[i].quantity < itemInCartList.cart_quantity) {
+        await Cart.destroy({
+          where: {
+            id_item: itemInCartList[i].id_item,
+            id_customer: itemInCartList[i].id_customer,
+          },
+        });
+        checkNotEnough = 1;
+      }
+      i++;
+    }
+    if (check || checkNotEnough) {
+      res.status(400).json({
+        message:
+          'Trong giỏ hàng có sản phẩm không đủ hàng hoặc đã ngừng kinh doanh, vui lòng đặt hàng lại!',
+      });
+    } else {
+      if (itemInCartList.length) {
+        const date = new Date();
+        date.setHours(date.getHours() + 7);
+        const info = await Cart.sequelize.query(
+          'SELECT SUM((C.quantity*I.price)) as itemFee, SUM(C.quantity) as itemQuantity FROM carts as C, items as I where C.id_item = I.id_item AND C.id_customer = :id_customer',
+          {
+            replacements: { id_customer: 1 },
+            type: QueryTypes.SELECT,
+          },
+        );
+        const newInvoice = await Invoice.create({
+          id_customer: 1,
+          description: 'Khách mua tại cửa hàng',
+          address: 'Khách mua tại cửa hàng',
+          payment_method: 'Khách mua tại cửa hàng',
+          ship_fee: 0,
+          item_fee: Number(info[0].itemFee),
+          total: Number(info[0].itemFee),
+          datetime: date,
+          invoice_status: 0,
+          payment_status: 0,
+        });
+        i = 0;
+        while (i < itemInCartList.length) {
+          await Invoice_detail.create({
+            id_invoice: newInvoice.id_invoice,
+            id_item: itemInCartList[i].id_item,
+            quantity: itemInCartList[i].cart_quantity,
+            unit_price: itemInCartList[i].price,
+            reviewed: 0,
+          });
+          await Cart.destroy({
+            where: {
+              id_item: itemInCartList[i].id_item,
+              id_customer: 1,
+            },
+          });
+          i++;
+        }
+        res.status(201).json({ message: 'Tạo đơn thành công!' });
+      } else {
+        res.status(400).json({ message: 'Giỏ hàng của bạn đang trống!' });
       }
     }
   } catch (error) {
@@ -214,7 +423,9 @@ const checkout = async (req, res) => {
           });
           i++;
         }
-        res.status(201).json({ message: 'Đặt hàng thành công!' });
+        res
+          .status(201)
+          .json({ message: 'Đặt hàng thành công!', data: newInvoice });
       } else {
         res.status(400).json({ message: 'Giỏ hàng của bạn đang trống!' });
       }
@@ -250,4 +461,10 @@ module.exports = {
   decreaseNumItemInCart,
   deleteOneItemInCart,
   checkout,
+  getAllItemInCartAtStore,
+  createItemInCartAtStore,
+  increaseNumItemInCartAtStore,
+  decreaseNumItemInCartAtStore,
+  deleteOneItemInCartAtStore,
+  checkoutAtStore,
 };

@@ -177,7 +177,7 @@ const completeImport = async (req, res) => {
 
 const updateImport = async (req, res) => {
   const { id_import } = req.params;
-  const { description } = req.body;
+  const { description, id_provider } = req.body;
   try {
     const check = await Import.findOne({
       where: {
@@ -186,6 +186,7 @@ const updateImport = async (req, res) => {
       raw: false,
     });
     check.description = description;
+    check.id_provider = id_provider;
     await check.save();
     res.status(200).json({
       message: 'Cập nhật thành công!',

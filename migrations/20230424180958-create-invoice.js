@@ -38,9 +38,11 @@ module.exports = {
       },
       invoice_status: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       payment_status: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       address: {
         type: Sequelize.STRING,

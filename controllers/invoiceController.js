@@ -91,6 +91,21 @@ const getAllItemInInvoice = async (req, res) => {
   }
 };
 
+const getCurrentInvoice = async (req, res) => {
+  try {
+    const item = await Invoice.findOne({
+      where: {
+        id_customer: req.user.id_user,
+      },
+    });
+    res.status(200).json({
+      data: item,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const confirmInvoice = async (req, res) => {
   const { id_invoice } = req.params;
   try {
@@ -166,8 +181,8 @@ const completeInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.invoice_status == 2 && invoice.payment_status == 1) {
-      invoice.invoice_status = 3;
+    if (invoice.invoice_status == 1 && invoice.payment_status == 1) {
+      invoice.invoice_status = 2;
       await invoice.save();
       res.status(200).json({
         message: 'Đơn hàng hoàn thành!',
@@ -235,24 +250,6 @@ const statistics = async (req, res) => {
           raw: true,
         },
       );
-      const totalExport = await Invoice_detail.sequelize.query(
-        'SELECT items.id_item, items.name, SUM(export_details.quantity) as total_quantity FROM items JOIN export_details ON items.id_item = export_details.id_item JOIN exports ON export_details.id_export = exports.id_export WHERE exports.status = 1 AND exports.datetime BETWEEN :fromdate AND :todate GROUP BY items.id_item, items.name',
-        {
-          replacements: {
-            fromdate: `${fromdate}`,
-            todate: `${todate}`,
-          },
-          type: QueryTypes.SELECT,
-          raw: true,
-        },
-      );
-      const exportCost = await Invoice_detail.sequelize.query(
-        'SELECT SUM(export_details.quantity * items.price) as total_cost FROM export_details JOIN items ON export_details.id_item = items.id_item JOIN exports ON export_details.id_export = exports.id_export WHERE exports.status = 1 AND exports.datetime BETWEEN :fromdate AND :todate',
-        {
-          type: QueryTypes.SELECT,
-          raw: true,
-        },
-      );
       const importCost = await Invoice_detail.sequelize.query(
         'SELECT SUM(import_details.quantity * items.price) as total_cost FROM import_details JOIN items ON import_details.id_item = items.id_item JOIN imports ON import_details.id_import = imports.id_import WHERE imports.status = 1 AND imports.datetime BETWEEN :fromdate AND :todate',
         {
@@ -274,9 +271,7 @@ const statistics = async (req, res) => {
       res.status(200).json({
         totalSold: totalSold,
         totalImport: totalImport,
-        totalExport: totalExport,
         importCost: importCost[0].total_cost,
-        exportCost: exportCost[0].total_cost,
         total: total[0].revenue,
         profit: total[0].revenue - totalImport,
       });
@@ -340,6 +335,7 @@ const statistics = async (req, res) => {
 };
 
 module.exports = {
+  getCurrentInvoice,
   getAllInvoice,
   getAllItemInInvoice,
   confirmInvoice,

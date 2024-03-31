@@ -848,7 +848,7 @@ const loginAdmin = async (req, res) => {
           .status(401)
           .json({ message: 'Thông tin đăng nhập không chính xác' });
       } else {
-        const userInfo = await Staff.findOne({
+        let userInfo = await Staff.findOne({
           where: {
             id_account: account.id_account,
           },

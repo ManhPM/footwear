@@ -165,6 +165,28 @@ const checkCheckOut = async (req, res, next) => {
   }
 };
 
+const checkCheckOutAtStore = async (req, res, next) => {
+  try {
+    const item = await Invoice.findOne({
+      where: {
+        id_customer: 1,
+        invoice_status: 0,
+      },
+    });
+    if (!item) {
+      next();
+    } else {
+      res.status(400).json({
+        message: 'Đang có đơn chưa được xác nhận không thể tạo thêm',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
 const checkForgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -538,4 +560,5 @@ module.exports = {
   checkUpdateProvider,
   checkCreateStaff,
   checkUpdateStaff,
+  checkCheckOutAtStore,
 };

@@ -39,14 +39,14 @@ authRouter.post('/forgotpassword', forgotPassword);
 authRouter.post('/verify/register', checkVerifyID, verifyRegister);
 authRouter.post('/verify/changeemail', checkVerifyID, verifyChangeEmail);
 authRouter.post('/verify/forgotpassword', checkVerifyID, verifyForgotPassword);
-authRouter.post(
+authRouter.put(
   '/changepassword',
   checkChangePassword,
   authenticate,
   changePassword,
 );
 authRouter.get('/logout', authenticate, logout);
-authRouter.post(
+authRouter.put(
   '/updateprofile',
   checkUpdateProfile,
   authenticate,
