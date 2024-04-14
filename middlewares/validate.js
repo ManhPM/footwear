@@ -295,10 +295,34 @@ const checkUpdateProfile = async (req, res, next) => {
 
 const checkCreateItem = async (req, res, next) => {
   try {
-    const { type, name, price, size, image, brand, origin, material } =
+    const { id_type, name, image, brand, origin, material } = req.body;
+    if (
+      isExist(id_type) &&
+      isExist(name) &&
+      isExist(brand) &&
+      isExist(origin) &&
+      isExist(material) &&
+      isExist(image)
+    ) {
+      next();
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateItemDetail = async (req, res, next) => {
+  try {
+    const { id_type, name, price, size, image, brand, origin, material } =
       req.body;
     if (
-      isExist(type) &&
+      isExist(id_type) &&
       isExist(name) &&
       isExist(price) &&
       isExist(size) &&
@@ -553,7 +577,6 @@ module.exports = {
   checkChangePassword,
   checkUpdateProfile,
   checkCreateItem,
-  checkCompleteExport,
   checkCompleteImport,
   checkCreateReview,
   checkCreateProvider,

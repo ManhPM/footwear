@@ -13,7 +13,7 @@ module.exports = {
       {
         name: 'Công ty Cổ Phần Giày Sài Gòn (SSC)',
         address:
-          'Phòng 3C, tầng 3, 157 – 159 đường Xuân Hồng, phường 12, quận Tân Bình – Thành Phố Hồ Chí Minh',
+          'Phòng 3C, tầng 3, 157/159 đường Xuân Hồng, phường 12, quận Tân Bình Thành Phố Hồ Chí Minh',
         phone: '0976234380',
         status: 1,
       },

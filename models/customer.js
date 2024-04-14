@@ -1,17 +1,11 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Customer extends Model {
-    static associate({
-      Cart,
-      Wishlist,
-      Review,
-      Invoice,
-    }) {
-      this.hasMany(Cart, { foreignKey: "id_customer" });
-      this.hasMany(Wishlist, { foreignKey: "id_customer" });
-      this.hasMany(Review, { foreignKey: "id_customer" });
-      this.hasMany(Invoice, { foreignKey: "id_invoice" });
+    static associate({ Cart, Wishlist, Invoice }) {
+      this.hasMany(Cart, { foreignKey: 'id_customer' });
+      this.hasMany(Wishlist, { foreignKey: 'id_customer' });
+      this.hasMany(Invoice, { foreignKey: 'id_invoice' });
     }
   }
   Customer.init(
@@ -26,15 +20,15 @@ module.exports = (sequelize, DataTypes) => {
       image: {
         type: DataTypes.STRING,
         defaultValue:
-          "http://res.cloudinary.com/dpgjnngzt/image/upload/v1692954334/anhdaidien_onsafn.jpg",
+          'http://res.cloudinary.com/dpgjnngzt/image/upload/v1692954334/anhdaidien_onsafn.jpg',
       },
     },
     {
-      tableName: "customers",
+      tableName: 'customers',
       sequelize,
-      modelName: "Customer",
+      modelName: 'Customer',
       timestamps: false,
-    }
+    },
   );
   return Customer;
 };

@@ -8,29 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      type: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      id_type: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Types', key: 'id_type' },
       },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        default: 0,
-      },
       image: {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-      size: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      price: {
-        type: Sequelize.INTEGER,
         allowNull: false,
       },
       description: Sequelize.STRING,

@@ -1,11 +1,11 @@
-const { Invoice, Invoice_detail, Item } = require('../models');
+const { Invoice, Invoice_detail, Item, Item_detail } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 const getAllInvoice = async (req, res) => {
   try {
     if (req.user.role == 'Khách hàng') {
       const invoiceList = await Invoice.sequelize.query(
-        'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer = :id_customer ORDER BY I.datetime DESC',
+        'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer AND I.id_customer = :id_customer ORDER BY I.datetime DESC',
         {
           replacements: { id_customer: req.user.id_user },
           type: QueryTypes.SELECT,
@@ -68,8 +68,8 @@ const getAllInvoice = async (req, res) => {
 const getAllItemInInvoice = async (req, res) => {
   const { id_invoice } = req.params;
   try {
-    const itemList = await Invoice.sequelize.query(
-      'SELECT ID.quantity as invoice_quantity, I.* FROM invoice_details as ID, items as I WHERE I.id_item = ID.id_item AND ID.id_invoice = :id_invoice',
+    let itemList = await Invoice.sequelize.query(
+      'SELECT ID.* FROM invoice_details AS ID, invoices as I WHERE I.id_invoice = ID.id_invoice AND I.id_invoice = :id_invoice',
       {
         replacements: { id_invoice: id_invoice },
         type: QueryTypes.SELECT,
@@ -81,6 +81,28 @@ const getAllItemInInvoice = async (req, res) => {
         replacements: { id_invoice: id_invoice },
         type: QueryTypes.SELECT,
       },
+    );
+    await Promise.all(
+      itemList.map(async (item) => {
+        const item_detail = await Item_detail.findOne({
+          where: {
+            id_item: item.id_item_detail,
+          },
+        });
+        const sizes = await Item_detail.findOne({
+          where: {
+            id_item: item_detail.id_item,
+            id_size: item_detail.id_size,
+          },
+        });
+        const itemName = await Item.findOne({
+          where: {
+            id_item: item_detail.id_item,
+          },
+        });
+        item.size = sizes.id_size;
+        item.name = itemName.name;
+      }),
     );
     res.status(200).json({
       info: invoice[0],
@@ -96,6 +118,8 @@ const getCurrentInvoice = async (req, res) => {
     const item = await Invoice.findOne({
       where: {
         id_customer: req.user.id_user,
+        invoice_status: [0, 1],
+        payment_method: 'Ví điện tử VNPAY',
       },
     });
     res.status(200).json({
@@ -124,9 +148,9 @@ const confirmInvoice = async (req, res) => {
       let i = 0;
       let check = 1;
       while (itemListInInvoice[i]) {
-        const item = await Item.findOne({
+        const item = await Item_detail.findOne({
           where: {
-            id_item: itemListInInvoice[i].id_item,
+            id_item_detail: itemListInInvoice[i].id_item_detail,
           },
         });
         if (item.quantity >= itemListInInvoice[i].quantity) {
@@ -140,10 +164,10 @@ const confirmInvoice = async (req, res) => {
         let j = 0;
         while (itemListInInvoice[j]) {
           await Invoice.sequelize.query(
-            'UPDATE items SET quantity = quantity - (:quantity) WHERE id_item = :id_item',
+            'UPDATE item_details SET quantity = quantity - (:quantity) WHERE id_item_detail = :id_item_detail',
             {
               replacements: {
-                id_item: itemListInInvoice[j].id_item,
+                id_item_detail: itemListInInvoice[j].id_item_detail,
                 quantity: itemListInInvoice[j].quantity,
               },
               type: QueryTypes.UPDATE,

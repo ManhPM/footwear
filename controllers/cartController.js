@@ -251,7 +251,6 @@ const checkoutAtStore = async (req, res) => {
             id_item: itemInCartList[i].id_item,
             quantity: itemInCartList[i].cart_quantity,
             unit_price: itemInCartList[i].price,
-            reviewed: 0,
           });
           await Cart.destroy({
             where: {
@@ -413,7 +412,6 @@ const checkout = async (req, res) => {
             id_item: itemInCartList[i].id_item,
             quantity: itemInCartList[i].cart_quantity,
             unit_price: itemInCartList[i].price,
-            reviewed: 0,
           });
           await Cart.destroy({
             where: {

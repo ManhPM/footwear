@@ -4,17 +4,17 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Carts', [
       {
-        id_item: 1,
+        id_item_detail: 1,
         id_customer: 2,
         quantity: 1,
       },
       {
-        id_item: 7,
+        id_item_detail: 7,
         id_customer: 2,
         quantity: 1,
       },
       {
-        id_item: 13,
+        id_item_detail: 13,
         id_customer: 2,
         quantity: 1,
       },

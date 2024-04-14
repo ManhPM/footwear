@@ -1,31 +1,19 @@
-const { Item, Export, Import } = require('../models');
+const { Item, Export, Import, Item_detail, Type, Size } = require('../models');
 const { QueryTypes } = require('sequelize');
 const sequelize = require('sequelize');
 
 const createItem = async (req, res) => {
-  const {
-    type,
-    name,
-    price,
-    size,
-    image,
-    description,
-    brand,
-    origin,
-    material,
-  } = req.body;
+  const { id_type, name, image, description, brand, origin, material } =
+    req.body;
   try {
     await Item.create({
-      type,
+      id_type,
       name,
-      price,
-      size,
       image,
       description,
       brand,
       origin,
       material,
-      quantity: 0,
       status: 2,
     });
     res.status(201).json({ message: 'Tạo mới thành công!' });
@@ -36,17 +24,8 @@ const createItem = async (req, res) => {
 
 const updateItem = async (req, res) => {
   const { id_item } = req.params;
-  const {
-    type,
-    name,
-    price,
-    size,
-    image,
-    description,
-    brand,
-    origin,
-    material,
-  } = req.body;
+  const { id_type, name, image, description, brand, origin, material } =
+    req.body;
   try {
     const update = await Item.findOne({
       where: {
@@ -54,11 +33,9 @@ const updateItem = async (req, res) => {
       },
       raw: false,
     });
-    update.type = type;
+    update.id_type = id_type;
     update.name = name;
-    update.size = size;
     update.image = image;
-    update.price = price;
     update.brand = brand;
     update.description = description;
     update.origin = origin;
@@ -100,22 +77,19 @@ const deleteItem = async (req, res) => {
 };
 
 const getAllItem = async (req, res) => {
-  const type = req.query.type;
+  const id_type = req.query.id_type;
   const origin = req.query.origin;
   const material = req.query.material;
   const brand = req.query.brand;
   const size = req.query.size;
   const fromprice = req.query.fromprice;
   const toprice = req.query.toprice;
-  const typesort = req.query.typesort || 1; // tăng dần, giảm dần theo giá
+  const typesort = req.query.typesort || 0; // tăng dần, giảm dần theo giá
   const page = req.query.page || 1;
   let query =
-    'SELECT I.*, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I WHERE I.status != 0';
+    'SELECT I.* FROM items AS I, types as T WHERE I.id_type = T.id_type AND I.status != 0';
   if (brand) {
     query += ` AND I.brand ='${brand}'`;
-  }
-  if (type) {
-    query += ` AND I.type ='${type}'`;
   }
   if (origin) {
     query += ` AND I.origin ='${origin}'`;
@@ -123,29 +97,48 @@ const getAllItem = async (req, res) => {
   if (material) {
     query += ` AND I.material ='${material}'`;
   }
-  if (size) {
-    query += ` AND I.size ='${size}'`;
+  if (id_type) {
+    query += ` AND I.id_type =${id_type}`;
+    const selectString = query.slice(0, 7);
+    query = 'SELECT T.name as name_type, ' + selectString;
   }
   let itemList = [];
   try {
-    if (fromprice && toprice) {
-      if (typesort) {
-        query += ` AND (I.price BETWEEN ${fromprice - 1} AND ${toprice + 1}) ORDER BY I.price ASC LIMIT ${(1 - page) * 12},12`;
-      } else {
-        query += ` AND (I.price BETWEEN ${fromprice - 1} AND ${toprice + 1}) ORDER BY I.price DESC LIMIT ${(1 - page) * 12},12`;
-      }
-    } else {
-      if (typesort) {
-        query += ` ORDER BY I.price ASC LIMIT ${(1 - page) * 12},12`;
-      } else {
-        query += ` ORDER BY I.price DESC LIMIT ${(1 - page) * 12},12`;
-      }
-    }
+    query += ` LIMIT ${(1 - page) * 8},8`;
     itemList = await Item.sequelize.query(query, {
       type: QueryTypes.SELECT,
       raw: true,
     });
-    res.status(200).json({ data: itemList });
+    await Promise.all(
+      itemList.map(async (item) => {
+        const sizes = await Item_detail.findAll({
+          where: {
+            id_item: item.id_item,
+          },
+        });
+        item.sizes = sizes;
+      }),
+    );
+    if (typesort) {
+      itemList.sort((a, b) => {
+        const priceA = Math.min(...a.sizes.map((size) => size.price));
+        const priceB = Math.min(...b.sizes.map((size) => size.price));
+        return priceB - priceA;
+      });
+    }
+    if (fromprice && toprice) {
+      itemList = itemList.filter((item) =>
+        item.sizes.some(
+          (size) => size.price >= fromprice && size.price <= toprice,
+        ),
+      );
+    }
+    if (size) {
+      itemList = itemList.filter((item) =>
+        item.sizes.some((item) => item.id_size == size),
+      );
+    }
+    res.status(200).json({ currentPage: page, data: itemList });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -154,8 +147,8 @@ const getAllItem = async (req, res) => {
 const searchItem = async (req, res) => {
   const name = req.query.name;
   try {
-    const itemList = await Item.sequelize.query(
-      'SELECT I.*, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I WHERE I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name',
+    let itemList = await Item.sequelize.query(
+      'SELECT I.* FROM items AS I WHERE I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name',
       {
         replacements: {
           name: `%${name}%`,
@@ -163,6 +156,16 @@ const searchItem = async (req, res) => {
         type: QueryTypes.SELECT,
         raw: true,
       },
+    );
+    await Promise.all(
+      itemList.map(async (item) => {
+        const sizes = await Item_detail.findAll({
+          where: {
+            id_item: item.id_item,
+          },
+        });
+        item.sizes = sizes;
+      }),
     );
     res.status(200).json({ data: itemList });
   } catch (error) {
@@ -173,15 +176,18 @@ const searchItem = async (req, res) => {
 const getDetailItem = async (req, res) => {
   const { id_item } = req.params;
   try {
-    const item = await Item.sequelize.query(
-      'SELECT I.*, IFNULL((SELECT ROUND(AVG(R.rating) * 2, 0) / 2 FROM reviews AS R WHERE R.id_item = I.id_item), 0) as rating FROM items AS I WHERE I.id_item = :id_item',
-      {
-        replacements: { id_item: id_item },
-        type: QueryTypes.SELECT,
-        raw: true,
+    const item = await Item.findOne({
+      where: {
+        id_item,
       },
-    );
-    res.status(200).json({ data: item[0] });
+    });
+    const sizes = await Item_detail.findAll({
+      where: {
+        id_item,
+      },
+    });
+    item.sizes = sizes;
+    res.status(200).json({ data: item });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -227,10 +233,7 @@ const getAllItemToExport = async (req, res) => {
 
 const getAllType = async (req, res) => {
   try {
-    const itemList = await Item.findAll({
-      attributes: ['type'],
-      group: ['type'],
-    });
+    const itemList = await Type.findAll({});
     res.status(200).json({
       data: itemList,
     });
@@ -241,10 +244,7 @@ const getAllType = async (req, res) => {
 
 const getAllSize = async (req, res) => {
   try {
-    const itemList = await Item.findAll({
-      attributes: ['size'],
-      group: ['size'],
-    });
+    const itemList = await Size.findAll({});
     res.status(200).json({
       data: itemList,
     });

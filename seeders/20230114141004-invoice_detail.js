@@ -1,21 +1,19 @@
-"use strict";
+'use strict';
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert("Invoice_details", [
+    return queryInterface.bulkInsert('Invoice_details', [
       {
         id_invoice: 1,
-        id_item: 1,
+        id_item_detail: 1,
         quantity: 1,
-        reviewed: 1,
-        unit_price: 2500000
+        unit_price: 750000,
       },
       {
         id_invoice: 1,
-        id_item: 2,
+        id_item_detail: 4,
         quantity: 1,
-        reviewed: 1,
-        unit_price: 350000
+        unit_price: 1000000,
       },
     ]);
   },

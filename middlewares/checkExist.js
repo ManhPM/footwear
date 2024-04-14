@@ -222,8 +222,6 @@ const checkExistProvider = async (req, res, next) => {
 module.exports = {
   checkExistImport,
   checkExistImportDetail,
-  checkExistExport,
-  checkExistExportDetail,
   checkExistItem,
   checkExistPhoneNum,
   checkExistEmail,
