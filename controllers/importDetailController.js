@@ -2,11 +2,11 @@ const { Import_detail, Import } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 const createImportDetail = async (req, res) => {
-  const { quantity, id_item, unit_price, id_import } = req.body;
+  const { quantity, id_item_detail, unit_price, id_import } = req.body;
   try {
     await Import_detail.create({
       id_import,
-      id_item,
+      id_item_detail,
       quantity,
       unit_price,
     });
@@ -19,7 +19,7 @@ const createImportDetail = async (req, res) => {
 };
 
 const updateImportDetail = async (req, res) => {
-  const { quantity, unit_price, id_import, id_item } = req.body;
+  const { quantity, unit_price, id_import, id_item_detail } = req.body;
   try {
     const check = await Import.findOne({
       where: {
@@ -28,9 +28,9 @@ const updateImportDetail = async (req, res) => {
     });
     if (check.status != 1) {
       await Import_detail.sequelize.query(
-        'UPDATE import_details SET quantity = :quantity, unit_price = :unit_price WHERE id_import = :id_import AND id_item = :id_item',
+        'UPDATE import_details SET quantity = :quantity, unit_price = :unit_price WHERE id_import = :id_import AND id_item_detail = :id_item_detail',
         {
-          replacements: { id_import, id_item, quantity, unit_price },
+          replacements: { id_import, id_item_detail, quantity, unit_price },
           type: QueryTypes.UPDATE,
           raw: true,
         },
@@ -49,7 +49,7 @@ const updateImportDetail = async (req, res) => {
 };
 
 const deleteImportDetail = async (req, res) => {
-  const { id_import, id_item } = req.body;
+  const { id_import, id_item_detail } = req.body;
   try {
     const check = await Import.findOne({
       where: {
@@ -60,7 +60,7 @@ const deleteImportDetail = async (req, res) => {
       await Import_detail.destroy({
         where: {
           id_import,
-          id_item,
+          id_item_detail,
         },
       });
       res.status(200).json({
@@ -75,12 +75,12 @@ const deleteImportDetail = async (req, res) => {
 };
 
 const getDetailImportDetail = async (req, res) => {
-  const { id_import, id_item } = req.body;
+  const { id_import, id_item_detail } = req.body;
   try {
     const item = await Import_detail.findOne({
       where: {
         id_import,
-        id_item,
+        id_item_detail,
       },
     });
     res.status(200).json({

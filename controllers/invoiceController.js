@@ -102,6 +102,7 @@ const getAllItemInInvoice = async (req, res) => {
         });
         item.size = sizes.id_size;
         item.name = itemName.name;
+        item.id_item = itemName.id_item;
       }),
     );
     res.status(200).json({

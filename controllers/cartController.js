@@ -1,31 +1,53 @@
-const { Cart, Item, Invoice, Invoice_detail, Discount } = require('../models');
+const {
+  Cart,
+  Item,
+  Invoice,
+  Invoice_detail,
+  Item_detail,
+} = require('../models');
 const { QueryTypes } = require('sequelize');
 const storeLat = 10.848881;
 const storeLng = 106.787017;
 
 const getAllItemInCart = async (req, res) => {
   try {
-    const itemList = await Item.sequelize.query(
-      'SELECT I.id_item, I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, C.quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
-      {
-        replacements: { id_customer: req.user.id_user },
-        type: QueryTypes.SELECT,
-        raw: true,
+    let cartProducts = [];
+    cartProducts = await Cart.findAll({
+      where: {
+        id_customer: req.user.id_user,
       },
+    });
+    await Promise.all(
+      cartProducts.map(async (item) => {
+        const data = await Item_detail.findOne({
+          where: {
+            id_item_detail: item.id_item_detail,
+          },
+        });
+        const itemName = await Item.findOne({
+          where: {
+            id_item: data.id_item,
+          },
+        });
+        item.price = data.price;
+        item.size = data.id_size;
+        item.name = itemName.name;
+        item.id_item = itemName.id_item;
+      }),
     );
-    res.status(200).json({ data: itemList });
+    res.status(200).json({ data: cartProducts });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 const createItemInCart = async (req, res) => {
-  const { id_item } = req.params;
+  const { id_item_detail } = req.params;
   const { quantity } = req.body;
   try {
     const isExist = await Cart.findOne({
       where: {
-        id_item,
+        id_item_detail,
         id_customer: req.user.id_user,
       },
       raw: false,
@@ -43,14 +65,14 @@ const createItemInCart = async (req, res) => {
     } else {
       if (quantity) {
         await Cart.create({
-          id_item,
+          id_item_detail,
           id_customer: req.user.id_user,
           quantity: quantity,
         });
         res.status(201).json({ message: 'Đã thêm vào giỏ hàng!' });
       } else {
         await Cart.create({
-          id_item,
+          id_item_detail,
           id_customer: req.user.id_user,
           quantity: 1,
         });
@@ -200,7 +222,7 @@ const checkoutAtStore = async (req, res) => {
         await Cart.destroy({
           where: {
             id_item: itemInCartList[i].id_item,
-            id_customer: itemInCartList[i].id_customer,
+            id_customer: req.user.id_user,
           },
         });
         check = 1;
@@ -209,7 +231,7 @@ const checkoutAtStore = async (req, res) => {
         await Cart.destroy({
           where: {
             id_item: itemInCartList[i].id_item,
-            id_customer: itemInCartList[i].id_customer,
+            id_customer: req.user.id_user,
           },
         });
         checkNotEnough = 1;
@@ -225,12 +247,11 @@ const checkoutAtStore = async (req, res) => {
       if (itemInCartList.length) {
         const date = new Date();
         date.setHours(date.getHours() + 7);
-        const info = await Cart.sequelize.query(
-          'SELECT SUM((C.quantity*I.price)) as itemFee, SUM(C.quantity) as itemQuantity FROM carts as C, items as I where C.id_item = I.id_item AND C.id_customer = :id_customer',
-          {
-            replacements: { id_customer: 1 },
-            type: QueryTypes.SELECT,
-          },
+        const total = 0;
+        await Promise.all(
+          itemInCartList.map(async (item) => {
+            total += itemInCartList.price * itemInCartList.quantity;
+          }),
         );
         const newInvoice = await Invoice.create({
           id_customer: 1,
@@ -271,11 +292,11 @@ const checkoutAtStore = async (req, res) => {
 };
 
 const increaseNumItemInCart = async (req, res) => {
-  const { id_item } = req.params;
+  const { id_item_detail } = req.params;
   try {
     const itemInCart = await Cart.findOne({
       where: {
-        id_item,
+        id_item_detail,
         id_customer: req.user.id_user,
       },
       raw: false,
@@ -289,11 +310,11 @@ const increaseNumItemInCart = async (req, res) => {
 };
 
 const decreaseNumItemInCart = async (req, res) => {
-  const { id_item } = req.params;
+  const { id_item_detail } = req.params;
   try {
     const itemInCart = await Cart.findOne({
       where: {
-        id_item,
+        id_item_detail,
         id_customer: req.user.id_user,
       },
       raw: false,
@@ -301,7 +322,7 @@ const decreaseNumItemInCart = async (req, res) => {
     if (itemInCart.quantity == 1) {
       await Cart.destroy({
         where: {
-          id_item,
+          id_item_detail,
           id_customer: req.user.id_user,
         },
       });
@@ -317,11 +338,11 @@ const decreaseNumItemInCart = async (req, res) => {
 };
 
 const deleteOneItemInCart = async (req, res) => {
-  const { id_item } = req.params;
+  const { id_item_detail } = req.params;
   try {
     await Cart.destroy({
       where: {
-        id_item,
+        id_item_detail,
         id_customer: req.user.id_user,
       },
     });
@@ -334,13 +355,31 @@ const deleteOneItemInCart = async (req, res) => {
 const checkout = async (req, res) => {
   const { payment_method, description, userLat, userLng, address } = req.body;
   try {
-    const itemInCartList = await Item.sequelize.query(
-      'SELECT I.id_item, I.type, I.name, I.image, I.size, I.price, I.description, I.brand, I.origin, I.material, I.status, I.quantity, C.quantity as cart_quantity FROM carts as C, items as I WHERE I.id_item = C.id_item AND C.id_customer = :id_customer',
-      {
-        replacements: { id_customer: req.user.id_user },
-        type: QueryTypes.SELECT,
-        raw: true,
+    let itemInCartList = [];
+    itemInCartList = await Cart.findAll({
+      where: {
+        id_customer: req.user.id_user,
       },
+    });
+    await Promise.all(
+      itemInCartList.map(async (item) => {
+        const data = await Item_detail.findOne({
+          where: {
+            id_item_detail: item.id_item_detail,
+          },
+        });
+        const itemName = await Item.findOne({
+          where: {
+            id_item: data.id_item,
+          },
+        });
+        item.price = data.price;
+        item.size = data.id_size;
+        item.name = itemName.name;
+        item.id_item = itemName.id_item;
+        item.status = itemName.status;
+        item.item_quantity = data.quantity;
+      }),
     );
     let i = 0;
     let check = 0;
@@ -349,17 +388,17 @@ const checkout = async (req, res) => {
       if (itemInCartList[i].status != 1 || itemInCartList.quantity == 0) {
         await Cart.destroy({
           where: {
-            id_item: itemInCartList[i].id_item,
-            id_customer: itemInCartList[i].id_customer,
+            id_item_detail: itemInCartList[i].id_item_detail,
+            id_customer: req.user.id_user,
           },
         });
         check = 1;
       }
-      if (itemInCartList[i].quantity < itemInCartList.cart_quantity) {
+      if (itemInCartList[i].item_quantity < itemInCartList.quantity) {
         await Cart.destroy({
           where: {
-            id_item: itemInCartList[i].id_item,
-            id_customer: itemInCartList[i].id_customer,
+            id_item_detail: itemInCartList[i].id_item_detail,
+            id_customer: req.user.id_user,
           },
         });
         checkNotEnough = 1;
@@ -386,12 +425,11 @@ const checkout = async (req, res) => {
         } else {
           random = 40000;
         }
-        const info = await Cart.sequelize.query(
-          'SELECT SUM((C.quantity*I.price)) as itemFee, SUM(C.quantity) as itemQuantity FROM carts as C, items as I where C.id_item = I.id_item AND C.id_customer = :id_customer',
-          {
-            replacements: { id_customer: req.user.id_user },
-            type: QueryTypes.SELECT,
-          },
+        let total = 0;
+        await Promise.all(
+          itemInCartList.map(async (item) => {
+            total += itemInCartList.price * itemInCartList.quantity;
+          }),
         );
         const newInvoice = await Invoice.create({
           id_customer: req.user.id_user,
@@ -399,8 +437,8 @@ const checkout = async (req, res) => {
           address,
           payment_method,
           ship_fee: random,
-          item_fee: Number(info[0].itemFee),
-          total: Number(Number(info[0].itemFee) + random),
+          item_fee: total,
+          total: total + random,
           datetime: date,
           invoice_status: 0,
           payment_status: 0,
@@ -409,13 +447,13 @@ const checkout = async (req, res) => {
         while (i < itemInCartList.length) {
           await Invoice_detail.create({
             id_invoice: newInvoice.id_invoice,
-            id_item: itemInCartList[i].id_item,
-            quantity: itemInCartList[i].cart_quantity,
+            id_item_detail: itemInCartList[i].id_item_detail,
+            quantity: itemInCartList[i].quantity,
             unit_price: itemInCartList[i].price,
           });
           await Cart.destroy({
             where: {
-              id_item: itemInCartList[i].id_item,
+              id_item_detail: itemInCartList[i].id_item_detail,
               id_customer: req.user.id_user,
             },
           });

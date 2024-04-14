@@ -1,5 +1,5 @@
-const { Import, Item } = require('../models');
-const { QueryTypes } = require('sequelize');
+const { Import, Item, Import_detail, Item_detail } = require('../models');
+const { QueryTypes, where } = require('sequelize');
 
 const getAllImport = async (req, res) => {
   try {
@@ -35,13 +35,28 @@ const getAllImport = async (req, res) => {
 const getAllItemInImport = async (req, res) => {
   const { id_import } = req.params;
   try {
-    const itemList = await Import.sequelize.query(
-      'SELECT I.name, ID.* FROM items AS I, import_details as ID WHERE ID.id_item = I.id_item AND ID.id_import = :id_import',
-      {
-        replacements: { id_import },
-        type: QueryTypes.SELECT,
-        raw: true,
+    let itemList = await Import_detail.findAll({
+      where: {
+        id_import,
       },
+    });
+    await Promise.all(
+      itemList.map(async (item) => {
+        const data = await Item_detail.findOne({
+          where: {
+            id_item_detail: item.id_item_detail,
+          },
+        });
+        const itemName = await Item.findOne({
+          where: {
+            id_item: data.id_item,
+          },
+        });
+        item.price = data.price;
+        item.size = data.id_size;
+        item.name = itemName.name;
+        item.id_item = itemName.id_item;
+      }),
     );
     res.status(200).json({
       data: itemList,
@@ -121,24 +136,28 @@ const completeImport = async (req, res) => {
     );
     if (itemInImportList[0]) {
       let i = 0;
-      let checkEnough = 1;
       while (itemInImportList[i]) {
         await Import.sequelize.query(
-          'UPDATE items SET quantity = quantity + :quantity WHERE id_item = :id_item',
+          'UPDATE item_details SET quantity = quantity + :quantity WHERE id_item_detail = :id_item_detail',
           {
             replacements: {
               quantity: itemInImportList[i].quantity,
-              id_item: itemInImportList[i].id_item,
+              id_item_detail: itemInImportList[i].id_item_detail,
             },
             type: QueryTypes.UPDATE,
             raw: true,
           },
         );
+        const updateStatus = await Item_detail.findOne({
+          where: {
+            id_item_detail: itemInImportList[i].id_item_detail,
+          },
+        });
         await Import.sequelize.query(
           'UPDATE items SET status = 1 WHERE id_item = :id_item',
           {
             replacements: {
-              id_item: itemInImportList[i].id_item,
+              id_item: updateStatus.id_item,
             },
             type: QueryTypes.UPDATE,
             raw: true,

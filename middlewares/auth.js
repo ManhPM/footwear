@@ -6,7 +6,6 @@ const authenticate = (req, res, next) => {
     if (token) {
       const data = jwt.verify(token, 'BOOKSTOREP2M');
       req.user = data;
-      console.log(data);
       return next();
     } else {
       return res.status(400).json({ message: 'Bạn chưa đăng nhập' });

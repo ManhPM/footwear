@@ -9,7 +9,7 @@ const {
   getAllItemInCartAtStore,
 } = require('../controllers/cartController');
 const { authenticate, authorize } = require('../middlewares/auth');
-const { checkExistItem } = require('../middlewares/checkExist');
+const { checkExistItemDetail } = require('../middlewares/checkExist');
 const {
   checkCheckOut,
   checkCheckOutAtStore,
@@ -18,10 +18,10 @@ const cartRouter = express.Router();
 
 cartRouter.get('/', authenticate, authorize(['Khách hàng']), getAllItemInCart);
 cartRouter.post(
-  '/add/:id_item',
+  '/add/:id_item_detail',
   authenticate,
   authorize(['Khách hàng']),
-  checkExistItem,
+  checkExistItemDetail,
   createItemInCart,
 );
 cartRouter.post(
@@ -32,24 +32,24 @@ cartRouter.post(
   checkout,
 );
 cartRouter.delete(
-  '/remove/:id_item',
+  '/remove/:id_item_detail',
   authenticate,
   authorize(['Khách hàng']),
-  checkExistItem,
+  checkExistItemDetail,
   deleteOneItemInCart,
 );
 cartRouter.post(
-  '/decrease/:id_item',
+  '/decrease/:id_item_detail',
   authenticate,
   authorize(['Khách hàng']),
-  checkExistItem,
+  checkExistItemDetail,
   decreaseNumItemInCart,
 );
 cartRouter.post(
-  '/increase/:id_item',
+  '/increase/:id_item_detail',
   authenticate,
   authorize(['Khách hàng']),
-  checkExistItem,
+  checkExistItemDetail,
   increaseNumItemInCart,
 );
 cartRouter.get(
@@ -59,10 +59,10 @@ cartRouter.get(
   getAllItemInCartAtStore,
 );
 cartRouter.post(
-  '/store/add/:id_item',
+  '/store/add/:id_item_detail',
   authenticate,
   authorize(['Nhân viên', 'Admin']),
-  checkExistItem,
+  checkExistItemDetail,
   createItemInCart,
 );
 cartRouter.post(
@@ -73,24 +73,24 @@ cartRouter.post(
   checkout,
 );
 cartRouter.delete(
-  '/store/remove/:id_item',
+  '/store/remove/:id_item_detail',
   authenticate,
   authorize(['Nhân viên', 'Admin']),
-  checkExistItem,
+  checkExistItemDetail,
   deleteOneItemInCart,
 );
 cartRouter.post(
-  '/store/decrease/:id_item',
+  '/store/decrease/:id_item_detail',
   authenticate,
   authorize(['Nhân viên', 'Admin']),
-  checkExistItem,
+  checkExistItemDetail,
   decreaseNumItemInCart,
 );
 cartRouter.post(
-  '/store/increase/:id_item',
+  '/store/increase/:id_item_detail',
   authenticate,
   authorize(['Nhân viên', 'Admin']),
-  checkExistItem,
+  checkExistItemDetail,
   increaseNumItemInCart,
 );
 

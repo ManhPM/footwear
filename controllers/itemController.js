@@ -197,28 +197,9 @@ const getAllItemToImport = async (req, res) => {
   const { id_import } = req.params;
   try {
     const itemList = await Import.sequelize.query(
-      'SELECT * FROM items WHERE id_item NOT IN(SELECT id_item FROM import_details WHERE id_import = :id_import)',
+      'SELECT * FROM item_details WHERE id_item_detail NOT IN(SELECT id_item_detail FROM import_details WHERE id_import = :id_import)',
       {
         replacements: { id_import },
-        type: QueryTypes.SELECT,
-        raw: true,
-      },
-    );
-    res.status(200).json({
-      data: itemList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getAllItemToExport = async (req, res) => {
-  const { id_export } = req.params;
-  try {
-    const itemList = await Export.sequelize.query(
-      'SELECT * FROM items WHERE id_item NOT IN(SELECT id_item FROM export_details WHERE id_export = :id_export)',
-      {
-        replacements: { id_export },
         type: QueryTypes.SELECT,
         raw: true,
       },
@@ -299,7 +280,6 @@ module.exports = {
   searchItem,
   getAllItem,
   getAllItemToImport,
-  getAllItemToExport,
   getDetailItem,
   createItem,
   updateItem,

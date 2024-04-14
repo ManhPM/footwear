@@ -7,6 +7,7 @@ const {
   Invoice,
   Provider,
   Staff,
+  Item_detail,
 } = require('../models');
 const { QueryTypes } = require('sequelize');
 
@@ -22,26 +23,6 @@ const checkExistImport = async (req, res, next) => {
       next();
     } else {
       res.status(400).json({ message: 'Đơn nhập không tồn tại!' });
-    }
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'CheckExist Error!', error: error.message });
-  }
-};
-
-const checkExistExport = async (req, res, next) => {
-  try {
-    const { id_export } = req.params;
-    const item = await Export.findOne({
-      where: {
-        id_export,
-      },
-    });
-    if (item) {
-      next();
-    } else {
-      res.status(400).json({ message: 'Đơn xuất không tồn tại!' });
     }
   } catch (error) {
     res
@@ -71,19 +52,18 @@ const checkExistImportDetail = async (req, res, next) => {
   }
 };
 
-const checkExistExportDetail = async (req, res, next) => {
+const checkExistItem = async (req, res, next) => {
   try {
-    const { id_export, id_item } = req.body;
-    const item = await Export_detail.findOne({
+    const { id_item } = req.params;
+    const item = await Item.findOne({
       where: {
-        id_export,
         id_item,
       },
     });
     if (item) {
       next();
     } else {
-      res.status(400).json({ message: 'Chi tiết đơn xuất không tồn tại!' });
+      res.status(400).json({ message: 'Sản phẩm không tồn tại!' });
     }
   } catch (error) {
     res
@@ -92,12 +72,12 @@ const checkExistExportDetail = async (req, res, next) => {
   }
 };
 
-const checkExistItem = async (req, res, next) => {
+const checkExistItemDetail = async (req, res, next) => {
   try {
-    const { id_item } = req.params;
-    const item = await Item.findOne({
+    const { id_item_detail } = req.params;
+    const item = await Item_detail.findOne({
       where: {
-        id_item,
+        id_item_detail,
       },
     });
     if (item) {
@@ -228,4 +208,5 @@ module.exports = {
   checkExistInvoice,
   checkExistStaff,
   checkExistProvider,
+  checkExistItemDetail,
 };
