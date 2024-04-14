@@ -33,11 +33,11 @@ const checkExistImport = async (req, res, next) => {
 
 const checkExistImportDetail = async (req, res, next) => {
   try {
-    const { id_import, id_item } = req.body;
+    const { id_import, id_item_detailf } = req.body;
     const item = await Import_detail.findOne({
       where: {
         id_import,
-        id_item,
+        id_item_detailf,
       },
     });
     if (item) {
