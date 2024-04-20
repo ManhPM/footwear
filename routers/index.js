@@ -15,6 +15,7 @@ const { sizeRouter } = require('./size');
 const { materialRouter } = require('./material');
 const { brandRouter } = require('./brand');
 const { originRouter } = require('./origin');
+const { paymentMethodRouter } = require('./payment_method');
 const rootRouter = express.Router();
 
 rootRouter.use('/auth', authRouter);
@@ -32,6 +33,7 @@ rootRouter.use('/size', sizeRouter);
 rootRouter.use('/origin', originRouter);
 rootRouter.use('/material', materialRouter);
 rootRouter.use('/brand', brandRouter);
+rootRouter.use('/payment_method', paymentMethodRouter);
 rootRouter.use('/vnpay', vnpayRouter);
 
 module.exports = {

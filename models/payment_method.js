@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Payment_method.init(
     {
-      id_type: {
+      id_payment_method: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },

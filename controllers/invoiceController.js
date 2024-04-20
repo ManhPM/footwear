@@ -5,7 +5,7 @@ const getAllInvoice = async (req, res) => {
   try {
     if (req.user.role == 'Khách hàng') {
       const invoiceList = await Invoice.sequelize.query(
-        'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer AND I.id_customer = :id_customer ORDER BY I.datetime DESC',
+        'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I , customers as C, invoice_statuses as II, payment_methods as P WHERE I.id_customer = C.id_customer AND I.id_customer = :id_customer AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method ORDER BY I.datetime DESC',
         {
           replacements: { id_customer: req.user.id_user },
           type: QueryTypes.SELECT,
@@ -18,7 +18,7 @@ const getAllInvoice = async (req, res) => {
       if (status) {
         if (fromdate && todate) {
           const invoiceList = await Invoice.sequelize.query(
-            'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer AND I.invoice_status = :status AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
+            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND I.invoice_status = :status AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
             {
               replacements: { status, fromdate, todate },
               type: QueryTypes.SELECT,
@@ -28,7 +28,7 @@ const getAllInvoice = async (req, res) => {
           res.status(200).json({ data: invoiceList });
         } else {
           const invoiceList = await Invoice.sequelize.query(
-            'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer AND I.invoice_status = :status ORDER BY I.datetime DESC',
+            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND I.invoice_status = :status AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method ORDER BY I.datetime DESC',
             {
               replacements: { status: status },
               type: QueryTypes.SELECT,
@@ -40,7 +40,7 @@ const getAllInvoice = async (req, res) => {
       } else {
         if (fromdate && todate) {
           const invoiceList = await Invoice.sequelize.query(
-            'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
+            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND (I.datetime BETWEEN :fromdate AND :todate) AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method ORDER BY I.datetime DESC',
             {
               replacements: { fromdate, todate },
               type: QueryTypes.SELECT,
@@ -50,7 +50,7 @@ const getAllInvoice = async (req, res) => {
           res.status(200).json({ data: invoiceList });
         } else {
           const invoiceList = await Invoice.sequelize.query(
-            'SELECT I.* FROM invoices as I , customers as C WHERE I.id_customer = C.id_customer ORDER BY I.datetime DESC',
+            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method ORDER BY I.datetime DESC',
             {
               type: QueryTypes.SELECT,
               raw: true,
@@ -76,7 +76,7 @@ const getAllItemInInvoice = async (req, res) => {
       },
     );
     const invoice = await Invoice.sequelize.query(
-      'SELECT C.name as name_customer, C.phone as phone_customer, S.name as name_staff, I.* FROM invoices as I, staffs as S, customers as C WHERE C.id_customer = I.id_customer AND I.id_staff = S.id_staff AND I.id_invoice = :id_invoice',
+      'SELECT C.name as name_customer, C.phone as phone_customer, S.name as name_staff, II.name as name_status, P.name as name_payment_method, I.* FROM invoices as I, invoice_statuses AS II, payment_methods as P, staffs as S, customers as C WHERE C.id_customer = I.id_customer AND I.id_staff = S.id_staff AND I.id_invoice = :id_invoice AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method',
       {
         replacements: { id_invoice: id_invoice },
         type: QueryTypes.SELECT,
@@ -140,7 +140,7 @@ const confirmInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.invoice_status == 0) {
+    if (invoice.invoice_status == 1) {
       const itemListInInvoice = await Invoice_detail.findAll({
         where: {
           id_invoice,
@@ -177,7 +177,7 @@ const confirmInvoice = async (req, res) => {
           );
           j++;
         }
-        invoice.invoice_status = 1;
+        invoice.invoice_status = 2;
         await invoice.save();
         res.status(201).json({
           message: 'Xác nhận đơn hàng!',
@@ -206,8 +206,8 @@ const completeInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.invoice_status == 1 && invoice.payment_status == 1) {
-      invoice.invoice_status = 2;
+    if (invoice.invoice_status == 2 && invoice.payment_status == 1) {
+      invoice.invoice_status = 4;
       await invoice.save();
       res.status(200).json({
         message: 'Đơn hàng hoàn thành!',
