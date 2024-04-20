@@ -12,6 +12,22 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: 'Types', key: 'id_type' },
       },
+      id_origin: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Origins', key: 'id_origin' },
+      },
+      id_material: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Materials', key: 'id_material' },
+      },
+      id_brand: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Brands', key: 'id_brand' },
+      },
+      id_status: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Item_statuses', key: 'id_status' },
+      },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -21,22 +37,6 @@ module.exports = {
         allowNull: false,
       },
       description: Sequelize.STRING,
-      brand: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      origin: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      material: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      status: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
-      },
     });
   },
   async down(queryInterface, Sequelize) {

@@ -1,4 +1,4 @@
-const { Item, Export, Import, Item_detail, Type, Size } = require('../models');
+const { Item, Import, Item_detail, Item_status } = require('../models');
 const { QueryTypes } = require('sequelize');
 const sequelize = require('sequelize');
 
@@ -78,29 +78,31 @@ const deleteItem = async (req, res) => {
 
 const getAllItem = async (req, res) => {
   const id_type = req.query.id_type;
-  const origin = req.query.origin;
-  const material = req.query.material;
-  const brand = req.query.brand;
-  const size = req.query.size;
+  const id_origin = req.query.id_origin;
+  const id_material = req.query.id_material;
+  const id_brand = req.query.id_brand;
+  const id_size = req.query.id_size;
   const fromprice = req.query.fromprice;
   const toprice = req.query.toprice;
   const typesort = req.query.typesort || 0; // tăng dần, giảm dần theo giá
   const page = req.query.page || 1;
   let query =
-    'SELECT I.* FROM items AS I, types as T WHERE I.id_type = T.id_type AND I.status != 0';
-  if (brand) {
-    query += ` AND I.brand ='${brand}'`;
+    'SELECT I.* FROM items AS I, types as T WHERE I.id_type = T.id_type AND I.id_status = 1';
+
+  if (id_material) {
+    query += ` AND I.id_material = ${id_material}`;
   }
-  if (origin) {
-    query += ` AND I.origin ='${origin}'`;
-  }
-  if (material) {
-    query += ` AND I.material ='${material}'`;
-  }
+
   if (id_type) {
-    query += ` AND I.id_type =${id_type}`;
-    const selectString = query.slice(0, 7);
-    query = 'SELECT T.name as name_type, ' + selectString;
+    query += ` AND I.id_type = ${id_type}`;
+  }
+
+  if (id_origin) {
+    query += ` AND I.id_origin = ${id_origin}`;
+  }
+
+  if (id_brand) {
+    query += ` AND I.id_brand = ${id_brand}`;
   }
   let itemList = [];
   try {
@@ -133,9 +135,9 @@ const getAllItem = async (req, res) => {
         ),
       );
     }
-    if (size) {
+    if (id_size) {
       itemList = itemList.filter((item) =>
-        item.sizes.some((item) => item.id_size == size),
+        item.sizes.some((item) => item.id_size == id_size),
       );
     }
     res.status(200).json({ currentPage: page, data: itemList });
@@ -148,7 +150,7 @@ const searchItem = async (req, res) => {
   const name = req.query.name;
   try {
     let itemList = await Item.sequelize.query(
-      'SELECT I.* FROM items AS I WHERE I.status != 0 AND I.name COLLATE UTF8_GENERAL_CI LIKE :name',
+      'SELECT I.*, II.name as name_status FROM items AS I, item_statuses AS II WHERE I.id_status = 1 AND II.id_status = I.id_status AND I.name COLLATE UTF8_GENERAL_CI LIKE :name',
       {
         replacements: {
           name: `%${name}%`,
@@ -186,6 +188,12 @@ const getDetailItem = async (req, res) => {
         id_item,
       },
     });
+    const itemStatus = await Item_status.findOne({
+      where: {
+        id_status: item.id_status,
+      },
+    });
+    item.status_name = itemStatus.name;
     item.sizes = sizes;
     res.status(200).json({ data: item });
   } catch (error) {
@@ -212,70 +220,6 @@ const getAllItemToImport = async (req, res) => {
   }
 };
 
-const getAllType = async (req, res) => {
-  try {
-    const itemList = await Type.findAll({});
-    res.status(200).json({
-      data: itemList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getAllSize = async (req, res) => {
-  try {
-    const itemList = await Size.findAll({});
-    res.status(200).json({
-      data: itemList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getAllBrand = async (req, res) => {
-  try {
-    const itemList = await Item.findAll({
-      attributes: ['brand'],
-      group: ['brand'],
-    });
-    res.status(200).json({
-      data: itemList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getAllOrigin = async (req, res) => {
-  try {
-    const itemList = await Item.findAll({
-      attributes: ['origin'],
-      group: ['origin'],
-    });
-    res.status(200).json({
-      data: itemList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const getAllMaterial = async (req, res) => {
-  try {
-    const itemList = await Item.findAll({
-      attributes: ['material'],
-      group: ['material'],
-    });
-    res.status(200).json({
-      data: itemList,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 module.exports = {
   searchItem,
   getAllItem,
@@ -284,9 +228,4 @@ module.exports = {
   createItem,
   updateItem,
   deleteItem,
-  getAllType,
-  getAllBrand,
-  getAllMaterial,
-  getAllOrigin,
-  getAllSize,
 };

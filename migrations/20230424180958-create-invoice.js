@@ -16,6 +16,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: 'Staffs', key: 'id_staff' },
       },
+      id_status: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Invoice_statuses', key: 'id_status' },
+      },
       payment_method: {
         type: Sequelize.STRING,
         allowNull: false,

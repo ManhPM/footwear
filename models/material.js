@@ -1,14 +1,14 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Size extends Model {
-    static associate({ Item_detail }) {
-      this.hasMany(Item_detail, { foreignKey: 'id_size' });
+  class Material extends Model {
+    static associate({ Item }) {
+      this.hasMany(Item, { foreignKey: 'id_item' });
     }
   }
-  Size.init(
+  Material.init(
     {
-      id_size: {
+      id_type: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
@@ -17,9 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Size',
+      modelName: 'Material',
       timestamps: false,
     },
   );
-  return Size;
+  return Material;
 };

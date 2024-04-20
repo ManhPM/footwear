@@ -5,6 +5,11 @@ const {
   Invoice,
   Provider,
   Staff,
+  Type,
+  Size,
+  Brand,
+  Origin,
+  Material,
 } = require('../models');
 
 function isPassword(str) {
@@ -568,6 +573,164 @@ const checkUpdateStaff = async (req, res, next) => {
   }
 };
 
+const checkCreateType = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (isExist(name)) {
+      const item = await Type.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({
+          message: 'Loại đã tồn tại',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateOrigin = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (isExist(name)) {
+      const item = await Origin.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({
+          message: 'Xuất xứ đã tồn tại',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateBrand = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (isExist(name)) {
+      const item = await Brand.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({
+          message: 'Brand đã tồn tại',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateMaterial = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (isExist(name)) {
+      const item = await Material.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({
+          message: 'Chất liệu đã tồn tại',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkCreateSize = async (req, res, next) => {
+  try {
+    const { name, id_size } = req.body;
+    if (isExist(name) && isExist(id_size)) {
+      const item = await Size.findOne({
+        where: {
+          id_size,
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({
+          message: 'Size đã tồn tại',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
+const checkUpdate = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (isExist(name)) {
+      next();
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
 module.exports = {
   checkLogin,
   checkRegister,
@@ -584,4 +747,10 @@ module.exports = {
   checkCreateStaff,
   checkUpdateStaff,
   checkCheckOutAtStore,
+  checkCreateBrand,
+  checkCreateMaterial,
+  checkCreateOrigin,
+  checkCreateSize,
+  checkCreateType,
+  checkUpdate,
 };

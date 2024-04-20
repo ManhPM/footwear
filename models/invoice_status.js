@@ -1,25 +1,25 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Size extends Model {
-    static associate({ Item_detail }) {
-      this.hasMany(Item_detail, { foreignKey: 'id_size' });
+  class Invoice_status extends Model {
+    static associate({ Invoice }) {
+      this.hasMany(Invoice, { foreignKey: 'id_status' });
     }
   }
-  Size.init(
+  Invoice_status.init(
     {
-      id_size: {
+      id_status: {
         type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
       },
       name: DataTypes.STRING,
-      status: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: 'Size',
+      modelName: 'Invoice_status',
       timestamps: false,
     },
   );
-  return Size;
+  return Invoice_status;
 };

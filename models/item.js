@@ -2,10 +2,13 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
-    static associate({ Wishlist, Item_detail, Type }) {
+    static associate({ Wishlist, Item_detail, Type, Origin, Brand, Material }) {
       this.hasMany(Wishlist, { foreignKey: 'id_item' });
       this.hasMany(Item_detail, { foreignKey: 'id_item' });
       this.belongsTo(Type, { foreignKey: 'id_type' });
+      this.belongsTo(Origin, { foreignKey: 'id_type' });
+      this.belongsTo(Brand, { foreignKey: 'id_type' });
+      this.belongsTo(Material, { foreignKey: 'id_type' });
     }
   }
   Item.init(
@@ -18,10 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       image: DataTypes.STRING,
       description: DataTypes.STRING,
-      brand: DataTypes.STRING,
-      origin: DataTypes.STRING,
-      material: DataTypes.STRING,
-      status: DataTypes.INTEGER,
     },
     {
       sequelize,

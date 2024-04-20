@@ -10,6 +10,11 @@ const { uploadRouter } = require('./upload');
 const { wishlistRouter } = require('./wishlist');
 const { providerRouter } = require('./provider');
 const { vnpayRouter } = require('./vnpay');
+const { typeRouter } = require('./type');
+const { sizeRouter } = require('./size');
+const { materialRouter } = require('./material');
+const { brandRouter } = require('./brand');
+const { originRouter } = require('./origin');
 const rootRouter = express.Router();
 
 rootRouter.use('/auth', authRouter);
@@ -22,6 +27,11 @@ rootRouter.use('/invoice', invoiceRouter);
 rootRouter.use('/item', itemRouter);
 rootRouter.use('/wishlist', wishlistRouter);
 rootRouter.use('/provider', providerRouter);
+rootRouter.use('/type', typeRouter);
+rootRouter.use('/size', sizeRouter);
+rootRouter.use('/origin', originRouter);
+rootRouter.use('/material', materialRouter);
+rootRouter.use('/brand', brandRouter);
 rootRouter.use('/vnpay', vnpayRouter);
 
 module.exports = {

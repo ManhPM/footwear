@@ -2,8 +2,11 @@ const {
   Import,
   Import_detail,
   Item,
-  Export,
-  Export_detail,
+  Type,
+  Size,
+  Origin,
+  Material,
+  Brand,
   Invoice,
   Provider,
   Staff,
@@ -199,6 +202,86 @@ const checkExistProvider = async (req, res, next) => {
   }
 };
 
+const checkExistType = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const item = await Type.findByPk(id);
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Loại không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
+const checkExistSize = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const item = await Size.findByPk(id);
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Size không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
+const checkExistBrand = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const item = await Brand.findByPk(id);
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Brand không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
+const checkExistMaterial = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const item = await Material.findByPk(id);
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Chất liệu không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
+const checkExistOrigin = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const item = await Origin.findByPk(id);
+    if (item) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Xuất xứ không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
 module.exports = {
   checkExistImport,
   checkExistImportDetail,
@@ -209,4 +292,9 @@ module.exports = {
   checkExistStaff,
   checkExistProvider,
   checkExistItemDetail,
+  checkExistType,
+  checkExistBrand,
+  checkExistMaterial,
+  checkExistOrigin,
+  checkExistSize,
 };

@@ -218,7 +218,7 @@ const checkoutAtStore = async (req, res) => {
     let check = 0;
     let checkNotEnough = 0;
     while (i < itemInCartList.length) {
-      if (itemInCartList[i].status != 1 || itemInCartList.quantity == 0) {
+      if (itemInCartList[i].id_status != 1 || itemInCartList.quantity == 0) {
         await Cart.destroy({
           where: {
             id_item: itemInCartList[i].id_item,
@@ -385,7 +385,7 @@ const checkout = async (req, res) => {
     let check = 0;
     let checkNotEnough = 0;
     while (i < itemInCartList.length) {
-      if (itemInCartList[i].status != 1 || itemInCartList.quantity == 0) {
+      if (itemInCartList[i].id_status != 1 || itemInCartList.quantity == 0) {
         await Cart.destroy({
           where: {
             id_item_detail: itemInCartList[i].id_item_detail,
