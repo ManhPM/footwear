@@ -1,12 +1,12 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Type extends Model {
-    static associate({ Item }) {
-      this.hasMany(Item, { foreignKey: 'id_type' });
+  class Payment_method extends Model {
+    static associate({ Invoice }) {
+      this.hasMany(Invoice, { foreignKey: 'id_payment_method' });
     }
   }
-  Type.init(
+  Payment_method.init(
     {
       id_type: {
         type: DataTypes.INTEGER,
@@ -17,9 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Type',
+      modelName: 'Payment_method',
       timestamps: false,
     },
   );
-  return Type;
+  return Payment_method;
 };

@@ -11,6 +11,7 @@ module.exports = {
       id_customer: {
         type: Sequelize.INTEGER,
         references: { model: 'Customers', key: 'id_customer' },
+        allowNull: false,
       },
       id_staff: {
         type: Sequelize.INTEGER,
@@ -19,9 +20,11 @@ module.exports = {
       id_status: {
         type: Sequelize.INTEGER,
         references: { model: 'Invoice_statuses', key: 'id_status' },
+        allowNull: false,
       },
-      payment_method: {
-        type: Sequelize.STRING,
+      id_payment_method: {
+        type: Sequelize.INTEGER,
+        references: { model: 'Payment_methods', key: 'id_payment_method' },
         allowNull: false,
       },
       datetime: {
@@ -37,10 +40,6 @@ module.exports = {
         allowNull: false,
       },
       total: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      invoice_status: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },

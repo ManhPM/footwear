@@ -11,6 +11,7 @@ const {
   Provider,
   Staff,
   Item_detail,
+  Payment_method,
 } = require('../models');
 const { QueryTypes } = require('sequelize');
 
@@ -282,6 +283,24 @@ const checkExistOrigin = async (req, res, next) => {
   }
 };
 
+const checkExistPaymentMethod = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const item = await Payment_method.findByPk(id);
+    if (item) {
+      next();
+    } else {
+      res
+        .status(400)
+        .json({ message: 'Phương thức thanh toán không tồn tại!' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'CheckExist Error!', error: error.message });
+  }
+};
+
 module.exports = {
   checkExistImport,
   checkExistImportDetail,
@@ -297,4 +316,5 @@ module.exports = {
   checkExistMaterial,
   checkExistOrigin,
   checkExistSize,
+  checkExistPaymentMethod,
 };

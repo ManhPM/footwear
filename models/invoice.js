@@ -4,10 +4,11 @@ const date = new Date();
 date.setHours(date.getHours() + 7);
 module.exports = (sequelize, DataTypes) => {
   class Invoice extends Model {
-    static associate({ Customer, Invoice_detail, Staff }) {
+    static associate({ Customer, Invoice_detail, Staff, Invoice_status }) {
       this.belongsTo(Customer, { foreignKey: 'id_customer' });
       this.belongsTo(Staff, { foreignKey: 'id_staff' });
       this.hasMany(Invoice_detail, { foreignKey: 'id_invoice' });
+      this.belongsTo(Invoice_status, { foreignKey: 'id_invoice_status' });
     }
   }
   Invoice.init(
@@ -17,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      payment_method: DataTypes.STRING,
       datetime: {
         type: DataTypes.DATE,
         defaultValue: date,

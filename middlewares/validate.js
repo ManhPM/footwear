@@ -10,6 +10,7 @@ const {
   Brand,
   Origin,
   Material,
+  Payment_method,
 } = require('../models');
 
 function isPassword(str) {
@@ -714,6 +715,34 @@ const checkCreateSize = async (req, res, next) => {
   }
 };
 
+const checkCreatePaymentMethod = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    if (isExist(name)) {
+      const item = await Payment_method.findOne({
+        where: {
+          name,
+        },
+      });
+      if (!item) {
+        next();
+      } else {
+        res.status(400).json({
+          message: 'Phương thức thanh toán đã tồn tại',
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: 'Các trường không được bỏ trống',
+      });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Middleware Error!', error: error.message });
+  }
+};
+
 const checkUpdate = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -753,4 +782,5 @@ module.exports = {
   checkCreateSize,
   checkCreateType,
   checkUpdate,
+  checkCreatePaymentMethod,
 };
