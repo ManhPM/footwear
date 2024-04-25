@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Brand.init(
     {
-      id_type: {
+      id_brand: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },

@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Material.init(
     {
-      id_type: {
+      id_material: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
