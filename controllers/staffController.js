@@ -21,12 +21,12 @@ const getDetailStaff = async (req, res) => {
 };
 
 const updateStaff = async (req, res) => {
-  const { id_staff } = req.params;
+  const { id } = req.params;
   const { name, phone, address } = req.body;
   try {
     const item = await Staff.findOne({
       where: {
-        id_staff,
+        id_staff: id,
       },
       raw: false,
     });
@@ -41,17 +41,10 @@ const updateStaff = async (req, res) => {
 };
 
 const deleteStaff = async (req, res) => {
-  const { id_staff } = req.params;
+  const { id } = req.params;
   try {
-    const item = await Staff.findOne({
-      where: {
-        id_staff,
-      },
-      raw: false,
-    });
-    item.status = 0;
-    await item.save();
-    res.status(201).json({ message: 'Xóa thành công' });
+    await Staff.update({ status: 0 }, { where: { id_staff: id } });
+    res.status(201).json({ message: 'Xoá thành công' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

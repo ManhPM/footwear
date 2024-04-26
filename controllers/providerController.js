@@ -44,37 +44,26 @@ const createProvider = async (req, res) => {
 };
 
 const updateProvider = async (req, res) => {
-  const { id_provider } = req.params;
-  const { name, phone, address } = req.body;
+  const { id } = req.params;
+  const { name } = req.body;
   try {
-    const item = await Provider.findOne({
-      where: {
-        id_provider,
-      },
-      raw: false,
-    });
-    item.name = name;
-    item.phone = phone;
-    item.address = address;
-    await item.save();
-    res.status(201).json({ message: 'Cập nhật thành công' });
+    const item = await Provider.findByPk(id);
+    if (item.name == name) {
+      res.status(201).json({ message: 'Cập nhật thành công' });
+    } else {
+      await Provider.update({ name: name }, { where: { id_provider: id } });
+      res.status(201).json({ message: 'Cập nhật thành công' });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 const deleteProvider = async (req, res) => {
-  const { id_provider } = req.params;
+  const { id } = req.params;
   try {
-    const item = await Provider.findOne({
-      where: {
-        id_provider,
-      },
-      raw: false,
-    });
-    item.status = 0;
-    await item.save();
-    res.status(201).json({ message: 'Xóa thành công' });
+    await Provider.update({ status: 0 }, { where: { id_provider: id } });
+    res.status(201).json({ message: 'Xoá thành công' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
