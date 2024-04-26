@@ -16,6 +16,16 @@ const getAllProvider = async (req, res) => {
   }
 };
 
+const getDetailProvider = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Provider.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createProvider = async (req, res) => {
   const { name, phone, address } = req.body;
   try {
@@ -75,4 +85,5 @@ module.exports = {
   createProvider,
   updateProvider,
   deleteProvider,
+  getDetailProvider,
 };

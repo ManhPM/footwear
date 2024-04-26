@@ -13,6 +13,16 @@ const getAllSize = async (req, res) => {
   }
 };
 
+const getDetailSize = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Size.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createSize = async (req, res) => {
   const { name } = req.body;
   try {
@@ -59,4 +69,5 @@ module.exports = {
   updateSize,
   deleteSize,
   createSize,
+  getDetailSize,
 };

@@ -4,6 +4,7 @@ const {
   createType,
   updateType,
   deleteType,
+  getDetailType,
 } = require('../controllers/typeController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const { checkExistType } = require('../middlewares/checkExist');
@@ -12,6 +13,7 @@ const { checkUpdate, checkCreateType } = require('../middlewares/validate');
 const typeRouter = express.Router();
 
 typeRouter.get('/', getAllType);
+typeRouter.get('/:id', checkExistType, getDetailType);
 typeRouter.post(
   '/create',
   authenticate,

@@ -13,6 +13,16 @@ const getAllMaterial = async (req, res) => {
   }
 };
 
+const getDetailMaterial = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Material.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createMaterial = async (req, res) => {
   const { name } = req.body;
   try {
@@ -59,4 +69,5 @@ module.exports = {
   updateMaterial,
   deleteMaterial,
   createMaterial,
+  getDetailMaterial,
 };

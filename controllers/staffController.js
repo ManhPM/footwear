@@ -10,6 +10,16 @@ const getAllStaff = async (req, res) => {
   }
 };
 
+const getDetailStaff = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Staff.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateStaff = async (req, res) => {
   const { id_staff } = req.params;
   const { name, phone, address } = req.body;
@@ -51,4 +61,5 @@ module.exports = {
   getAllStaff,
   updateStaff,
   deleteStaff,
+  getDetailStaff,
 };

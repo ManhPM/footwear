@@ -4,6 +4,7 @@ const {
   createMaterial,
   updateMaterial,
   deleteMaterial,
+  getDetailMaterial,
 } = require('../controllers/materialController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const { checkExistMaterial } = require('../middlewares/checkExist');
@@ -12,6 +13,7 @@ const { checkUpdate, checkCreateMaterial } = require('../middlewares/validate');
 const materialRouter = express.Router();
 
 materialRouter.get('/', getAllMaterial);
+materialRouter.get('/:id', checkExistMaterial, getDetailMaterial);
 materialRouter.post(
   '/create',
   authenticate,

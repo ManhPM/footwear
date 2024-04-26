@@ -4,6 +4,7 @@ const {
   createBrand,
   updateBrand,
   deleteBrand,
+  getDetailBrand,
 } = require('../controllers/brandController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const { checkExistBrand } = require('../middlewares/checkExist');
@@ -12,6 +13,7 @@ const { checkUpdate, checkCreateBrand } = require('../middlewares/validate');
 const brandRouter = express.Router();
 
 brandRouter.get('/', getAllBrand);
+brandRouter.get('/:id', checkExistBrand, getDetailBrand);
 brandRouter.post(
   '/create',
   authenticate,

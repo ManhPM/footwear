@@ -4,6 +4,7 @@ const {
   createProvider,
   updateProvider,
   deleteProvider,
+  getDetailProvider,
 } = require('../controllers/providerController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const {
@@ -15,6 +16,13 @@ const { checkExistProvider } = require('../middlewares/checkExist');
 const providerRouter = express.Router();
 
 providerRouter.get('/', authenticate, authorize(['Admin']), getAllProvider);
+providerRouter.get(
+  '/:id',
+  authenticate,
+  authorize(['Admin']),
+  checkExistProvider,
+  getDetailProvider,
+);
 providerRouter.post(
   '/create',
   authenticate,
@@ -23,7 +31,7 @@ providerRouter.post(
   createProvider,
 );
 providerRouter.put(
-  '/update/:id_provider',
+  '/update/:id',
   authenticate,
   authorize(['Admin']),
   checkExistProvider,
@@ -31,7 +39,7 @@ providerRouter.put(
   updateProvider,
 );
 providerRouter.delete(
-  '/delete/:id_provider',
+  '/delete/:id',
   authenticate,
   authorize(['Admin']),
   checkExistProvider,

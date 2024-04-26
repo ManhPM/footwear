@@ -4,6 +4,7 @@ const {
   createPaymentMethod,
   updatePaymentMethod,
   deletePaymentMethod,
+  getDetailPaymentMethod,
 } = require('../controllers/paymentMethodController');
 const { authenticate, authorize } = require('../middlewares/auth');
 const { checkExistPaymentMethod } = require('../middlewares/checkExist');
@@ -15,6 +16,11 @@ const {
 const paymentMethodRouter = express.Router();
 
 paymentMethodRouter.get('/', getAllPaymentMethod);
+paymentMethodRouter.get(
+  '/:id',
+  checkExistPaymentMethod,
+  getDetailPaymentMethod,
+);
 paymentMethodRouter.post(
   '/create',
   authenticate,

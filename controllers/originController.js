@@ -13,6 +13,16 @@ const getAllOrigin = async (req, res) => {
   }
 };
 
+const getDetailOrigin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Origin.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createOrigin = async (req, res) => {
   const { name } = req.body;
   try {
@@ -59,4 +69,5 @@ module.exports = {
   updateOrigin,
   deleteOrigin,
   createOrigin,
+  getDetailOrigin,
 };

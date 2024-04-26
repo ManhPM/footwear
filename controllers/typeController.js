@@ -13,6 +13,16 @@ const getAllType = async (req, res) => {
   }
 };
 
+const getDetailType = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Type.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createType = async (req, res) => {
   const { name } = req.body;
   try {
@@ -59,4 +69,5 @@ module.exports = {
   updateType,
   deleteType,
   createType,
+  getDetailType,
 };

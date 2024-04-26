@@ -13,6 +13,16 @@ const getAllPaymentMethod = async (req, res) => {
   }
 };
 
+const getDetailPaymentMethod = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Payment_method.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createPaymentMethod = async (req, res) => {
   const { name } = req.body;
   try {
@@ -65,4 +75,5 @@ module.exports = {
   updatePaymentMethod,
   deletePaymentMethod,
   createPaymentMethod,
+  getDetailPaymentMethod,
 };

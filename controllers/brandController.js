@@ -13,6 +13,16 @@ const getAllBrand = async (req, res) => {
   }
 };
 
+const getDetailBrand = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Brand.findByPk(id);
+    res.status(200).json({ data: item });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createBrand = async (req, res) => {
   const { name } = req.body;
   try {
@@ -56,6 +66,7 @@ const deleteBrand = async (req, res) => {
 
 module.exports = {
   getAllBrand,
+  getDetailBrand,
   updateBrand,
   deleteBrand,
   createBrand,

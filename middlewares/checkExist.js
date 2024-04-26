@@ -164,13 +164,9 @@ const checkExistInvoice = async (req, res, next) => {
 };
 
 const checkExistStaff = async (req, res, next) => {
-  const { id_staff } = req.params;
+  const { id } = req.params;
   try {
-    const item = await Staff.findOne({
-      where: {
-        id_staff,
-      },
-    });
+    const item = await Staff.findByPk(id);
     if (!item) {
       res.status(400).json({ message: 'Nhân viên không tồn tại!' });
     } else {
@@ -184,13 +180,9 @@ const checkExistStaff = async (req, res, next) => {
 };
 
 const checkExistProvider = async (req, res, next) => {
-  const { id_provider } = req.params;
+  const { id } = req.params;
   try {
-    const item = await Provider.findOne({
-      where: {
-        id_provider,
-      },
-    });
+    const item = await Provider.findByPk(id);
     if (!item) {
       res.status(400).json({ message: 'Nhà cung cấp không tồn tại!' });
     } else {
