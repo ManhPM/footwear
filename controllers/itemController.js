@@ -106,7 +106,7 @@ const getAllItem = async (req, res) => {
   }
   let itemList = [];
   try {
-    query += ` LIMIT ${(1 - page) * 8},8`;
+    query += ` LIMIT ${(page - 1) * 8},8`;
     itemList = await Item.sequelize.query(query, {
       type: QueryTypes.SELECT,
       raw: true,
