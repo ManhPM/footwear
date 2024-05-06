@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(Customer, { foreignKey: 'id_customer' });
       this.belongsTo(Staff, { foreignKey: 'id_staff' });
       this.hasMany(Invoice_detail, { foreignKey: 'id_invoice' });
-      this.belongsTo(Invoice_status, { foreignKey: 'id_invoice_status' });
+      this.belongsTo(Invoice_status, { foreignKey: 'id_status' });
     }
   }
   Invoice.init(
@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       ship_fee: DataTypes.INTEGER,
       item_fee: DataTypes.INTEGER,
       total: DataTypes.INTEGER,
-      invoice_status: DataTypes.INTEGER,
       payment_status: DataTypes.INTEGER,
       address: DataTypes.STRING,
       description: DataTypes.STRING,

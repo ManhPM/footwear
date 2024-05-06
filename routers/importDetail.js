@@ -10,7 +10,7 @@ const { checkExistImportDetail } = require('../middlewares/checkExist');
 const importDetailRouter = express.Router();
 
 importDetailRouter.get(
-  '/detail',
+  '/detail/:id_import/:id_item_detail',
   authenticate,
   authorize(['Admin', 'Nhân viên']),
   checkExistImportDetail,

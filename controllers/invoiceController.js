@@ -18,7 +18,7 @@ const getAllInvoice = async (req, res) => {
       if (status) {
         if (fromdate && todate) {
           const invoiceList = await Invoice.sequelize.query(
-            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND I.invoice_status = :status AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
+            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND I.id_status = :status AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method AND (I.datetime BETWEEN :fromdate AND :todate) ORDER BY I.datetime DESC',
             {
               replacements: { status, fromdate, todate },
               type: QueryTypes.SELECT,
@@ -28,7 +28,7 @@ const getAllInvoice = async (req, res) => {
           res.status(200).json({ data: invoiceList });
         } else {
           const invoiceList = await Invoice.sequelize.query(
-            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND I.invoice_status = :status AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method ORDER BY I.datetime DESC',
+            'SELECT I.*, II.name as name_status, P.name as name_payment_method FROM invoices as I, invoice_statuses as II, payment_methods as P, customers as C WHERE I.id_customer = C.id_customer AND I.id_status = :status AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method ORDER BY I.datetime DESC',
             {
               replacements: { status: status },
               type: QueryTypes.SELECT,
@@ -119,8 +119,8 @@ const getCurrentInvoice = async (req, res) => {
     const item = await Invoice.findOne({
       where: {
         id_customer: req.user.id_user,
-        invoice_status: [0, 1],
-        payment_method: 'Ví điện tử VNPAY',
+        id_status: [0, 1],
+        id_payment_method: 1,
       },
     });
     res.status(200).json({
@@ -140,7 +140,7 @@ const confirmInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.invoice_status == 1) {
+    if (invoice.id_status == 1) {
       const itemListInInvoice = await Invoice_detail.findAll({
         where: {
           id_invoice,
@@ -177,7 +177,7 @@ const confirmInvoice = async (req, res) => {
           );
           j++;
         }
-        invoice.invoice_status = 2;
+        invoice.id_status = 2;
         await invoice.save();
         res.status(201).json({
           message: 'Xác nhận đơn hàng!',
@@ -206,8 +206,8 @@ const completeInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.invoice_status == 2 && invoice.payment_status == 1) {
-      invoice.invoice_status = 4;
+    if (invoice.id_status == 2 && invoice.payment_status == 1) {
+      invoice.id_status = 4;
       await invoice.save();
       res.status(200).json({
         message: 'Đơn hàng hoàn thành!',
@@ -232,8 +232,8 @@ const cancelInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.invoice_status == 0) {
-      invoice.invoice_status = 3;
+    if (invoice.id_status == 0) {
+      invoice.id_status = 3;
       await invoice.save();
       res.status(200).json({
         message: 'Đơn hàng đã được huỷ bỏ!',
@@ -254,7 +254,7 @@ const statistics = async (req, res) => {
     if (fromdate !== undefined && todate !== undefined) {
       // Thống kê từ ngày fromdate đến ngày todate
       const totalSold = await Invoice_detail.sequelize.query(
-        'SELECT i.id_item, i.name, SUM(id.quantity) AS total_quantity_sold, SUM(id.quantity * id.unit_price) AS total_price_sold FROM items i JOIN invoice_details id ON i.id_item = id.id_item_detail JOIN invoices inv ON id.id_invoice = inv.id_invoice WHERE inv.invoice_status = 2 AND inv.datetime BETWEEN ? AND ? GROUP BY i.id_item ORDER BY total_price_sold DESC',
+        'SELECT i.id_item, i.name, SUM(id.quantity) AS total_quantity_sold, SUM(id.quantity * id.unit_price) AS total_price_sold FROM items i JOIN invoice_details id ON i.id_item = id.id_item_detail JOIN invoices inv ON id.id_invoice = inv.id_invoice WHERE inv.id_status = 2 AND inv.datetime BETWEEN ? AND ? GROUP BY i.id_item ORDER BY total_price_sold DESC',
         {
           replacements: [fromdate, todate],
           type: QueryTypes.SELECT,
@@ -279,7 +279,7 @@ const statistics = async (req, res) => {
         },
       );
       const total = await Invoice_detail.sequelize.query(
-        'SELECT IFNULL(SUM(I.total),0) as revenue FROM invoices as I WHERE I.invoice_status = 2 AND I.datetime BETWEEN ? AND ?',
+        'SELECT IFNULL(SUM(I.total),0) as revenue FROM invoices as I WHERE I.id_status = 2 AND I.datetime BETWEEN ? AND ?',
         {
           replacements: [fromdate, todate],
           type: QueryTypes.SELECT,
@@ -299,7 +299,7 @@ const statistics = async (req, res) => {
     } else {
       // Thống kê từ trước đến nay
       const totalSold = await Invoice_detail.sequelize.query(
-        'SELECT i.id_item, i.name, SUM(id.quantity) AS total_quantity_sold, SUM(id.quantity * id.unit_price) AS total_price_sold FROM items i JOIN invoice_details id ON i.id_item = id.id_item_detail JOIN invoices inv ON id.id_invoice = inv.id_invoice WHERE inv.invoice_status = 2 GROUP BY i.id_item ORDER BY total_price_sold DESC',
+        'SELECT i.id_item, i.name, SUM(id.quantity) AS total_quantity_sold, SUM(id.quantity * id.unit_price) AS total_price_sold FROM items i JOIN invoice_details id ON i.id_item = id.id_item_detail JOIN invoices inv ON id.id_invoice = inv.id_invoice WHERE inv.id_status = 2 GROUP BY i.id_item ORDER BY total_price_sold DESC',
         {
           type: QueryTypes.SELECT,
           raw: true,
@@ -320,7 +320,7 @@ const statistics = async (req, res) => {
         },
       );
       const total = await Invoice_detail.sequelize.query(
-        'SELECT IFNULL(SUM(I.total),0) as revenue FROM invoices as I WHERE I.invoice_status = 2',
+        'SELECT IFNULL(SUM(I.total),0) as revenue FROM invoices as I WHERE I.id_status = 2',
         {
           type: QueryTypes.SELECT,
           raw: true,

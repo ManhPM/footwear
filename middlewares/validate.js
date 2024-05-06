@@ -144,12 +144,12 @@ const checkRegister = async (req, res, next) => {
 
 const checkCheckOut = async (req, res, next) => {
   try {
-    const { payment_method, userLat, userLng } = req.body;
-    if (isExist(payment_method) && isExist(userLat) && isExist(userLng)) {
+    const { id_payment_method, userLat, userLng } = req.body;
+    if (isExist(id_payment_method) && isExist(userLat) && isExist(userLng)) {
       const item = await Invoice.findOne({
         where: {
           id_customer: req.user.id_user,
-          invoice_status: 0,
+          id_status: 0,
         },
       });
       if (!item) {
@@ -176,7 +176,7 @@ const checkCheckOutAtStore = async (req, res, next) => {
     const item = await Invoice.findOne({
       where: {
         id_customer: 1,
-        invoice_status: 0,
+        id_status: 0,
       },
     });
     if (!item) {
@@ -410,7 +410,7 @@ const checkCreateReview = async (req, res, next) => {
         id_invoice,
       },
     });
-    if (invoice.invoice_status == 2) {
+    if (invoice.id_status == 2) {
       next();
     } else {
       res.status(400).json({

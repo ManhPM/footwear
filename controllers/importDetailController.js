@@ -75,7 +75,7 @@ const deleteImportDetail = async (req, res) => {
 };
 
 const getDetailImportDetail = async (req, res) => {
-  const { id_import, id_item_detail } = req.body;
+  const { id_import, id_item_detail } = req.params;
   try {
     const item = await Import_detail.findOne({
       where: {

@@ -1,15 +1,14 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Role extends Model {
-    static associate({ Account, Role_has_permission }) {
-      this.hasOne(Account, { foreignKey: 'id_account' });
-      this.hasMany(Role_has_permission, { foreignKey: 'id_role' });
+  class Permission extends Model {
+    static associate({ Role_has_permission }) {
+      this.hasMany(Role_has_permission, { foreignKey: 'id_permission' });
     }
   }
-  Role.init(
+  Permission.init(
     {
-      id_role: {
+      id_permission: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
@@ -17,9 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Role',
+      modelName: 'Permission',
       timestamps: false,
     },
   );
-  return Role;
+  return Permission;
 };

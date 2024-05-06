@@ -257,12 +257,12 @@ const checkoutAtStore = async (req, res) => {
           id_customer: 1,
           description: 'Khách mua tại cửa hàng',
           address: 'Khách mua tại cửa hàng',
-          payment_method: 'Khách mua tại cửa hàng',
+          id_payment_method: 2,
           ship_fee: 0,
           item_fee: Number(info[0].itemFee),
           total: Number(info[0].itemFee),
           datetime: date,
-          invoice_status: 0,
+          id_status: 0,
           payment_status: 0,
         });
         i = 0;
@@ -353,7 +353,8 @@ const deleteOneItemInCart = async (req, res) => {
 };
 
 const checkout = async (req, res) => {
-  const { payment_method, description, userLat, userLng, address } = req.body;
+  const { id_payment_method, description, userLat, userLng, address } =
+    req.body;
   try {
     let itemInCartList = [];
     itemInCartList = await Cart.findAll({
@@ -377,15 +378,16 @@ const checkout = async (req, res) => {
         item.size = data.id_size;
         item.name = itemName.name;
         item.id_item = itemName.id_item;
-        item.status = itemName.status;
         item.item_quantity = data.quantity;
+        item.status = itemName.id_status;
       }),
     );
+
     let i = 0;
     let check = 0;
     let checkNotEnough = 0;
     while (i < itemInCartList.length) {
-      if (itemInCartList[i].id_status != 1 || itemInCartList.quantity == 0) {
+      if (itemInCartList[i].status != 1 || itemInCartList.quantity == 0) {
         await Cart.destroy({
           where: {
             id_item_detail: itemInCartList[i].id_item_detail,
@@ -435,12 +437,12 @@ const checkout = async (req, res) => {
           id_customer: req.user.id_user,
           description,
           address,
-          payment_method,
+          id_payment_method,
           ship_fee: random,
           item_fee: total,
           total: total + random,
           datetime: date,
-          invoice_status: 0,
+          id_status: 1,
           payment_status: 0,
         });
         i = 0;
