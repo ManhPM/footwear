@@ -407,10 +407,24 @@ const checkout = async (req, res) => {
       }
       i++;
     }
+    i = 0;
+    // dem so luong san pham
+    let countItem = 0;
+    while (i < itemInCartList.length) {
+      countItem += itemInCartList[i].quantity;
+      i++;
+    }
+    //====
     if (check || checkNotEnough) {
       res.status(400).json({
         message:
           'Trong giỏ hàng của bạn có sản phẩm không đủ hàng hoặc đã ngừng kinh doanh, vui lòng đặt hàng lại!',
+      });
+    } else if (countItem > 10) {
+      //kiem tra so luong san pham
+      res.status(400).json({
+        message:
+          'Số lượng sản phẩm trong giỏ hàng của bạn vượt quá giới hạn cho phép, vui lòng đặt tối đa 10 sản phẩm!',
       });
     } else {
       if (itemInCartList.length) {
@@ -430,7 +444,7 @@ const checkout = async (req, res) => {
         let total = 0;
         await Promise.all(
           itemInCartList.map(async (item) => {
-            total += itemInCartList.price * itemInCartList.quantity;
+            total += item.price * item.quantity;
           }),
         );
         const newInvoice = await Invoice.create({

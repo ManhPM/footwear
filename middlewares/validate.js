@@ -149,7 +149,7 @@ const checkCheckOut = async (req, res, next) => {
       const item = await Invoice.findOne({
         where: {
           id_customer: req.user.id_user,
-          id_status: 0,
+          id_status: 1,
         },
       });
       if (!item) {
@@ -176,7 +176,7 @@ const checkCheckOutAtStore = async (req, res, next) => {
     const item = await Invoice.findOne({
       where: {
         id_customer: 1,
-        id_status: 0,
+        id_status: 1,
       },
     });
     if (!item) {
