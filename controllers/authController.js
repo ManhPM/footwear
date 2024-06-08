@@ -366,7 +366,7 @@ const registerStaff = async (req, res) => {
     const account = await Account.create({
       password: hashPassword,
       email,
-      role: 'Nhân viên',
+      id_role: 2,
       status: 1,
     });
     await Staff.create({
