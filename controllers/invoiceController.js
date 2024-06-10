@@ -76,7 +76,7 @@ const getAllItemInInvoice = async (req, res) => {
       },
     );
     const invoice = await Invoice.sequelize.query(
-      'SELECT C.name as name_customer, C.phone as phone_customer, S.name as name_staff, II.name as name_status, P.name as name_payment_method, I.* FROM invoices as I, invoice_statuses AS II, payment_methods as P, staffs as S, customers as C WHERE C.id_customer = I.id_customer AND I.id_staff = S.id_staff AND I.id_invoice = :id_invoice AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method',
+      'SELECT C.name as name_customer, C.phone as phone_customer, II.name as name_status, P.name as name_payment_method, I.* FROM invoices as I, invoice_statuses AS II, payment_methods as P, customers as C WHERE C.id_customer = I.id_customer AND I.id_invoice = :id_invoice AND II.id_status = I.id_status AND I.id_payment_method = P.id_payment_method',
       {
         replacements: { id_invoice: id_invoice },
         type: QueryTypes.SELECT,
@@ -105,6 +105,7 @@ const getAllItemInInvoice = async (req, res) => {
         item.id_item = itemName.id_item;
       }),
     );
+    console.log(invoice);
     res.status(200).json({
       info: invoice[0],
       data: itemList,
