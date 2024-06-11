@@ -449,55 +449,67 @@ const logout = async (req, res, next) => {
 
 const updateProfile = async (req, res) => {
   try {
-    const { name, email, phone, image } = req.body;
-    const customer = await Customer.findOne({
-      where: {
-        id_account: req.user.id,
-      },
-      raw: false,
-    });
-    customer.name = name;
-    customer.phone = phone;
-    customer.image = image;
-    await customer.save();
-    if (!email) {
-      res.status(200).json({ message: 'Cập nhật thông tin thành công' });
-    } else {
-      const randomID = Math.floor(100000 + Math.random() * 900000);
-      const account = await Account.findOne({
+    const { name, email, phone } = req.body;
+    if (req.user.role != 'Khách hàng') {
+      const staff = await Staff.findOne({
         where: {
           id_account: req.user.id,
         },
+        raw: false,
       });
-      const date = new Date();
-      date.setHours(date.getHours() + 7);
-      date.setMinutes(date.getMinutes() + 5);
-      const account_verify = await Account_verify.create({
-        id_account: account.id_account,
-        verify_code: randomID,
-        expire_time: date,
-        status: 0,
-      });
-      let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: 'n19dccn107@student.ptithcm.edu.vn', // generated ethereal user
-          pass: 'dzwedtbaoqsmrkob', // generated ethereal password
+      staff.name = name;
+      staff.phone = phone;
+      await staff.save();
+      res.status(200).json({ message: 'Cập nhật thông tin thành công' });
+    } else {
+      const customer = await Customer.findOne({
+        where: {
+          id_account: req.user.id,
         },
+        raw: false,
       });
-      let htmlContent = createHtmlContent(randomID);
-      await transporter.sendMail({
-        from: 'n19dccn107@student.ptithcm.edu.vn', // sender address
-        to: `${account.email}`, // list of receivers
-        subject: 'FOOTWEAR', // Subject line
-        text: 'FOOTWEAR', // plain text body
-        html: htmlContent, // html body
-      });
-      res.status(200).json({
-        message: `Bạn vừa thay đổi email mã xác minh đã được gửi về email đăng ký!`,
-      });
+      customer.name = name;
+      customer.phone = phone;
+      await customer.save();
+      if (!email) {
+        res.status(200).json({ message: 'Cập nhật thông tin thành công' });
+      } else {
+        const randomID = Math.floor(100000 + Math.random() * 900000);
+        const account = await Account.findOne({
+          where: {
+            id_account: req.user.id,
+          },
+        });
+        const date = new Date();
+        date.setHours(date.getHours() + 7);
+        date.setMinutes(date.getMinutes() + 5);
+        const account_verify = await Account_verify.create({
+          id_account: account.id_account,
+          verify_code: randomID,
+          expire_time: date,
+          status: 0,
+        });
+        let transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: 'n19dccn107@student.ptithcm.edu.vn', // generated ethereal user
+            pass: 'dzwedtbaoqsmrkob', // generated ethereal password
+          },
+        });
+        let htmlContent = createHtmlContent(randomID);
+        await transporter.sendMail({
+          from: 'n19dccn107@student.ptithcm.edu.vn', // sender address
+          to: `${account.email}`, // list of receivers
+          subject: 'FOOTWEAR', // Subject line
+          text: 'FOOTWEAR', // plain text body
+          html: htmlContent, // html body
+        });
+        res.status(200).json({
+          message: `Bạn vừa thay đổi email mã xác minh đã được gửi về email đăng ký!`,
+        });
+      }
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -86,7 +86,7 @@ const getAllItemInInvoice = async (req, res) => {
       itemList.map(async (item) => {
         const item_detail = await Item_detail.findOne({
           where: {
-            id_item: item.id_item_detail,
+            id_item_detail: item.id_item_detail,
           },
         });
         const sizes = await Item_detail.findOne({
@@ -233,7 +233,7 @@ const cancelInvoice = async (req, res) => {
       },
       raw: false,
     });
-    if (invoice.id_status == 0) {
+    if (invoice.id_status == 1) {
       invoice.id_status = 3;
       await invoice.save();
       res.status(200).json({

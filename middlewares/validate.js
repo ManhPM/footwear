@@ -462,7 +462,7 @@ const checkCreateProvider = async (req, res, next) => {
 const checkUpdateProvider = async (req, res, next) => {
   try {
     const { phone, name, address } = req.body;
-    const { id_provider } = req.params;
+    const { id } = req.params;
     if (isExist(phone) && isExist(name) && isExist(address)) {
       if (isValidPhoneNumber(phone)) {
         const item = await Provider.findOne({
@@ -474,7 +474,7 @@ const checkUpdateProvider = async (req, res, next) => {
         if (!item) {
           next();
         } else {
-          if (item.id_provider == id_provider) {
+          if (item.id_provider == id) {
             next();
           } else {
             res.status(400).json({
@@ -537,7 +537,7 @@ const checkCreateStaff = async (req, res, next) => {
 const checkUpdateStaff = async (req, res, next) => {
   try {
     const { phone, name, address } = req.body;
-    const { id_staff } = req.params;
+    const { id } = req.params;
     if (isExist(phone) && isExist(name) && isExist(address)) {
       if (isValidPhoneNumber(phone)) {
         const item = await Staff.findOne({
@@ -549,7 +549,7 @@ const checkUpdateStaff = async (req, res, next) => {
         if (!item) {
           next();
         } else {
-          if (item.id_staff == id_staff) {
+          if (item.id_staff == id) {
             next();
           } else {
             res.status(400).json({

@@ -1,4 +1,4 @@
-const { Staff } = require('../models');
+const { Staff, Account } = require('../models');
 const { QueryTypes } = require('sequelize');
 
 const getAllStaff = async (req, res) => {
@@ -43,7 +43,12 @@ const updateStaff = async (req, res) => {
 const deleteStaff = async (req, res) => {
   const { id } = req.params;
   try {
+    const staff = await Staff.findOne({ id: id });
     await Staff.update({ status: 0 }, { where: { id_staff: id } });
+    await Account.update(
+      { status: 0 },
+      { where: { id_account: staff.id_account } },
+    );
     res.status(201).json({ message: 'Xoá thành công' });
   } catch (error) {
     res.status(500).json({ message: error.message });
